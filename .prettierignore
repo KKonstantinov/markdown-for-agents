@@ -1,0 +1,8 @@
+# Test fixtures contain expected converter output and must not be reformatted
+packages/core/test/fixtures/
+
+# Build output
+**/dist/
+
+# Lock files
+pnpm-lock.yaml

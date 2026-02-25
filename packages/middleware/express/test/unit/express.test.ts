@@ -1,0 +1,126 @@
+import { describe, it, expect, vi } from 'vitest';
+import { markdown } from '../../src/index.js';
+
+function createMockReqRes(acceptHeader: string, contentType: string) {
+    const req = {
+        headers: { accept: acceptHeader } as Record<string, string | string[] | undefined>
+    };
+
+    const sentHeaders = new Map<string, string | number>([['content-type', contentType]]);
+
+    let sentBody: unknown;
+
+    const res = {
+        getHeader: (name: string) => sentHeaders.get(name),
+        setHeader(name: string, value: string | number) {
+            sentHeaders.set(name, value);
+            return res;
+        },
+        send(body?: unknown) {
+            sentBody = body;
+            return res;
+        }
+    };
+
+    return {
+        req,
+        res,
+        getSentBody: () => sentBody,
+        getSentHeader: (name: string) => sentHeaders.get(name)
+    };
+}
+
+describe('express middleware', () => {
+    it('converts HTML to markdown when Accept: text/markdown', () => {
+        const mw = markdown();
+        const { req, res, getSentBody, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
+        const next = vi.fn();
+
+        mw(req, res, next);
+        expect(next).toHaveBeenCalled();
+
+        // Simulate Express calling res.send with HTML
+        res.send('<h1>Title</h1><p>Body</p>');
+
+        expect(getSentBody()).toContain('# Title');
+        expect(getSentBody()).toContain('Body');
+        expect(getSentHeader('content-type')).toBe('text/markdown; charset=utf-8');
+        expect(getSentHeader('x-markdown-tokens')).toBeTruthy();
+    });
+
+    it('passes through when Accept is not text/markdown', () => {
+        const mw = markdown();
+        const { req, res, getSentBody } = createMockReqRes('text/html', 'text/html');
+        const next = vi.fn();
+
+        mw(req, res, next);
+        expect(next).toHaveBeenCalled();
+
+        // res.send should not have been overridden
+        res.send('<h1>Title</h1>');
+        expect(getSentBody()).toBe('<h1>Title</h1>');
+    });
+
+    it('passes through non-HTML responses', () => {
+        const mw = markdown();
+        const { req, res, getSentBody, getSentHeader } = createMockReqRes('text/markdown', 'application/json');
+        const next = vi.fn();
+
+        mw(req, res, next);
+        res.send('{"ok":true}');
+
+        expect(getSentBody()).toBe('{"ok":true}');
+        expect(getSentHeader('content-type')).toBe('application/json');
+    });
+
+    it('passes through non-string body', () => {
+        const mw = markdown();
+        const { req, res, getSentBody } = createMockReqRes('text/markdown', 'text/html');
+        const next = vi.fn();
+
+        mw(req, res, next);
+        const buffer = Buffer.from('<h1>Title</h1>');
+        res.send(buffer);
+
+        expect(getSentBody()).toBe(buffer);
+    });
+
+    it('supports custom token header', () => {
+        const mw = markdown({ tokenHeader: 'x-tokens' });
+        const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
+        const next = vi.fn();
+
+        mw(req, res, next);
+        res.send('<p>Hello</p>');
+
+        expect(getSentHeader('x-tokens')).toBeTruthy();
+        expect(getSentHeader('x-markdown-tokens')).toBeUndefined();
+    });
+
+    it('forwards convert options', () => {
+        const mw = markdown({ extract: true });
+        const { req, res, getSentBody } = createMockReqRes('text/markdown', 'text/html');
+        const next = vi.fn();
+
+        mw(req, res, next);
+        res.send('<nav><a href="/">Home</a></nav><main><p>Content</p></main><footer>Footer</footer>');
+
+        const body = getSentBody() as string;
+        expect(body).toContain('Content');
+        expect(body).not.toContain('Home');
+        expect(body).not.toContain('Footer');
+    });
+
+    it('handles missing accept header', () => {
+        const mw = markdown();
+        const { req, res, getSentBody } = createMockReqRes('text/html', 'text/html');
+        req.headers.accept = undefined;
+        const next = vi.fn();
+
+        mw(req, res, next);
+        expect(next).toHaveBeenCalled();
+
+        res.send('<h1>Title</h1>');
+        expect(getSentBody()).toBe('<h1>Title</h1>');
+    });
+});

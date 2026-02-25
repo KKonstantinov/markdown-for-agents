@@ -1,0 +1,64 @@
+import { convert } from 'markdown-for-agents';
+import type { MiddlewareOptions } from 'markdown-for-agents';
+
+export type { MiddlewareOptions } from 'markdown-for-agents';
+
+// Minimal Express types — avoids requiring express as a compile-time dependency
+interface ExpressRequest {
+    headers: Record<string, string | string[] | undefined>;
+}
+
+interface ExpressResponse {
+    getHeader(name: string): string | number | string[] | undefined;
+    setHeader(name: string, value: string | number): this;
+    send(body?: unknown): this;
+}
+
+type ExpressNextFunction = (error?: unknown) => void;
+
+export type ExpressMiddleware = (req: ExpressRequest, res: ExpressResponse, next: ExpressNextFunction) => void;
+
+/**
+ * Express middleware that converts HTML responses to markdown
+ * when the client sends an `Accept: text/markdown` header.
+ *
+ * @param options - Conversion and middleware options.
+ * @returns An Express middleware function.
+ *
+ * @example
+ * ```ts
+ * import express from "express";
+ * import { markdown } from "@markdown-for-agents/express";
+ *
+ * const app = express();
+ * app.use(markdown());
+ * ```
+ */
+export function markdown(options?: MiddlewareOptions): ExpressMiddleware {
+    const tokenHeader = options?.tokenHeader ?? 'x-markdown-tokens';
+
+    return (req, res, next) => {
+        const accept = typeof req.headers.accept === 'string' ? req.headers.accept : '';
+        if (!accept.includes('text/markdown')) {
+            next();
+            return;
+        }
+
+        const originalSend = res.send.bind(res);
+
+        res.send = function (body?: unknown) {
+            const contentType = String(res.getHeader('content-type') ?? '');
+
+            if (!contentType.includes('text/html') || typeof body !== 'string') {
+                return originalSend.call(this, body);
+            }
+
+            const { markdown: md, tokenEstimate } = convert(body, options);
+            res.setHeader('content-type', 'text/markdown; charset=utf-8');
+            res.setHeader(tokenHeader, String(tokenEstimate.tokens));
+            return originalSend.call(this, md);
+        };
+
+        next();
+    };
+}

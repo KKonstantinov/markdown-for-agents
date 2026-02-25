@@ -1,0 +1,58 @@
+{
+    "name": "markdown-for-agents",
+    "version": "0.1.0",
+    "description": "Runtime-agnostic HTML to Markdown converter with content extraction and plugin system",
+    "type": "module",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=18"
+    },
+    "files": [
+        "dist",
+        "LICENSE"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.mts",
+            "import": "./dist/index.mjs"
+        },
+        "./extract": {
+            "types": "./dist/extract/index.d.mts",
+            "import": "./dist/extract/index.mjs"
+        },
+        "./tokens": {
+            "types": "./dist/tokens/index.d.mts",
+            "import": "./dist/tokens/index.mjs"
+        }
+    },
+    "main": "./dist/index.mjs",
+    "types": "./dist/index.d.mts",
+    "scripts": {
+        "build": "tsdown",
+        "dev": "tsdown --watch",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:integration:node": "node --test test/integration/node.test.mts",
+        "test:integration:bun": "bun test test/integration/bun.test.ts",
+        "test:integration:deno": "deno test --allow-read test/integration/deno.test.ts",
+        "test:integration": "pnpm run build && pnpm run test:integration:node",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "domhandler": "^5.0.3",
+        "htmlparser2": "^10.1.0"
+    },
+    "keywords": [
+        "html",
+        "markdown",
+        "converter",
+        "ai",
+        "agent",
+        "content-extraction",
+        "edge",
+        "cloudflare-workers",
+        "deno",
+        "bun"
+    ],
+    "license": "MIT"
+}

@@ -1,0 +1,44 @@
+{
+    "name": "@markdown-for-agents/nextjs",
+    "version": "0.1.0",
+    "description": "Next.js middleware for markdown-for-agents",
+    "type": "module",
+    "sideEffects": false,
+    "engines": {
+        "node": ">=18"
+    },
+    "files": [
+        "dist",
+        "LICENSE"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.mts",
+            "import": "./dist/index.mjs"
+        }
+    },
+    "main": "./dist/index.mjs",
+    "types": "./dist/index.d.mts",
+    "scripts": {
+        "build": "tsdown",
+        "dev": "tsdown --watch",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:integration": "vitest run test/integration",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "markdown-for-agents": "workspace:*"
+    },
+    "peerDependencies": {
+        "next": ">=14.0.0"
+    },
+    "keywords": [
+        "html",
+        "markdown",
+        "middleware",
+        "nextjs",
+        "next"
+    ],
+    "license": "MIT"
+}
