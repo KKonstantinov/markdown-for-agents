@@ -1,4 +1,6 @@
-run-name: ${{ github.event_name == 'push' && format('CI · main · {0}', github.event.head_commit.message) || format('CI · PR #{0} · {1}', github.event.pull_request.number, github.event.pull_request.title) }}
+run-name:
+    "${{ github.event_name == 'push' && format('CI · main · {0}', github.event.head_commit.message) || format('CI · PR #{0} · {1}',
+    github.event.pull_request.number, github.event.pull_request.title) }}"
 
 on:
     push:
