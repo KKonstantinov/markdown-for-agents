@@ -1,0 +1,15 @@
+pre-commit:
+    parallel: true
+    jobs:
+        - name: lint
+          glob: '*.{js,ts,mts,tsx,jsx}'
+          run: pnpm eslint --fix {staged_files}
+          stage_fixed: true
+
+        - name: format
+          glob: '*.{js,ts,mts,tsx,jsx,json,yml,yaml,md,css,html}'
+          run: pnpm prettier --write {staged_files}
+          stage_fixed: true
+
+        - name: test
+          run: pnpm build && pnpm vitest run --changed

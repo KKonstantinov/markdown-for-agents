@@ -14,7 +14,8 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "prepare": "lefthook install"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
@@ -23,6 +24,7 @@
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.5",
         "eslint-plugin-unicorn": "^63.0.0",
+        "lefthook": "^2.1.1",
         "prettier": "^3.8.1",
         "tsdown": "^0.20.3",
         "typescript": "^5.7.0",
@@ -30,6 +32,8 @@
         "vitest": "^3.0.0"
     },
     "pnpm": {
-        "onlyBuiltDependencies": []
+        "onlyBuiltDependencies": [
+            "lefthook"
+        ]
     }
 }
