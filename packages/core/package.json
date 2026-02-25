@@ -34,8 +34,8 @@
         "test:watch": "vitest",
         "test:integration:node": "node --test test/integration/node.test.mts",
         "test:integration:bun": "bun test test/integration/bun.test.ts",
-        "test:integration:deno": "deno test --allow-read test/integration/deno.test.ts",
-        "test:integration": "pnpm run build && pnpm run test:integration:node",
+        "test:integration:deno": "deno test --no-check --allow-read test/integration/deno.test.ts",
+        "test:integration": "pnpm run build && pnpm run test:integration:node && pnpm run test:integration:bun && pnpm run test:integration:deno",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
