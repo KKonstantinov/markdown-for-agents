@@ -2,6 +2,7 @@
     "name": "@markdown-for-agents/monorepo",
     "private": true,
     "type": "module",
+    "packageManager": "pnpm@10.29.3",
     "engines": {
         "node": ">=18"
     },
