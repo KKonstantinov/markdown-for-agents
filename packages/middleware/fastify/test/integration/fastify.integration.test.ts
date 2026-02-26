@@ -3,6 +3,32 @@ import Fastify from 'fastify';
 import type { FastifyInstance } from 'fastify';
 import { markdown } from '../../src/index.js';
 
+async function createApp(options?: Parameters<typeof markdown>[0]): Promise<{ instance: FastifyInstance; address: string }> {
+    const instance = Fastify();
+    instance.register(markdown(options));
+
+    instance.get('/html', (_request, reply) => {
+        reply.header('content-type', 'text/html');
+        return reply.send('<h1>Hello World</h1><p>This is <strong>bold</strong> text.</p>');
+    });
+
+    instance.get('/json', (_request, reply) => {
+        return reply.send({ message: 'hello' });
+    });
+
+    instance.get('/page', (_request, reply) => {
+        reply.header('content-type', 'text/html');
+        return reply.send(`
+        <nav><a href="/">Home</a></nav>
+        <main><h1>Article</h1><p>Content here.</p></main>
+        <footer>Copyright</footer>
+      `);
+    });
+
+    const address = await instance.listen({ port: 0, host: '127.0.0.1' });
+    return { instance, address };
+}
+
 describe('fastify middleware integration', () => {
     let app: FastifyInstance | undefined;
 
@@ -13,34 +39,10 @@ describe('fastify middleware integration', () => {
         }
     });
 
-    async function createApp(options?: Parameters<typeof markdown>[0]) {
-        app = Fastify();
-        app.register(markdown(options));
-
-        app.get('/html', (_request, reply) => {
-            reply.header('content-type', 'text/html');
-            return reply.send('<h1>Hello World</h1><p>This is <strong>bold</strong> text.</p>');
-        });
-
-        app.get('/json', (_request, reply) => {
-            return reply.send({ message: 'hello' });
-        });
-
-        app.get('/page', (_request, reply) => {
-            reply.header('content-type', 'text/html');
-            return reply.send(`
-        <nav><a href="/">Home</a></nav>
-        <main><h1>Article</h1><p>Content here.</p></main>
-        <footer>Copyright</footer>
-      `);
-        });
-
-        const address = await app.listen({ port: 0, host: '127.0.0.1' });
-        return address;
-    }
-
     it('converts HTML to markdown via real HTTP request', async () => {
-        const base = await createApp();
+        const result = await createApp();
+        app = result.instance;
+        const base = result.address;
 
         const res = await fetch(`${base}/html`, {
             headers: { accept: 'text/markdown' }
@@ -56,9 +58,10 @@ describe('fastify middleware integration', () => {
     });
 
     it('returns HTML when Accept header does not request markdown', async () => {
-        const base = await createApp();
+        const result = await createApp();
+        app = result.instance;
 
-        const res = await fetch(`${base}/html`, {
+        const res = await fetch(`${result.address}/html`, {
             headers: { accept: 'text/html' }
         });
         const body = await res.text();
@@ -68,9 +71,10 @@ describe('fastify middleware integration', () => {
     });
 
     it('does not interfere with JSON responses', async () => {
-        const base = await createApp();
+        const result = await createApp();
+        app = result.instance;
 
-        const res = await fetch(`${base}/json`, {
+        const res = await fetch(`${result.address}/json`, {
             headers: { accept: 'text/markdown' }
         });
         const body = await res.json();
@@ -79,9 +83,10 @@ describe('fastify middleware integration', () => {
     });
 
     it('supports extraction via options', async () => {
-        const base = await createApp({ extract: true });
+        const result = await createApp({ extract: true });
+        app = result.instance;
 
-        const res = await fetch(`${base}/page`, {
+        const res = await fetch(`${result.address}/page`, {
             headers: { accept: 'text/markdown' }
         });
         const body = await res.text();

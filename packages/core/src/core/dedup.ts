@@ -11,6 +11,64 @@ function normalize(text: string): string {
     return text.toLowerCase().replaceAll(/\s+/g, ' ');
 }
 
+function findNextNonEmptyIndex(blocks: string[], start: number): number {
+    let idx = start;
+    while (idx < blocks.length && !blocks[idx].trim()) {
+        idx++;
+    }
+    return idx;
+}
+
+function isDuplicate(seen: Set<string>, fingerprint: string, minLength: number): boolean {
+    return fingerprint.length >= minLength && seen.has(fingerprint);
+}
+
+function registerFingerprint(seen: Set<string>, fingerprint: string, minLength: number): void {
+    if (fingerprint.length >= minLength) {
+        seen.add(fingerprint);
+    }
+}
+
+/** Process a heading block with its following content as a section. */
+function processHeadingBlock(blocks: string[], i: number, seen: Set<string>, minLength: number, kept: string[]): number {
+    const trimmed = blocks[i].trim();
+    const nextIdx = findNextNonEmptyIndex(blocks, i + 1);
+    const nextTrimmed = nextIdx < blocks.length ? blocks[nextIdx].trim() : '';
+    const hasContent = nextTrimmed !== '' && !HEADING_RE.test(nextTrimmed);
+
+    if (!hasContent) {
+        // Standalone heading (next block is another heading or end) — always keep
+        kept.push(blocks[i]);
+        return i + 1;
+    }
+
+    // Section: heading + content → compound fingerprint
+    const sectionFp = normalize(trimmed + ' ' + nextTrimmed);
+
+    if (isDuplicate(seen, sectionFp, minLength)) {
+        return nextIdx + 1;
+    }
+
+    registerFingerprint(seen, sectionFp, minLength);
+    // Register the content fingerprint so standalone duplicates
+    // of the same content are still caught
+    registerFingerprint(seen, normalize(nextTrimmed), minLength);
+    kept.push(blocks[i], blocks[nextIdx]);
+    return nextIdx + 1;
+}
+
+/** Deduplicate a non-heading content block individually. */
+function processContentBlock(block: string, trimmed: string, seen: Set<string>, minLength: number, kept: string[]): void {
+    const fingerprint = normalize(trimmed);
+
+    if (isDuplicate(seen, fingerprint, minLength)) {
+        return;
+    }
+
+    registerFingerprint(seen, fingerprint, minLength);
+    kept.push(block);
+}
+
 /**
  * Removes duplicate content blocks from rendered Markdown.
  *
@@ -43,62 +101,11 @@ export function deduplicateBlocks(markdown: string, minLength: number = DEFAULT_
         }
 
         if (HEADING_RE.test(trimmed)) {
-            // Find the next non-empty block
-            let nextIdx = i + 1;
-            while (nextIdx < blocks.length && !blocks[nextIdx].trim()) {
-                nextIdx++;
-            }
-
-            const nextTrimmed = nextIdx < blocks.length ? blocks[nextIdx].trim() : '';
-            const hasContent = nextTrimmed !== '' && !HEADING_RE.test(nextTrimmed);
-
-            if (hasContent) {
-                // Section: heading + content → compound fingerprint
-                const sectionFp = normalize(trimmed + ' ' + nextTrimmed);
-
-                if (sectionFp.length >= minLength && seen.has(sectionFp)) {
-                    i = nextIdx + 1;
-                    continue;
-                }
-
-                if (sectionFp.length >= minLength) {
-                    seen.add(sectionFp);
-                }
-
-                // Register the content fingerprint so standalone duplicates
-                // of the same content are still caught
-                const contentFp = normalize(nextTrimmed);
-                if (contentFp.length >= minLength) {
-                    seen.add(contentFp);
-                }
-
-                kept.push(blocks[i], blocks[nextIdx]);
-                i = nextIdx + 1;
-                continue;
-            }
-
-            // Standalone heading (next block is another heading or end) — always keep
-            kept.push(blocks[i]);
-            i++;
+            i = processHeadingBlock(blocks, i, seen, minLength, kept);
             continue;
         }
 
-        // Non-heading block — deduplicate individually
-        const fingerprint = normalize(trimmed);
-
-        if (fingerprint.length < minLength) {
-            kept.push(blocks[i]);
-            i++;
-            continue;
-        }
-
-        if (seen.has(fingerprint)) {
-            i++;
-            continue;
-        }
-
-        seen.add(fingerprint);
-        kept.push(blocks[i]);
+        processContentBlock(blocks[i], trimmed, seen, minLength, kept);
         i++;
     }
 

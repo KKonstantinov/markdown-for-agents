@@ -11,9 +11,7 @@ let cached: Rule[] | null = null;
  * The result is cached after the first call.
  */
 export function getDefaultRules(): Rule[] {
-    if (!cached) {
-        cached = [...blockRules, ...inlineRules, ...listRules, ...tableRules];
-    }
+    cached ??= [...blockRules, ...inlineRules, ...listRules, ...tableRules];
     return cached;
 }
 

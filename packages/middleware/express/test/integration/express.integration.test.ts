@@ -3,6 +3,41 @@ import express from 'express';
 import type { Server } from 'node:http';
 import { markdown } from '../../src/index.js';
 
+function createApp(options?: Parameters<typeof markdown>[0]) {
+    const app = express();
+    app.use(markdown(options));
+
+    app.get('/html', (_req, res) => {
+        res.setHeader('content-type', 'text/html');
+        res.send('<h1>Hello World</h1><p>This is <strong>bold</strong> text.</p>');
+    });
+
+    app.get('/json', (_req, res) => {
+        res.json({ message: 'hello' });
+    });
+
+    app.get('/page', (_req, res) => {
+        res.setHeader('content-type', 'text/html');
+        res.send(`
+        <nav><a href="/">Home</a></nav>
+        <main><h1>Article</h1><p>Content here.</p></main>
+        <footer>Copyright</footer>
+      `);
+    });
+
+    return app;
+}
+
+function listen(app: ReturnType<typeof express>): Promise<{ server: Server; url: string }> {
+    return new Promise(resolve => {
+        const srv = app.listen(0, () => {
+            const addr = srv.address();
+            const port = typeof addr === 'object' && addr ? addr.port : 0;
+            resolve({ server: srv, url: `http://127.0.0.1:${String(port)}` });
+        });
+    });
+}
+
 describe('express middleware integration', () => {
     let server: Server | undefined;
 
@@ -13,46 +48,11 @@ describe('express middleware integration', () => {
         }
     });
 
-    function createApp(options?: Parameters<typeof markdown>[0]) {
-        const app = express();
-        app.use(markdown(options));
-
-        app.get('/html', (_req, res) => {
-            res.setHeader('content-type', 'text/html');
-            res.send('<h1>Hello World</h1><p>This is <strong>bold</strong> text.</p>');
-        });
-
-        app.get('/json', (_req, res) => {
-            res.json({ message: 'hello' });
-        });
-
-        app.get('/page', (_req, res) => {
-            res.setHeader('content-type', 'text/html');
-            res.send(`
-        <nav><a href="/">Home</a></nav>
-        <main><h1>Article</h1><p>Content here.</p></main>
-        <footer>Copyright</footer>
-      `);
-        });
-
-        return app;
-    }
-
-    function listen(app: ReturnType<typeof express>): Promise<string> {
-        return new Promise(resolve => {
-            server = app.listen(0, () => {
-                const addr = server!.address();
-                const port = typeof addr === 'object' && addr ? addr.port : 0;
-                resolve(`http://127.0.0.1:${String(port)}`);
-            });
-        });
-    }
-
     it('converts HTML to markdown via real HTTP request', async () => {
-        const app = createApp();
-        const base = await listen(app);
+        const result = await listen(createApp());
+        server = result.server;
 
-        const res = await fetch(`${base}/html`, {
+        const res = await fetch(`${result.url}/html`, {
             headers: { accept: 'text/markdown' }
         });
         const body = await res.text();
@@ -66,10 +66,10 @@ describe('express middleware integration', () => {
     });
 
     it('returns HTML when Accept header does not request markdown', async () => {
-        const app = createApp();
-        const base = await listen(app);
+        const result = await listen(createApp());
+        server = result.server;
 
-        const res = await fetch(`${base}/html`, {
+        const res = await fetch(`${result.url}/html`, {
             headers: { accept: 'text/html' }
         });
         const body = await res.text();
@@ -79,10 +79,10 @@ describe('express middleware integration', () => {
     });
 
     it('does not interfere with JSON responses', async () => {
-        const app = createApp();
-        const base = await listen(app);
+        const result = await listen(createApp());
+        server = result.server;
 
-        const res = await fetch(`${base}/json`, {
+        const res = await fetch(`${result.url}/json`, {
             headers: { accept: 'text/markdown' }
         });
         const body = await res.json();
@@ -91,10 +91,10 @@ describe('express middleware integration', () => {
     });
 
     it('supports extraction via options', async () => {
-        const app = createApp({ extract: true });
-        const base = await listen(app);
+        const result = await listen(createApp({ extract: true }));
+        server = result.server;
 
-        const res = await fetch(`${base}/page`, {
+        const res = await fetch(`${result.url}/page`, {
             headers: { accept: 'text/markdown' }
         });
         const body = await res.text();

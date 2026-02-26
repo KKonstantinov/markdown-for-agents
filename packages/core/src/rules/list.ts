@@ -26,7 +26,7 @@ export const listRules: Rule[] = [
             const parentEl = parent && isTag(parent) ? parent : null;
 
             let bullet: string;
-            if (parentEl && parentEl.name === 'ol') {
+            if (parentEl?.name === 'ol') {
                 const start = Number.parseInt(parentEl.attribs.start || '1', 10);
                 // Count only <li> siblings before this one
                 let liIndex = 0;

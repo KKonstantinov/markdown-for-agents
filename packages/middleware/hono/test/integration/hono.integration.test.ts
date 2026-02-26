@@ -2,30 +2,30 @@ import { describe, it, expect } from 'vitest';
 import { Hono } from 'hono';
 import { markdown } from '../../src/index.js';
 
-describe('hono middleware integration', () => {
-    function createApp(options?: Parameters<typeof markdown>[0]) {
-        const app = new Hono();
-        app.use('*', markdown(options));
+function createApp(options?: Parameters<typeof markdown>[0]) {
+    const app = new Hono();
+    app.use('*', markdown(options));
 
-        app.get('/html', c => {
-            return c.html('<h1>Hello World</h1><p>This is <strong>bold</strong> text.</p>');
-        });
+    app.get('/html', c => {
+        return c.html('<h1>Hello World</h1><p>This is <strong>bold</strong> text.</p>');
+    });
 
-        app.get('/json', c => {
-            return c.json({ message: 'hello' });
-        });
+    app.get('/json', c => {
+        return c.json({ message: 'hello' });
+    });
 
-        app.get('/page', c => {
-            return c.html(`
+    app.get('/page', c => {
+        return c.html(`
         <nav><a href="/">Home</a></nav>
         <main><h1>Article</h1><p>Content here.</p></main>
         <footer>Copyright</footer>
       `);
-        });
+    });
 
-        return app;
-    }
+    return app;
+}
 
+describe('hono middleware integration', () => {
     it('converts HTML to markdown via Hono request', async () => {
         const app = createApp();
         const res = await app.request('/html', {
