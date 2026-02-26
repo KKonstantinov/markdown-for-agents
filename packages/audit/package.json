@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/audit",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Audit token savings when converting HTML to Markdown for AI agents",
     "type": "module",
     "sideEffects": false,
@@ -41,5 +41,17 @@
         "ai",
         "agent"
     ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KKonstantinov/markdown-for-agents.git",
+        "directory": "packages/audit"
+    },
+    "homepage": "https://github.com/KKonstantinov/markdown-for-agents/tree/main/packages/audit#readme",
+    "bugs": {
+        "url": "https://github.com/KKonstantinov/markdown-for-agents/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
     "license": "MIT"
 }

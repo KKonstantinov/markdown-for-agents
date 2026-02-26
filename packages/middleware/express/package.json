@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/express",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Express middleware for markdown-for-agents",
     "type": "module",
     "sideEffects": false,
@@ -43,5 +43,17 @@
         "middleware",
         "express"
     ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KKonstantinov/markdown-for-agents.git",
+        "directory": "packages/middleware/express"
+    },
+    "homepage": "https://github.com/KKonstantinov/markdown-for-agents/tree/main/packages/middleware/express#readme",
+    "bugs": {
+        "url": "https://github.com/KKonstantinov/markdown-for-agents/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
     "license": "MIT"
 }

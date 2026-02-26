@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/hono",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Hono middleware for markdown-for-agents",
     "type": "module",
     "sideEffects": false,
@@ -42,5 +42,17 @@
         "middleware",
         "hono"
     ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KKonstantinov/markdown-for-agents.git",
+        "directory": "packages/middleware/hono"
+    },
+    "homepage": "https://github.com/KKonstantinov/markdown-for-agents/tree/main/packages/middleware/hono#readme",
+    "bugs": {
+        "url": "https://github.com/KKonstantinov/markdown-for-agents/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
     "license": "MIT"
 }

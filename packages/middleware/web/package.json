@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/web",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Web Standard (Request/Response) middleware for markdown-for-agents",
     "type": "module",
     "sideEffects": false,
@@ -39,5 +39,17 @@
         "request",
         "response"
     ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KKonstantinov/markdown-for-agents.git",
+        "directory": "packages/middleware/web"
+    },
+    "homepage": "https://github.com/KKonstantinov/markdown-for-agents/tree/main/packages/middleware/web#readme",
+    "bugs": {
+        "url": "https://github.com/KKonstantinov/markdown-for-agents/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
     "license": "MIT"
 }

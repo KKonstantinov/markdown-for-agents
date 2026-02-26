@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/fastify",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Fastify plugin for markdown-for-agents",
     "type": "module",
     "sideEffects": false,
@@ -43,5 +43,17 @@
         "fastify",
         "plugin"
     ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KKonstantinov/markdown-for-agents.git",
+        "directory": "packages/middleware/fastify"
+    },
+    "homepage": "https://github.com/KKonstantinov/markdown-for-agents/tree/main/packages/middleware/fastify#readme",
+    "bugs": {
+        "url": "https://github.com/KKonstantinov/markdown-for-agents/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
     "license": "MIT"
 }
