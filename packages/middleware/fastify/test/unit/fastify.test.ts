@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { markdown } from '../../src/index.js';
+import { markdown, type MiddlewareOptions } from '../../src/index.js';
 
 type OnSendHook = (
     request: { headers: Record<string, string | string[] | undefined> },
@@ -24,8 +24,11 @@ function createMockFastify() {
     return { instance, hooks };
 }
 
-function createMockReply(contentType: string) {
+function createMockReply(contentType: string, extraHeaders?: Record<string, string>) {
     const headers = new Map<string, string>([['content-type', contentType]]);
+    if (extraHeaders) {
+        for (const [k, v] of Object.entries(extraHeaders)) headers.set(k, v);
+    }
 
     return {
         reply: {
@@ -39,26 +42,32 @@ function createMockReply(contentType: string) {
     };
 }
 
+function invokeHook(options?: MiddlewareOptions) {
+    const plugin = markdown(options);
+    const { instance, hooks } = createMockFastify();
+    plugin(instance as never, {}, () => {});
+    const hook = hooks[0];
+
+    return async (accept: string | undefined, contentType: string, payload: unknown, extraHeaders?: Record<string, string>) => {
+        const headers: Record<string, string | undefined> = accept === undefined ? {} : { accept };
+        const request = { headers };
+        const { reply, getHeader } = createMockReply(contentType, extraHeaders);
+        const result = await hook(request, reply, payload);
+        return { result, getHeader };
+    };
+}
+
 describe('fastify middleware', () => {
     it('registers an onSend hook', () => {
         const plugin = markdown();
         const { instance, hooks } = createMockFastify();
-        const done = () => {};
-
-        plugin(instance as never, {}, done);
-
+        plugin(instance as never, {}, () => {});
         expect(hooks).toHaveLength(1);
     });
 
     it('converts HTML to markdown when Accept: text/markdown', async () => {
-        const plugin = markdown();
-        const { instance, hooks } = createMockFastify();
-        plugin(instance as never, {}, () => {});
-
-        const request = { headers: { accept: 'text/markdown' } };
-        const { reply, getHeader } = createMockReply('text/html');
-
-        const result = await hooks[0](request, reply, '<h1>Title</h1><p>Body</p>');
+        const send = invokeHook();
+        const { result, getHeader } = await send('text/markdown', 'text/html', '<h1>Title</h1><p>Body</p>');
 
         expect(result).toContain('# Title');
         expect(result).toContain('Body');
@@ -67,69 +76,41 @@ describe('fastify middleware', () => {
     });
 
     it('passes through when Accept is not text/markdown', async () => {
-        const plugin = markdown();
-        const { instance, hooks } = createMockFastify();
-        plugin(instance as never, {}, () => {});
-
-        const request = { headers: { accept: 'text/html' } };
-        const { reply } = createMockReply('text/html');
-
-        const result = await hooks[0](request, reply, '<h1>Title</h1>');
-
+        const send = invokeHook();
+        const { result } = await send('text/html', 'text/html', '<h1>Title</h1>');
         expect(result).toBe('<h1>Title</h1>');
     });
 
     it('passes through non-HTML responses', async () => {
-        const plugin = markdown();
-        const { instance, hooks } = createMockFastify();
-        plugin(instance as never, {}, () => {});
-
-        const request = { headers: { accept: 'text/markdown' } };
-        const { reply, getHeader } = createMockReply('application/json');
-
-        const result = await hooks[0](request, reply, '{"ok":true}');
+        const send = invokeHook();
+        const { result, getHeader } = await send('text/markdown', 'application/json', '{"ok":true}');
 
         expect(result).toBe('{"ok":true}');
         expect(getHeader('content-type')).toBe('application/json');
     });
 
     it('passes through non-string payloads', async () => {
-        const plugin = markdown();
-        const { instance, hooks } = createMockFastify();
-        plugin(instance as never, {}, () => {});
-
-        const request = { headers: { accept: 'text/markdown' } };
-        const { reply } = createMockReply('text/html');
+        const send = invokeHook();
         const buffer = Buffer.from('<h1>Title</h1>');
-
-        const result = await hooks[0](request, reply, buffer);
-
+        const { result } = await send('text/markdown', 'text/html', buffer);
         expect(result).toBe(buffer);
     });
 
     it('supports custom token header', async () => {
-        const plugin = markdown({ tokenHeader: 'x-tokens' });
-        const { instance, hooks } = createMockFastify();
-        plugin(instance as never, {}, () => {});
-
-        const request = { headers: { accept: 'text/markdown' } };
-        const { reply, getHeader } = createMockReply('text/html');
-
-        await hooks[0](request, reply, '<p>Hello</p>');
+        const send = invokeHook({ tokenHeader: 'x-tokens' });
+        const { getHeader } = await send('text/markdown', 'text/html', '<p>Hello</p>');
 
         expect(getHeader('x-tokens')).toBeTruthy();
         expect(getHeader('x-markdown-tokens')).toBeUndefined();
     });
 
     it('forwards convert options', async () => {
-        const plugin = markdown({ extract: true });
-        const { instance, hooks } = createMockFastify();
-        plugin(instance as never, {}, () => {});
-
-        const request = { headers: { accept: 'text/markdown' } };
-        const { reply } = createMockReply('text/html');
-
-        const result = await hooks[0](request, reply, '<nav><a href="/">Home</a></nav><main><p>Content</p></main><footer>Footer</footer>');
+        const send = invokeHook({ extract: true });
+        const { result } = await send(
+            'text/markdown',
+            'text/html',
+            '<nav><a href="/">Home</a></nav><main><p>Content</p></main><footer>Footer</footer>'
+        );
 
         expect(result).toContain('Content');
         expect(result).not.toContain('Home');
@@ -137,100 +118,48 @@ describe('fastify middleware', () => {
     });
 
     it('handles missing accept header', async () => {
-        const plugin = markdown();
-        const { instance, hooks } = createMockFastify();
-        plugin(instance as never, {}, () => {});
-
-        const request = { headers: {} as Record<string, string | undefined> };
-        const { reply } = createMockReply('text/html');
-
-        const result = await hooks[0](request, reply, '<h1>Title</h1>');
-
+        const send = invokeHook();
+        const { result } = await send(undefined, 'text/html', '<h1>Title</h1>');
         expect(result).toBe('<h1>Title</h1>');
     });
 
     describe('ETag header', () => {
         it('sets ETag on converted responses', async () => {
-            const plugin = markdown();
-            const { instance, hooks } = createMockFastify();
-            plugin(instance as never, {}, () => {});
-
-            const request = { headers: { accept: 'text/markdown' } };
-            const { reply, getHeader } = createMockReply('text/html');
-
-            await hooks[0](request, reply, '<h1>Title</h1>');
-
+            const send = invokeHook();
+            const { getHeader } = await send('text/markdown', 'text/html', '<h1>Title</h1>');
             expect(getHeader('etag')).toMatch(/^".+"$/);
         });
 
         it('does not set ETag on pass-through responses', async () => {
-            const plugin = markdown();
-            const { instance, hooks } = createMockFastify();
-            plugin(instance as never, {}, () => {});
-
-            const request = { headers: { accept: 'text/html' } };
-            const { reply, getHeader } = createMockReply('text/html');
-
-            await hooks[0](request, reply, '<h1>Title</h1>');
-
+            const send = invokeHook();
+            const { getHeader } = await send('text/html', 'text/html', '<h1>Title</h1>');
             expect(getHeader('etag')).toBeUndefined();
         });
 
         it('produces the same ETag for identical content', async () => {
-            const plugin = markdown();
-            const { instance, hooks } = createMockFastify();
-            plugin(instance as never, {}, () => {});
-
-            const request = { headers: { accept: 'text/markdown' } };
-
-            const a = createMockReply('text/html');
-            await hooks[0](request, a.reply, '<p>Hello</p>');
-
-            const b = createMockReply('text/html');
-            await hooks[0](request, b.reply, '<p>Hello</p>');
-
+            const send = invokeHook();
+            const a = await send('text/markdown', 'text/html', '<p>Hello</p>');
+            const b = await send('text/markdown', 'text/html', '<p>Hello</p>');
             expect(a.getHeader('etag')).toBe(b.getHeader('etag'));
         });
     });
 
     describe('Vary header', () => {
         it('sets Vary: Accept on converted responses', async () => {
-            const plugin = markdown();
-            const { instance, hooks } = createMockFastify();
-            plugin(instance as never, {}, () => {});
-
-            const request = { headers: { accept: 'text/markdown' } };
-            const { reply, getHeader } = createMockReply('text/html');
-
-            await hooks[0](request, reply, '<h1>Title</h1>');
-
+            const send = invokeHook();
+            const { getHeader } = await send('text/markdown', 'text/html', '<h1>Title</h1>');
             expect(getHeader('vary')).toBe('Accept');
         });
 
         it('sets Vary: Accept on pass-through responses', async () => {
-            const plugin = markdown();
-            const { instance, hooks } = createMockFastify();
-            plugin(instance as never, {}, () => {});
-
-            const request = { headers: { accept: 'text/html' } };
-            const { reply, getHeader } = createMockReply('text/html');
-
-            await hooks[0](request, reply, '<h1>Title</h1>');
-
+            const send = invokeHook();
+            const { getHeader } = await send('text/html', 'text/html', '<h1>Title</h1>');
             expect(getHeader('vary')).toBe('Accept');
         });
 
         it('appends to existing Vary header', async () => {
-            const plugin = markdown();
-            const { instance, hooks } = createMockFastify();
-            plugin(instance as never, {}, () => {});
-
-            const request = { headers: { accept: 'text/markdown' } };
-            const { reply, getHeader } = createMockReply('text/html');
-            reply.header('vary', 'Accept-Encoding');
-
-            await hooks[0](request, reply, '<h1>Title</h1>');
-
+            const send = invokeHook();
+            const { getHeader } = await send('text/markdown', 'text/html', '<h1>Title</h1>', { vary: 'Accept-Encoding' });
             expect(getHeader('vary')).toBe('Accept-Encoding, Accept');
         });
     });
