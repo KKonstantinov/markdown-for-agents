@@ -65,4 +65,71 @@ describe('hono middleware', () => {
         expect(c.res.headers.get('x-tokens')).toBeTruthy();
         expect(c.res.headers.get('x-markdown-tokens')).toBeNull();
     });
+
+    describe('ETag header', () => {
+        it('sets ETag on converted responses', async () => {
+            const mw = markdown();
+            const c = createMockContext('text/markdown', '<h1>Title</h1>', 'text/html');
+
+            const next = vi.fn().mockResolvedValue(undefined);
+            await mw(c as any, next);
+
+            expect(c.res.headers.get('etag')).toMatch(/^".+"$/);
+        });
+
+        it('does not set ETag on pass-through responses', async () => {
+            const mw = markdown();
+            const c = createMockContext('text/html', '<h1>Title</h1>', 'text/html');
+
+            const next = vi.fn().mockResolvedValue(undefined);
+            await mw(c as any, next);
+
+            expect(c.res.headers.get('etag')).toBeNull();
+        });
+    });
+
+    describe('Vary header', () => {
+        it('sets Vary: Accept on converted responses', async () => {
+            const mw = markdown();
+            const c = createMockContext('text/markdown', '<h1>Title</h1>', 'text/html');
+
+            const next = vi.fn().mockResolvedValue(undefined);
+            await mw(c as any, next);
+
+            expect(c.res.headers.get('vary')).toContain('Accept');
+        });
+
+        it('sets Vary: Accept on pass-through responses', async () => {
+            const mw = markdown();
+            const c = createMockContext('text/html', '<h1>Title</h1>', 'text/html');
+
+            const next = vi.fn().mockResolvedValue(undefined);
+            await mw(c as any, next);
+
+            expect(c.res.headers.get('vary')).toContain('Accept');
+        });
+
+        it('appends to existing Vary header', async () => {
+            const mw = markdown();
+            const resHeaders = new Headers({
+                'content-type': 'text/html',
+                vary: 'Accept-Encoding'
+            });
+            const c = {
+                req: {
+                    header: (name: string): string | undefined => {
+                        if (name === 'accept') return 'text/markdown';
+                    }
+                },
+                res: new Response('<h1>Title</h1>', { headers: resHeaders })
+            };
+
+            const next = vi.fn().mockResolvedValue(undefined);
+            await mw(c as any, next);
+
+            const vary = c.res.headers.get('vary')!;
+            expect(vary).toContain('Accept-Encoding');
+            expect(vary).toContain('Accept');
+        });
+    });
 });

@@ -87,6 +87,95 @@ describe('nextjs middleware', () => {
     });
 });
 
+describe('ETag header', () => {
+    const htmlHandler = async () =>
+        new Response('<h1>Title</h1><p>Body</p>', {
+            headers: { 'content-type': 'text/html' }
+        });
+
+    it('sets ETag on converted responses', async () => {
+        const handler = withMarkdown(htmlHandler);
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        expect(response!.headers.get('etag')).toMatch(/^".+"$/);
+    });
+
+    it('does not set ETag on pass-through responses', async () => {
+        const handler = withMarkdown(htmlHandler);
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/html' }
+        });
+
+        const response = await handler(request);
+        expect(response!.headers.get('etag')).toBeNull();
+    });
+});
+
+describe('Vary header', () => {
+    const htmlHandler = async () =>
+        new Response('<h1>Title</h1><p>Body</p>', {
+            headers: { 'content-type': 'text/html' }
+        });
+
+    it('sets Vary: Accept on converted responses', async () => {
+        const handler = withMarkdown(htmlHandler);
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        expect(response!.headers.get('vary')).toContain('Accept');
+    });
+
+    it('sets Vary: Accept on pass-through responses', async () => {
+        const handler = withMarkdown(htmlHandler);
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/html' }
+        });
+
+        const response = await handler(request);
+        expect(response!.headers.get('vary')).toContain('Accept');
+    });
+
+    it('appends to existing Vary header', async () => {
+        const handlerWithVary = async () =>
+            new Response('<h1>Title</h1>', {
+                headers: {
+                    'content-type': 'text/html',
+                    vary: 'Accept-Encoding'
+                }
+            });
+
+        const handler = withMarkdown(handlerWithVary);
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        const vary = response!.headers.get('vary')!;
+        expect(vary).toContain('Accept-Encoding');
+        expect(vary).toContain('Accept');
+    });
+
+    it('sets Vary: Accept on non-HTML responses', async () => {
+        const jsonHandler = async () =>
+            new Response('{"ok":true}', {
+                headers: { 'content-type': 'application/json' }
+            });
+
+        const handler = withMarkdown(jsonHandler);
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        expect(response!.headers.get('vary')).toContain('Accept');
+    });
+});
+
 describe('nextImageRule', () => {
     it('extracts original URL from /_next/image path', () => {
         const { markdown } = convert('<img src="/_next/image?url=%2Fphoto.png&w=640&q=75" alt="Photo">', {

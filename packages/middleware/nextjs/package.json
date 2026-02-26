@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/nextjs",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Next.js middleware for markdown-for-agents",
     "type": "module",
     "sideEffects": false,

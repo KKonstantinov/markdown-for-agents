@@ -33,11 +33,16 @@ export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
     const tokenHeader = options?.tokenHeader ?? 'x-markdown-tokens';
 
     return async (request: Request, next: Handler): Promise<Response> => {
+        const response = await next(request);
+
+        // Always signal that responses vary by Accept so caches store
+        // separate entries for HTML and Markdown representations.
+        response.headers.append('vary', 'Accept');
+
         if (!wantsMarkdown(request)) {
-            return next(request);
+            return response;
         }
 
-        const response = await next(request);
         const contentType = response.headers.get('content-type') ?? '';
 
         if (!contentType.includes('text/html')) {
@@ -45,11 +50,12 @@ export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
         }
 
         const html = await response.text();
-        const { markdown, tokenEstimate } = convert(html, options);
+        const { markdown, tokenEstimate, contentHash } = convert(html, options);
 
         const headers = new Headers(response.headers);
         headers.set('content-type', 'text/markdown; charset=utf-8');
         headers.set(tokenHeader, String(tokenEstimate.tokens));
+        headers.set('etag', `"${contentHash}"`);
 
         return new Response(markdown, {
             status: response.status,

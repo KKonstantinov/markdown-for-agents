@@ -43,6 +43,11 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
 
     const plugin: FastifyPlugin = (fastify, _opts, done) => {
         fastify.addHook('onSend', (request, reply, payload) => {
+            // Always signal that responses vary by Accept so caches store
+            // separate entries for HTML and Markdown representations.
+            const existing = reply.getHeader('vary');
+            reply.header('vary', existing ? `${existing}, Accept` : 'Accept');
+
             const accept = typeof request.headers.accept === 'string' ? request.headers.accept : '';
 
             if (!accept.includes('text/markdown')) {
@@ -58,9 +63,10 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
                 return Promise.resolve(payload);
             }
 
-            const { markdown: md, tokenEstimate } = convert(payload, options);
+            const { markdown: md, tokenEstimate, contentHash } = convert(payload, options);
             reply.header('content-type', 'text/markdown; charset=utf-8');
             reply.header(tokenHeader, String(tokenEstimate.tokens));
+            reply.header('etag', `"${contentHash}"`);
             return Promise.resolve(md);
         });
 

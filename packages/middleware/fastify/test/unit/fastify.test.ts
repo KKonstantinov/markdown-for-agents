@@ -148,4 +148,90 @@ describe('fastify middleware', () => {
 
         expect(result).toBe('<h1>Title</h1>');
     });
+
+    describe('ETag header', () => {
+        it('sets ETag on converted responses', async () => {
+            const plugin = markdown();
+            const { instance, hooks } = createMockFastify();
+            plugin(instance as never, {}, () => {});
+
+            const request = { headers: { accept: 'text/markdown' } };
+            const { reply, getHeader } = createMockReply('text/html');
+
+            await hooks[0](request, reply, '<h1>Title</h1>');
+
+            expect(getHeader('etag')).toMatch(/^".+"$/);
+        });
+
+        it('does not set ETag on pass-through responses', async () => {
+            const plugin = markdown();
+            const { instance, hooks } = createMockFastify();
+            plugin(instance as never, {}, () => {});
+
+            const request = { headers: { accept: 'text/html' } };
+            const { reply, getHeader } = createMockReply('text/html');
+
+            await hooks[0](request, reply, '<h1>Title</h1>');
+
+            expect(getHeader('etag')).toBeUndefined();
+        });
+
+        it('produces the same ETag for identical content', async () => {
+            const plugin = markdown();
+            const { instance, hooks } = createMockFastify();
+            plugin(instance as never, {}, () => {});
+
+            const request = { headers: { accept: 'text/markdown' } };
+
+            const a = createMockReply('text/html');
+            await hooks[0](request, a.reply, '<p>Hello</p>');
+
+            const b = createMockReply('text/html');
+            await hooks[0](request, b.reply, '<p>Hello</p>');
+
+            expect(a.getHeader('etag')).toBe(b.getHeader('etag'));
+        });
+    });
+
+    describe('Vary header', () => {
+        it('sets Vary: Accept on converted responses', async () => {
+            const plugin = markdown();
+            const { instance, hooks } = createMockFastify();
+            plugin(instance as never, {}, () => {});
+
+            const request = { headers: { accept: 'text/markdown' } };
+            const { reply, getHeader } = createMockReply('text/html');
+
+            await hooks[0](request, reply, '<h1>Title</h1>');
+
+            expect(getHeader('vary')).toBe('Accept');
+        });
+
+        it('sets Vary: Accept on pass-through responses', async () => {
+            const plugin = markdown();
+            const { instance, hooks } = createMockFastify();
+            plugin(instance as never, {}, () => {});
+
+            const request = { headers: { accept: 'text/html' } };
+            const { reply, getHeader } = createMockReply('text/html');
+
+            await hooks[0](request, reply, '<h1>Title</h1>');
+
+            expect(getHeader('vary')).toBe('Accept');
+        });
+
+        it('appends to existing Vary header', async () => {
+            const plugin = markdown();
+            const { instance, hooks } = createMockFastify();
+            plugin(instance as never, {}, () => {});
+
+            const request = { headers: { accept: 'text/markdown' } };
+            const { reply, getHeader } = createMockReply('text/html');
+            reply.header('vary', 'Accept-Encoding');
+
+            await hooks[0](request, reply, '<h1>Title</h1>');
+
+            expect(getHeader('vary')).toBe('Accept-Encoding, Accept');
+        });
+    });
 });

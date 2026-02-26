@@ -89,6 +89,33 @@ const mw = markdownMiddleware();
 
 The middleware inspects the `Accept` header. Normal browser requests pass through untouched. When an AI agent sends `Accept: text/markdown`, the HTML response is automatically converted. See the [Middleware guide](docs/middleware.md) for full details.
 
+### Caching
+
+The middleware automatically sets headers to support proper HTTP caching:
+
+- **`Vary: Accept`** — ensures CDNs and proxies cache HTML and Markdown responses separately, preventing an AI agent from receiving a cached HTML response (or vice versa).
+- **`ETag`** — a content hash of the Markdown output, enabling conditional requests via `If-None-Match`. CDNs can serve `304 Not Modified` without hitting your origin server.
+
+For production deployments, add `Cache-Control` at your infrastructure layer to control how long responses are cached:
+
+```ts
+// Example: cache Markdown responses for 1 hour at the CDN
+app.use((req, res, next) => {
+    if (req.headers.accept?.includes('text/markdown')) {
+        res.setHeader('cache-control', 'public, max-age=3600');
+    }
+    next();
+});
+app.use(markdown());
+```
+
+The `contentHash` is also available on the core `convert()` result for custom caching strategies:
+
+```ts
+const { markdown, contentHash } = convert(html);
+// contentHash: "2f-1a3b4c5" — use as a cache key or ETag
+```
+
 ## Custom Rules
 
 Override how any element is converted, or add support for custom elements:

@@ -56,4 +56,76 @@ describe('web middleware', () => {
         expect(res.headers.get('x-tokens')).toBeTruthy();
         expect(res.headers.get('x-markdown-tokens')).toBeNull();
     });
+
+    describe('ETag header', () => {
+        it('sets ETag on converted responses', async () => {
+            const mw = markdownMiddleware();
+            const req = new Request('https://example.com', {
+                headers: { accept: 'text/markdown' }
+            });
+
+            const res = await mw(req, htmlHandler);
+            expect(res.headers.get('etag')).toMatch(/^".+"$/);
+        });
+
+        it('does not set ETag on pass-through responses', async () => {
+            const mw = markdownMiddleware();
+            const req = new Request('https://example.com', {
+                headers: { accept: 'text/html' }
+            });
+
+            const res = await mw(req, htmlHandler);
+            expect(res.headers.get('etag')).toBeNull();
+        });
+
+        it('produces the same ETag for identical content', async () => {
+            const mw = markdownMiddleware();
+
+            const a = await mw(new Request('https://example.com', { headers: { accept: 'text/markdown' } }), htmlHandler);
+            const b = await mw(new Request('https://example.com', { headers: { accept: 'text/markdown' } }), htmlHandler);
+
+            expect(a.headers.get('etag')).toBe(b.headers.get('etag'));
+        });
+    });
+
+    describe('Vary header', () => {
+        it('sets Vary: Accept on converted responses', async () => {
+            const mw = markdownMiddleware();
+            const req = new Request('https://example.com', {
+                headers: { accept: 'text/markdown' }
+            });
+
+            const res = await mw(req, htmlHandler);
+            expect(res.headers.get('vary')).toContain('Accept');
+        });
+
+        it('sets Vary: Accept on pass-through responses', async () => {
+            const mw = markdownMiddleware();
+            const req = new Request('https://example.com', {
+                headers: { accept: 'text/html' }
+            });
+
+            const res = await mw(req, htmlHandler);
+            expect(res.headers.get('vary')).toContain('Accept');
+        });
+
+        it('appends to existing Vary header', async () => {
+            const mw = markdownMiddleware();
+            const req = new Request('https://example.com', {
+                headers: { accept: 'text/markdown' }
+            });
+            const handlerWithVary = () =>
+                new Response('<h1>Title</h1>', {
+                    headers: {
+                        'content-type': 'text/html',
+                        vary: 'Accept-Encoding'
+                    }
+                });
+
+            const res = await mw(req, handlerWithVary);
+            const vary = res.headers.get('vary')!;
+            expect(vary).toContain('Accept-Encoding');
+            expect(vary).toContain('Accept');
+        });
+    });
 });

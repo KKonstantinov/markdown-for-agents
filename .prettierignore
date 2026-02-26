@@ -6,3 +6,4 @@ packages/core/test/fixtures/
 
 # Lock files
 pnpm-lock.yaml
+.npmrc

@@ -21,7 +21,9 @@ All middleware packages depend on `markdown-for-agents` (the core library), whic
 2. Your server generates an HTML response as usual
 3. The middleware intercepts the response, converts the HTML to Markdown
 4. The client receives `Content-Type: text/markdown; charset=utf-8`
-5. The response includes an `x-markdown-tokens` header with the estimated token count
+5. The response includes an `x-markdown-tokens` header with the estimated token count and an `ETag` for cache validation
+
+All responses (converted or not) include `Vary: Accept` so that CDNs and proxies cache HTML and Markdown representations separately.
 
 If the `Accept` header doesn't include `text/markdown`, or the upstream response isn't HTML, the middleware passes through without modification.
 
@@ -308,10 +310,32 @@ const mw = markdownMiddleware({
 
 When the middleware converts a response, it sets these headers:
 
-| Header              | Value                          | Description                                      |
-| ------------------- | ------------------------------ | ------------------------------------------------ |
-| `Content-Type`      | `text/markdown; charset=utf-8` | Replaces the original `text/html`                |
-| `x-markdown-tokens` | `123`                          | Estimated token count (configurable header name) |
+| Header              | Value                          | Description                                                                                          |
+| ------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `Content-Type`      | `text/markdown; charset=utf-8` | Replaces the original `text/html`                                                                    |
+| `x-markdown-tokens` | `123`                          | Estimated token count (configurable header name)                                                     |
+| `ETag`              | `"2f-1a3b4c5"`                 | Content hash of the markdown output for cache validation                                             |
+| `Vary`              | `Accept`                       | Ensures caches store separate entries per content type (always set, even on non-converted responses) |
+
+## Caching
+
+The middleware sets two headers that enable efficient caching out of the box:
+
+- **`Vary: Accept`** — tells CDNs and proxies that the response varies by `Accept` header. Without this, a CDN could cache the HTML variant and serve it to an AI agent requesting Markdown (or vice versa). This header is set on **all** responses, not just converted ones.
+- **`ETag`** — a deterministic content hash of the Markdown output. Enables conditional requests (`If-None-Match`) so CDNs and clients can validate cached responses without re-downloading the full body.
+
+To control cache lifetime, add `Cache-Control` at your infrastructure layer:
+
+```ts
+// Example: cache Markdown responses for 1 hour at the CDN
+app.use((req, res, next) => {
+    if (req.headers.accept?.includes('text/markdown')) {
+        res.setHeader('cache-control', 'public, max-age=3600');
+    }
+    next();
+});
+app.use(markdown());
+```
 
 ## Import Paths
 

@@ -10,6 +10,8 @@ The plugin uses content negotiation. When a client sends `Accept: text/markdown`
 
 - `Content-Type: text/markdown; charset=utf-8`
 - `x-markdown-tokens` header with the token count
+- `ETag` header with a content hash for cache validation
+- `Vary: Accept` header so CDNs cache HTML and Markdown separately
 
 ## Install
 

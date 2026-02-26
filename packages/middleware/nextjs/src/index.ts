@@ -89,8 +89,15 @@ export function withMarkdown(handler: NextMiddleware, options?: MiddlewareOption
 
     return async request => {
         const accept = request.headers.get('accept') ?? '';
+
         if (!accept.includes('text/markdown')) {
-            return handler(request);
+            const response = await handler(request);
+            if (response) {
+                // Always signal that responses vary by Accept so caches store
+                // separate entries for HTML and Markdown representations.
+                response.headers.append('vary', 'Accept');
+            }
+            return response;
         }
 
         const response = await handler(request);
@@ -98,6 +105,7 @@ export function withMarkdown(handler: NextMiddleware, options?: MiddlewareOption
 
         const contentType = response.headers.get('content-type') ?? '';
         if (!contentType.includes('text/html')) {
+            response.headers.append('vary', 'Accept');
             return response;
         }
 
@@ -108,11 +116,13 @@ export function withMarkdown(handler: NextMiddleware, options?: MiddlewareOption
             rules: [nextImageRule, ...(options?.rules ?? [])]
         };
 
-        const { markdown, tokenEstimate } = convert(html, resolvedOptions);
+        const { markdown, tokenEstimate, contentHash } = convert(html, resolvedOptions);
 
         const headers = new Headers(response.headers);
+        headers.append('vary', 'Accept');
         headers.set('content-type', 'text/markdown; charset=utf-8');
         headers.set(tokenHeader, String(tokenEstimate.tokens));
+        headers.set('etag', `"${contentHash}"`);
 
         return new Response(markdown, {
             status: response.status,

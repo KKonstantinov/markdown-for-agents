@@ -275,6 +275,14 @@ export interface ConvertResult {
 
     /** Token / character / word estimates for the generated markdown. */
     tokenEstimate: TokenEstimate;
+
+    /**
+     * A short, deterministic content hash of the markdown output.
+     *
+     * Useful as an `ETag` value or cache key — the same markdown always
+     * produces the same hash. Format: `"<length_base36>-<fnv1a_base36>"`.
+     */
+    contentHash: string;
 }
 
 /**

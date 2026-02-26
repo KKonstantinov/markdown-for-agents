@@ -22,7 +22,7 @@ function convert(html: string, options?: ConvertOptions): ConvertResult;
 **Example:**
 
 ```ts
-const { markdown, tokenEstimate } = convert('<h1>Hello</h1>', {
+const { markdown, tokenEstimate, contentHash } = convert('<h1>Hello</h1>', {
     extract: true,
     baseUrl: 'https://example.com'
 });
@@ -241,8 +241,17 @@ When used with middleware, the custom counter's `tokens` value is used for the `
 interface ConvertResult {
     markdown: string;
     tokenEstimate: TokenEstimate;
+    contentHash: string;
 }
 ```
+
+| Property        | Type            | Description                                                        |
+| --------------- | --------------- | ------------------------------------------------------------------ |
+| `markdown`      | `string`        | The generated markdown string                                      |
+| `tokenEstimate` | `TokenEstimate` | Token / character / word estimates                                 |
+| `contentHash`   | `string`        | Deterministic content hash of the markdown output (FNV-1a, base36) |
+
+The `contentHash` is useful as an `ETag` value or cache key — the same markdown always produces the same hash.
 
 ---
 

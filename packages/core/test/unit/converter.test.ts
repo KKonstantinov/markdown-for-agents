@@ -49,6 +49,26 @@ describe('convert', () => {
         expect(markdown).toContain('> **Note:** Important!');
     });
 
+    describe('contentHash', () => {
+        it('returns a content hash string', () => {
+            const { contentHash } = convert('<p>Hello world</p>');
+            expect(typeof contentHash).toBe('string');
+            expect(contentHash.length).toBeGreaterThan(0);
+        });
+
+        it('is deterministic for the same input', () => {
+            const a = convert('<p>Hello</p>');
+            const b = convert('<p>Hello</p>');
+            expect(a.contentHash).toBe(b.contentHash);
+        });
+
+        it('differs for different content', () => {
+            const a = convert('<p>Hello</p>');
+            const b = convert('<p>World</p>');
+            expect(a.contentHash).not.toBe(b.contentHash);
+        });
+    });
+
     describe('tokenCounter option', () => {
         it('uses custom tokenCounter when provided', () => {
             const customCounter = vi.fn(

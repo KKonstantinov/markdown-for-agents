@@ -2,6 +2,7 @@ import { parse } from './parser.js';
 import { walk } from './walker.js';
 import { render } from './renderer.js';
 import { deduplicateBlocks } from './dedup.js';
+import { contentHash } from './hash.js';
 import { extractContent } from '../extract/index.js';
 import { estimateTokens } from '../tokens/index.js';
 import { getDefaultRules } from '../rules/index.js';
@@ -63,5 +64,5 @@ export function convert(html: string, options?: ConvertOptions): ConvertResult {
 
     const tokenEstimate = opts.tokenCounter ? opts.tokenCounter(markdown) : estimateTokens(markdown);
 
-    return { markdown, tokenEstimate };
+    return { markdown, tokenEstimate, contentHash: contentHash(markdown) };
 }

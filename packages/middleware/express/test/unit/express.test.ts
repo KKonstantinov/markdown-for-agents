@@ -123,4 +123,94 @@ describe('express middleware', () => {
         res.send('<h1>Title</h1>');
         expect(getSentBody()).toBe('<h1>Title</h1>');
     });
+
+    describe('ETag header', () => {
+        it('sets ETag on converted responses', () => {
+            const mw = markdown();
+            const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
+            const next = vi.fn();
+
+            mw(req, res, next);
+            res.send('<h1>Title</h1>');
+
+            const etag = getSentHeader('etag') as string;
+            expect(etag).toMatch(/^".+"$/);
+        });
+
+        it('does not set ETag on pass-through responses', () => {
+            const mw = markdown();
+            const { req, res, getSentHeader } = createMockReqRes('text/html', 'text/html');
+            const next = vi.fn();
+
+            mw(req, res, next);
+            res.send('<h1>Title</h1>');
+
+            expect(getSentHeader('etag')).toBeUndefined();
+        });
+
+        it('produces the same ETag for identical content', () => {
+            const mw = markdown();
+            const next = vi.fn();
+
+            const a = createMockReqRes('text/markdown', 'text/html');
+            mw(a.req, a.res, next);
+            a.res.send('<p>Hello</p>');
+
+            const b = createMockReqRes('text/markdown', 'text/html');
+            mw(b.req, b.res, next);
+            b.res.send('<p>Hello</p>');
+
+            expect(a.getSentHeader('etag')).toBe(b.getSentHeader('etag'));
+        });
+
+        it('produces different ETags for different content', () => {
+            const mw = markdown();
+            const next = vi.fn();
+
+            const a = createMockReqRes('text/markdown', 'text/html');
+            mw(a.req, a.res, next);
+            a.res.send('<p>Hello</p>');
+
+            const b = createMockReqRes('text/markdown', 'text/html');
+            mw(b.req, b.res, next);
+            b.res.send('<p>World</p>');
+
+            expect(a.getSentHeader('etag')).not.toBe(b.getSentHeader('etag'));
+        });
+    });
+
+    describe('Vary header', () => {
+        it('sets Vary: Accept on converted responses', () => {
+            const mw = markdown();
+            const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
+            const next = vi.fn();
+
+            mw(req, res, next);
+            res.send('<h1>Title</h1>');
+
+            expect(getSentHeader('vary')).toBe('Accept');
+        });
+
+        it('sets Vary: Accept on pass-through responses', () => {
+            const mw = markdown();
+            const { req, res, getSentHeader } = createMockReqRes('text/html', 'text/html');
+            const next = vi.fn();
+
+            mw(req, res, next);
+
+            expect(getSentHeader('vary')).toBe('Accept');
+        });
+
+        it('appends to existing Vary header', () => {
+            const mw = markdown();
+            const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
+            res.setHeader('vary', 'Accept-Encoding');
+            const next = vi.fn();
+
+            mw(req, res, next);
+            res.send('<h1>Title</h1>');
+
+            expect(getSentHeader('vary')).toBe('Accept-Encoding, Accept');
+        });
+    });
 });

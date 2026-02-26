@@ -32,7 +32,7 @@ const html = `
   <p>This is a <strong>simple</strong> example.</p>
 `;
 
-const { markdown, tokenEstimate } = convert(html);
+const { markdown, tokenEstimate, contentHash } = convert(html);
 
 console.log(markdown);
 // # Hello World
@@ -41,6 +41,9 @@ console.log(markdown);
 
 console.log(tokenEstimate);
 // { tokens: 12, characters: 46, words: 8 }
+
+console.log(contentHash);
+// "d-1a3b4c5" — deterministic, use as ETag or cache key
 ```
 
 ## Content Extraction
