@@ -86,6 +86,30 @@ describe('deduplicateBlocks', () => {
         expect(deduplicateBlocks('')).toBe('\n');
         expect(deduplicateBlocks('\n\n')).toBe('\n');
     });
+
+    describe('custom minLength', () => {
+        it('deduplicates short blocks when minLength is lowered', () => {
+            // "Content" is 7 chars normalized — below default 10, so kept by default
+            const input = 'Content\n\nContent\n';
+            expect(deduplicateBlocks(input)).toBe('Content\n\nContent\n');
+            expect(deduplicateBlocks(input, 5)).toBe('Content\n');
+        });
+
+        it('preserves longer blocks when minLength is raised', () => {
+            // "some content here." is 18 chars normalized — above default 10
+            const input = 'Some content here.\n\nSome content here.\n';
+            expect(deduplicateBlocks(input)).toBe('Some content here.\n');
+            expect(deduplicateBlocks(input, 50)).toBe('Some content here.\n\nSome content here.\n');
+        });
+
+        it('applies minLength to section fingerprints', () => {
+            const input = '## Hi\n\nShort.\n\n## Hi\n\nShort.\n';
+            // Section fingerprint "## hi short." is 12 chars — above default 10
+            expect(deduplicateBlocks(input)).toBe('## Hi\n\nShort.\n');
+            // With minLength 50, the section fingerprint is too short → both kept
+            expect(deduplicateBlocks(input, 50)).toBe('## Hi\n\nShort.\n\n## Hi\n\nShort.\n');
+        });
+    });
 });
 
 describe('convert with deduplicate option', () => {
@@ -154,5 +178,25 @@ describe('convert with deduplicate option', () => {
         const original = convert(html);
         const deduped = convert(html, { deduplicate: true });
         expect(deduped.tokenEstimate.tokens).toBeLessThan(original.tokenEstimate.tokens);
+    });
+
+    it('accepts DeduplicateOptions with custom minLength', () => {
+        // "Read more" is 9 chars — below default minLength 10, so normally kept
+        const html = '<p>Read more</p><p>Main content that is long enough.</p><p>Read more</p>';
+        const defaultDedup = convert(html, { deduplicate: true });
+        const customDedup = convert(html, { deduplicate: { minLength: 5 } });
+
+        const defaultCount = defaultDedup.markdown.split('Read more').length - 1;
+        const customCount = customDedup.markdown.split('Read more').length - 1;
+
+        expect(defaultCount).toBe(2); // preserved — below default minLength
+        expect(customCount).toBe(1); // deduped — above custom minLength
+    });
+
+    it('uses default minLength when DeduplicateOptions is empty', () => {
+        const html = '<p>Duplicate paragraph content here.</p><p>Unique</p><p>Duplicate paragraph content here.</p>';
+        const withTrue = convert(html, { deduplicate: true });
+        const withEmpty = convert(html, { deduplicate: {} });
+        expect(withTrue.markdown).toBe(withEmpty.markdown);
     });
 });

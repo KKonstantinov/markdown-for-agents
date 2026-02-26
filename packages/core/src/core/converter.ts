@@ -57,10 +57,11 @@ export function convert(html: string, options?: ConvertOptions): ConvertResult {
     let markdown = render(raw);
 
     if (opts.deduplicate) {
-        markdown = deduplicateBlocks(markdown);
+        const minLength = typeof opts.deduplicate === 'object' ? opts.deduplicate.minLength : undefined;
+        markdown = deduplicateBlocks(markdown, minLength);
     }
 
-    const tokenEstimate = estimateTokens(markdown);
+    const tokenEstimate = opts.tokenCounter ? opts.tokenCounter(markdown) : estimateTokens(markdown);
 
     return { markdown, tokenEstimate };
 }

@@ -1,9 +1,9 @@
 /**
- * Minimum fingerprint length to consider for deduplication.
+ * Default minimum fingerprint length to consider for deduplication.
  * Blocks shorter than this are always kept to avoid stripping
  * separators (---), short headings, or formatting elements.
  */
-const MIN_LENGTH = 10;
+const DEFAULT_MIN_LENGTH = 10;
 
 const HEADING_RE = /^#{1,6}\s/;
 
@@ -23,9 +23,13 @@ function normalize(text: string): string {
  * - Standalone headings (followed by another heading or nothing) are
  *   always preserved
  * - Non-heading blocks are fingerprinted individually
- * - Blocks shorter than 10 characters are exempt from deduplication
+ * - Blocks shorter than `minLength` characters are exempt from deduplication
+ *
+ * @param markdown - The rendered markdown string.
+ * @param minLength - Minimum normalized character length for a block to be
+ *   eligible for deduplication. Defaults to {@link DEFAULT_MIN_LENGTH} (10).
  */
-export function deduplicateBlocks(markdown: string): string {
+export function deduplicateBlocks(markdown: string, minLength: number = DEFAULT_MIN_LENGTH): string {
     const blocks = markdown.split(/\n\n+/);
     const seen = new Set<string>();
     const kept: string[] = [];
@@ -52,19 +56,19 @@ export function deduplicateBlocks(markdown: string): string {
                 // Section: heading + content → compound fingerprint
                 const sectionFp = normalize(trimmed + ' ' + nextTrimmed);
 
-                if (sectionFp.length >= MIN_LENGTH && seen.has(sectionFp)) {
+                if (sectionFp.length >= minLength && seen.has(sectionFp)) {
                     i = nextIdx + 1;
                     continue;
                 }
 
-                if (sectionFp.length >= MIN_LENGTH) {
+                if (sectionFp.length >= minLength) {
                     seen.add(sectionFp);
                 }
 
                 // Register the content fingerprint so standalone duplicates
                 // of the same content are still caught
                 const contentFp = normalize(nextTrimmed);
-                if (contentFp.length >= MIN_LENGTH) {
+                if (contentFp.length >= minLength) {
                     seen.add(contentFp);
                 }
 
@@ -82,7 +86,7 @@ export function deduplicateBlocks(markdown: string): string {
         // Non-heading block — deduplicate individually
         const fingerprint = normalize(trimmed);
 
-        if (fingerprint.length < MIN_LENGTH) {
+        if (fingerprint.length < minLength) {
             kept.push(blocks[i]);
             i++;
             continue;

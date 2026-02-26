@@ -10,7 +10,7 @@ Convert any HTML page into clean, token-efficient Markdown — with built-in con
 - **Content extraction** — strip nav, footer, ads, sidebars, cookie banners automatically
 - **Framework middleware** — drop-in support for Express, Fastify, Hono, Next.js, and any Web Standard server
 - **Content negotiation** — respond with Markdown when clients send `Accept: text/markdown`
-- **Token estimation** — built-in heuristic token counter for LLM cost planning
+- **Token estimation** — built-in heuristic token counter for LLM cost planning, with support for custom tokenizers
 - **Plugin system** — override or extend any element conversion with custom rules
 - **Single dependency** — only [htmlparser2](https://github.com/fb55/htmlparser2) (no DOM required)
 - **ESM only** — modern, tree-shakeable, with subpath exports
@@ -145,9 +145,45 @@ convert(html, {
     linkStyle: 'inlined', // "inlined" or "referenced"
 
     // Remove duplicate content blocks
-    deduplicate: false // true to enable
+    deduplicate: false, // true | DeduplicateOptions
+
+    // Custom token counter (replaces built-in heuristic)
+    tokenCounter: undefined // (text: string) => TokenEstimate
 });
 ```
+
+### Custom Token Counter
+
+By default, token estimation uses a fast heuristic (~4 characters per token). You can replace it with an exact tokenizer:
+
+```ts
+import { convert } from 'markdown-for-agents';
+import { encoding_for_model } from 'tiktoken';
+
+const enc = encoding_for_model('gpt-4o');
+
+const { markdown, tokenEstimate } = convert(html, {
+    tokenCounter: text => ({
+        tokens: enc.encode(text).length,
+        characters: text.length,
+        words: text.split(/\s+/).filter(Boolean).length
+    })
+});
+```
+
+The custom counter receives the final markdown string and must return a `TokenEstimate` object with `tokens`, `characters`, and `words` fields. It flows through to middleware as well — the `x-markdown-tokens` header will reflect your counter's value.
+
+### Deduplication Options
+
+Pass `deduplicate: true` to use defaults, or pass a `DeduplicateOptions` object to customize behavior:
+
+```ts
+const { markdown } = convert(html, {
+    deduplicate: { minLength: 5 } // catch short repeated phrases like "Read more"
+});
+```
+
+The `minLength` option (default: `10`) controls the minimum block length eligible for deduplication. Blocks shorter than this are always kept. Lower it to catch short repeated phrases, raise it for more conservative deduplication.
 
 ## Supported Elements
 

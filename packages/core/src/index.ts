@@ -6,6 +6,7 @@ export { estimateTokens } from './tokens/index.js';
 export type {
     ConvertOptions,
     ConvertResult,
+    DeduplicateOptions,
     Rule,
     RuleContext,
     ExtractOptions,

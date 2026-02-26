@@ -93,9 +93,40 @@ export interface ConvertOptions {
      * Useful for pages that repeat the same content in multiple sections
      * (e.g. mobile/desktop variants).
      *
+     * - `true` — use default deduplication settings
+     * - `DeduplicateOptions` — customize deduplication behavior
+     *
      * @defaultValue `false`
      */
-    deduplicate?: boolean;
+    deduplicate?: boolean | DeduplicateOptions;
+
+    /**
+     * Custom token counter to replace the built-in heuristic.
+     *
+     * Receives the final markdown string and must return a
+     * {@link TokenEstimate} (or at minimum an object with a `tokens` field).
+     *
+     * Useful for plugging in an exact tokenizer such as
+     * [tiktoken](https://github.com/openai/tiktoken) or
+     * [gpt-tokenizer](https://github.com/niieani/gpt-tokenizer).
+     *
+     * @defaultValue Built-in heuristic (~4 characters per token)
+     *
+     * @example
+     * ```ts
+     * import { encoding_for_model } from 'tiktoken';
+     *
+     * const enc = encoding_for_model('gpt-4o');
+     * const { tokenEstimate } = convert(html, {
+     *     tokenCounter: (text) => ({
+     *         tokens: enc.encode(text).length,
+     *         characters: text.length,
+     *         words: text.split(/\s+/).filter(Boolean).length,
+     *     }),
+     * });
+     * ```
+     */
+    tokenCounter?: (text: string) => TokenEstimate;
 }
 
 /**
@@ -208,6 +239,23 @@ export interface ExtractOptions {
     keepNav?: boolean;
 }
 
+/**
+ * Options for the deduplication pass that runs after conversion.
+ */
+export interface DeduplicateOptions {
+    /**
+     * Minimum block length (in normalized characters) to consider for
+     * deduplication. Blocks shorter than this are always kept, which
+     * protects separators (`---`), short headings, and formatting elements.
+     *
+     * Lower values catch more duplicates (e.g. repeated "Read more" links).
+     * Higher values make deduplication more conservative.
+     *
+     * @defaultValue `10`
+     */
+    minLength?: number;
+}
+
 /** Token, character, and word counts for a piece of text. */
 export interface TokenEstimate {
     /** Estimated token count (heuristic: ~4 characters per token). */
@@ -235,9 +283,11 @@ export interface ConvertResult {
  *
  * @internal Used by the conversion pipeline; not typically needed by consumers.
  */
-export type ResolvedOptions = Required<Omit<ConvertOptions, 'extract' | 'rules'>> & {
+export type ResolvedOptions = Required<Omit<ConvertOptions, 'extract' | 'rules' | 'tokenCounter' | 'deduplicate'>> & {
     extract: boolean | ExtractOptions;
+    deduplicate: boolean | DeduplicateOptions;
     rules: Rule[];
+    tokenCounter?: (text: string) => TokenEstimate;
 };
 
 /**

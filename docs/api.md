@@ -193,23 +193,45 @@ interface ConvertOptions {
     strongDelimiter?: '**' | '__';
     emDelimiter?: '*' | '_';
     linkStyle?: 'inlined' | 'referenced';
-    deduplicate?: boolean;
+    deduplicate?: boolean | DeduplicateOptions;
+    tokenCounter?: (text: string) => TokenEstimate;
 }
 ```
 
-| Property          | Type                        | Default     | Description                          |
-| ----------------- | --------------------------- | ----------- | ------------------------------------ |
-| `extract`         | `boolean \| ExtractOptions` | `false`     | Enable content extraction            |
-| `rules`           | `Rule[]`                    | `[]`        | Custom conversion rules              |
-| `baseUrl`         | `string`                    | `""`        | Base URL for resolving relative URLs |
-| `headingStyle`    | `"atx" \| "setext"`         | `"atx"`     | Heading format                       |
-| `bulletChar`      | `"-" \| "*" \| "+"`         | `"-"`       | Unordered list bullet                |
-| `codeBlockStyle`  | `"fenced" \| "indented"`    | `"fenced"`  | Code block format                    |
-| `fenceChar`       | ``"`" \| "~"``              | ``"`"``     | Fence character                      |
-| `strongDelimiter` | `"**" \| "__"`              | `"**"`      | Bold delimiter                       |
-| `emDelimiter`     | `"*" \| "_"`                | `"*"`       | Italic delimiter                     |
-| `linkStyle`       | `"inlined" \| "referenced"` | `"inlined"` | Link format                          |
-| `deduplicate`     | `boolean`                   | `false`     | Remove duplicate content blocks      |
+| Property          | Type                              | Default            | Description                          |
+| ----------------- | --------------------------------- | ------------------ | ------------------------------------ |
+| `extract`         | `boolean \| ExtractOptions`       | `false`            | Enable content extraction            |
+| `rules`           | `Rule[]`                          | `[]`               | Custom conversion rules              |
+| `baseUrl`         | `string`                          | `""`               | Base URL for resolving relative URLs |
+| `headingStyle`    | `"atx" \| "setext"`               | `"atx"`            | Heading format                       |
+| `bulletChar`      | `"-" \| "*" \| "+"`               | `"-"`              | Unordered list bullet                |
+| `codeBlockStyle`  | `"fenced" \| "indented"`          | `"fenced"`         | Code block format                    |
+| `fenceChar`       | ``"`" \| "~"``                    | ``"`"``            | Fence character                      |
+| `strongDelimiter` | `"**" \| "__"`                    | `"**"`             | Bold delimiter                       |
+| `emDelimiter`     | `"*" \| "_"`                      | `"*"`              | Italic delimiter                     |
+| `linkStyle`       | `"inlined" \| "referenced"`       | `"inlined"`        | Link format                          |
+| `deduplicate`     | `boolean \| DeduplicateOptions`   | `false`            | Remove duplicate content blocks      |
+| `tokenCounter`    | `(text: string) => TokenEstimate` | Built-in heuristic | Custom token counter (see below)     |
+
+#### `tokenCounter`
+
+Replace the built-in heuristic (~4 characters per token) with an exact tokenizer. The function receives the final markdown string and must return a [TokenEstimate](#tokenestimate).
+
+```ts
+import { encoding_for_model } from 'tiktoken';
+
+const enc = encoding_for_model('gpt-4o');
+
+const { tokenEstimate } = convert(html, {
+    tokenCounter: text => ({
+        tokens: enc.encode(text).length,
+        characters: text.length,
+        words: text.split(/\s+/).filter(Boolean).length
+    })
+});
+```
+
+When used with middleware, the custom counter's `tokens` value is used for the `x-markdown-tokens` response header.
 
 ---
 
@@ -291,6 +313,22 @@ interface ExtractOptions {
 | `keepHeader`   | `boolean`              | `false` | Keep `<header>` elements           |
 | `keepFooter`   | `boolean`              | `false` | Keep `<footer>` elements           |
 | `keepNav`      | `boolean`              | `false` | Keep `<nav>` elements              |
+
+---
+
+### `DeduplicateOptions`
+
+```ts
+interface DeduplicateOptions {
+    minLength?: number;
+}
+```
+
+| Property    | Type     | Default | Description                                                     |
+| ----------- | -------- | ------- | --------------------------------------------------------------- |
+| `minLength` | `number` | `10`    | Minimum block length (in characters) eligible for deduplication |
+
+Blocks shorter than `minLength` are always kept, which protects separators (`---`), short headings, and formatting elements. Lower it to catch short repeated phrases like "Read more"; raise it for more conservative deduplication.
 
 ---
 
