@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { markdown, type MiddlewareOptions } from '../../src/index.js';
+import { markdown } from '../../src/index.js';
+import type { MiddlewareOptions } from '../../src/index.js';
+import { describeContentSignalHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 type OnSendHook = (
     request: { headers: Record<string, string | string[] | undefined> },
@@ -144,23 +147,14 @@ describe('fastify middleware', () => {
         });
     });
 
-    describe('Vary header', () => {
-        it('sets Vary: Accept on converted responses', async () => {
-            const send = invokeHook();
-            const { getHeader } = await send('text/markdown', 'text/html', '<h1>Title</h1>');
-            expect(getHeader('vary')).toBe('Accept');
-        });
+    const fastifyHarness: HeaderTestHarness = {
+        async send(options, accept, contentType, body, extraHeaders) {
+            const send = invokeHook(options);
+            const { getHeader } = await send(accept, contentType, body, extraHeaders);
+            return { getHeader };
+        }
+    };
 
-        it('sets Vary: Accept on pass-through responses', async () => {
-            const send = invokeHook();
-            const { getHeader } = await send('text/html', 'text/html', '<h1>Title</h1>');
-            expect(getHeader('vary')).toBe('Accept');
-        });
-
-        it('appends to existing Vary header', async () => {
-            const send = invokeHook();
-            const { getHeader } = await send('text/markdown', 'text/html', '<h1>Title</h1>', { vary: 'Accept-Encoding' });
-            expect(getHeader('vary')).toBe('Accept-Encoding, Accept');
-        });
-    });
+    describeContentSignalHeader(fastifyHarness);
+    describeVaryHeader(fastifyHarness);
 });

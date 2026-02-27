@@ -1,4 +1,4 @@
-import { convert } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -56,6 +56,10 @@ export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
         headers.set('content-type', 'text/markdown; charset=utf-8');
         headers.set(tokenHeader, String(tokenEstimate.tokens));
         headers.set('etag', `"${contentHash}"`);
+        if (options?.contentSignal) {
+            const signalValue = buildContentSignalHeader(options.contentSignal);
+            if (signalValue) headers.set('content-signal', signalValue);
+        }
 
         return new Response(markdown, {
             status: response.status,

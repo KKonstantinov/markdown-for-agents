@@ -1,5 +1,5 @@
 import type { MiddlewareHandler } from 'hono';
-import { convert } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -46,5 +46,9 @@ export function markdown(options?: MiddlewareOptions): MiddlewareHandler {
         c.res.headers.set('content-type', 'text/markdown; charset=utf-8');
         c.res.headers.set(tokenHeader, String(tokenEstimate.tokens));
         c.res.headers.set('etag', `"${contentHash}"`);
+        if (options?.contentSignal) {
+            const signalValue = buildContentSignalHeader(options.contentSignal);
+            if (signalValue) c.res.headers.set('content-signal', signalValue);
+        }
     };
 }

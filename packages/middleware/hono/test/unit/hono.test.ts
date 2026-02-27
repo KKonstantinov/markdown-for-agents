@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { markdown } from '../../src/index.js';
+import { describeContentSignalHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 // Minimal mock of Hono's Context for testing
 function createMockContext(acceptHeader: string, responseBody: string, responseContentType: string) {
@@ -88,48 +90,29 @@ describe('hono middleware', () => {
         });
     });
 
-    describe('Vary header', () => {
-        it('sets Vary: Accept on converted responses', async () => {
-            const mw = markdown();
-            const c = createMockContext('text/markdown', '<h1>Title</h1>', 'text/html');
-
-            const next = vi.fn().mockResolvedValue(undefined);
-            await mw(c as any, next);
-
-            expect(c.res.headers.get('vary')).toContain('Accept');
-        });
-
-        it('sets Vary: Accept on pass-through responses', async () => {
-            const mw = markdown();
-            const c = createMockContext('text/html', '<h1>Title</h1>', 'text/html');
-
-            const next = vi.fn().mockResolvedValue(undefined);
-            await mw(c as any, next);
-
-            expect(c.res.headers.get('vary')).toContain('Accept');
-        });
-
-        it('appends to existing Vary header', async () => {
-            const mw = markdown();
-            const resHeaders = new Headers({
-                'content-type': 'text/html',
-                vary: 'Accept-Encoding'
-            });
+    const honoHarness: HeaderTestHarness = {
+        async send(options, accept, contentType, body, extraHeaders) {
+            const mw = markdown(options);
+            const resHeaders = new Headers({ 'content-type': contentType });
+            if (extraHeaders) {
+                for (const [k, v] of Object.entries(extraHeaders)) {
+                    resHeaders.set(k, v);
+                }
+            }
             const c = {
                 req: {
                     header: (name: string): string | undefined => {
-                        if (name === 'accept') return 'text/markdown';
+                        if (name === 'accept') return accept;
                     }
                 },
-                res: new Response('<h1>Title</h1>', { headers: resHeaders })
+                res: new Response(body, { headers: resHeaders })
             };
-
             const next = vi.fn().mockResolvedValue(undefined);
             await mw(c as any, next);
+            return { getHeader: (name: string) => c.res.headers.get(name) };
+        }
+    };
 
-            const vary = c.res.headers.get('vary')!;
-            expect(vary).toContain('Accept-Encoding');
-            expect(vary).toContain('Accept');
-        });
-    });
+    describeContentSignalHeader(honoHarness);
+    describeVaryHeader(honoHarness);
 });

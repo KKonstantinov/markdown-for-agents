@@ -3,6 +3,7 @@ import { walk } from './walker.js';
 import { render } from './renderer.js';
 import { deduplicateBlocks } from './dedup.js';
 import { contentHash } from './hash.js';
+import { extractMetadata, serializeFrontmatter } from './frontmatter.js';
 import { extractContent } from '../extract/index.js';
 import { estimateTokens } from '../tokens/index.js';
 import { getDefaultRules } from '../rules/index.js';
@@ -19,7 +20,8 @@ const DEFAULTS: ResolvedOptions = {
     strongDelimiter: '**',
     emDelimiter: '*',
     linkStyle: 'inlined',
-    deduplicate: false
+    deduplicate: false,
+    frontmatter: true
 };
 
 /**
@@ -38,6 +40,15 @@ export function convert(html: string, options?: ConvertOptions): ConvertResult {
     const opts: ResolvedOptions = { ...DEFAULTS, ...options };
 
     const document = parse(html);
+
+    // Extract metadata from <head> before extract strips it
+    let frontmatterBlock = '';
+    if (opts.frontmatter !== false) {
+        const extracted = extractMetadata(document);
+        const userFields = typeof opts.frontmatter === 'object' ? opts.frontmatter : {};
+        const merged = { ...extracted, ...userFields };
+        frontmatterBlock = serializeFrontmatter(merged);
+    }
 
     if (opts.extract) {
         const extractOpts = typeof opts.extract === 'object' ? opts.extract : undefined;
@@ -61,6 +72,9 @@ export function convert(html: string, options?: ConvertOptions): ConvertResult {
         const minLength = typeof opts.deduplicate === 'object' ? opts.deduplicate.minLength : undefined;
         markdown = deduplicateBlocks(markdown, minLength);
     }
+
+    // Prepend frontmatter after render/dedup so it's included in hash+tokens
+    markdown = frontmatterBlock + markdown;
 
     const tokenEstimate = opts.tokenCounter ? opts.tokenCounter(markdown) : estimateTokens(markdown);
 
