@@ -17,6 +17,45 @@ interface NextResponse {
 type NextMiddleware = (request: NextRequest) => Promise<NextResponse | Response | undefined | null>;
 
 /**
+ * Extract page metadata (`title`, `description`, `image`) from raw HTML by
+ * scanning the full document, not just `<head>`.
+ *
+ * Next.js App Router in dev mode streams `<title>` and `<meta>` tags outside
+ * `<head>` (they appear later in the body and are moved client-side via
+ * script).  This function picks them up so they can be passed to `convert()`
+ * via the `frontmatter` option.
+ */
+function extractStreamedMetadata(html: string): Record<string, string> {
+    const meta: Record<string, string> = {};
+
+    const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+    if (titleMatch) {
+        const text = titleMatch[1].trim();
+        if (text) meta.title = text;
+    }
+
+    const metaTagRegex = /<meta\s[^>]*>/gi;
+    let match;
+    while ((match = metaTagRegex.exec(html)) !== null) {
+        const tag = match[0];
+        const content = tag.match(/content=["']([^"']*?)["']/i);
+        if (!content || !content[1].trim()) continue;
+
+        const name = tag.match(/name=["']([^"']*?)["']/i);
+        if (name && name[1].toLowerCase() === 'description' && !meta.description) {
+            meta.description = content[1].trim();
+        }
+
+        const property = tag.match(/property=["']([^"']*?)["']/i);
+        if (property && property[1].toLowerCase() === 'og:image' && !meta.image) {
+            meta.image = content[1].trim();
+        }
+    }
+
+    return meta;
+}
+
+/**
  * Extract the original image URL from a Next.js `/_next/image` optimization path.
  * Example: `/_next/image?url=%2Fphoto.png&w=640&q=75` → `/photo.png`
  */
@@ -111,10 +150,20 @@ export function withMarkdown(handler: NextMiddleware, options?: MiddlewareOption
 
         const html = await response.text();
 
+        const streamedMeta = extractStreamedMetadata(html);
+
         const resolvedOptions: MiddlewareOptions = {
             ...options,
             rules: [nextImageRule, ...(options?.rules ?? [])]
         };
+
+        // Pass streamed metadata via frontmatter so it overrides core's
+        // head-only extraction.  Respects frontmatter:false (skip entirely)
+        // and user-provided fields (which take priority over streamed values).
+        if (options?.frontmatter !== false && Object.keys(streamedMeta).length > 0) {
+            const userFields = typeof options?.frontmatter === 'object' ? options.frontmatter : {};
+            resolvedOptions.frontmatter = { ...streamedMeta, ...userFields };
+        }
 
         const { markdown, tokenEstimate, contentHash } = convert(html, resolvedOptions);
 

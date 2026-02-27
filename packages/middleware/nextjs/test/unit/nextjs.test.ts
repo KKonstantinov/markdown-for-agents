@@ -147,6 +147,60 @@ describe('Vary header (nextjs-specific)', () => {
     });
 });
 
+describe('streamed metadata (Next.js App Router)', () => {
+    it('extracts metadata streamed outside <head>', async () => {
+        const streamingHandler = async () =>
+            new Response(
+                '<html><head></head><body><div>Content</div><title>Streamed Title</title><meta name="description" content="Streamed desc"><meta property="og:image" content="https://example.com/img.png"></body></html>',
+                { headers: { 'content-type': 'text/html' } }
+            );
+
+        const handler = withMarkdown(streamingHandler);
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        const body = await response!.text();
+        expect(body).toContain('title: Streamed Title');
+        expect(body).toContain('description: Streamed desc');
+        expect(body).toContain('image: https://example.com/img.png');
+    });
+
+    it('user-provided frontmatter overrides streamed metadata', async () => {
+        const streamingHandler = async () =>
+            new Response('<html><head></head><body><title>Streamed</title></body></html>', { headers: { 'content-type': 'text/html' } });
+
+        const handler = withMarkdown(streamingHandler, {
+            frontmatter: { title: 'Custom Title', author: 'Alice' }
+        });
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        const body = await response!.text();
+        expect(body).toContain('title: Custom Title');
+        expect(body).toContain('author: Alice');
+        expect(body).not.toContain('Streamed');
+    });
+
+    it('respects frontmatter: false with streamed tags', async () => {
+        const streamingHandler = async () =>
+            new Response('<html><head></head><body><title>Streamed</title></body></html>', { headers: { 'content-type': 'text/html' } });
+
+        const handler = withMarkdown(streamingHandler, { frontmatter: false });
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        const body = await response!.text();
+        expect(body).not.toContain('---');
+        expect(body).not.toContain('Streamed');
+    });
+});
+
 describe('nextImageRule', () => {
     it('extracts original URL from /_next/image path', () => {
         const { markdown } = convert('<img src="/_next/image?url=%2Fphoto.png&w=640&q=75" alt="Photo">', {
