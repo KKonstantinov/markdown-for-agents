@@ -110,9 +110,10 @@ describe('block rules', () => {
     });
 
     describe('metadata stripping', () => {
-        it('strips <head> and its contents', () => {
+        it('strips <head> and its contents from body markdown', () => {
             const { markdown } = convert(
-                "<html><head><title>Page Title</title><meta name='desc' content='test'></head><body><p>Content</p></body></html>"
+                "<html><head><title>Page Title</title><meta name='desc' content='test'></head><body><p>Content</p></body></html>",
+                { frontmatter: false }
             );
             expect(markdown).not.toContain('Page Title');
             expect(markdown).toContain('Content');

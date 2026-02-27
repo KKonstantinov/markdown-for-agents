@@ -69,6 +69,56 @@ describe('convert', () => {
         });
     });
 
+    describe('frontmatter', () => {
+        it('prepends frontmatter when <head> has title and description', () => {
+            const html = '<html><head><title>Hi</title><meta name="description" content="Desc"></head><body><p>Text</p></body></html>';
+            const { markdown } = convert(html);
+            expect(markdown).toMatch(/^---\ntitle: Hi\ndescription: Desc\n---\n/);
+            expect(markdown).toContain('Text');
+        });
+
+        it('extracts og:image into frontmatter', () => {
+            const html =
+                '<html><head><meta property="og:image" content="https://example.com/img.png"></head><body><p>Text</p></body></html>';
+            const { markdown } = convert(html);
+            expect(markdown).toContain('image: https://example.com/img.png');
+        });
+
+        it('produces no frontmatter when there is no <head>', () => {
+            const { markdown } = convert('<p>Hello</p>');
+            expect(markdown).not.toContain('---');
+        });
+
+        it('produces no frontmatter when frontmatter is false', () => {
+            const html = '<html><head><title>Hi</title></head><body><p>Text</p></body></html>';
+            const { markdown } = convert(html, { frontmatter: false });
+            expect(markdown).not.toContain('---');
+            expect(markdown).toContain('Text');
+        });
+
+        it('merges custom fields with extracted metadata', () => {
+            const html = '<html><head><title>Original</title></head><body><p>Text</p></body></html>';
+            const { markdown } = convert(html, { frontmatter: { custom: 'val' } });
+            expect(markdown).toContain('title: Original');
+            expect(markdown).toContain('custom: val');
+        });
+
+        it('allows custom fields to override extracted ones', () => {
+            const html = '<html><head><title>Original</title></head><body><p>Text</p></body></html>';
+            const { markdown } = convert(html, { frontmatter: { title: 'Override' } });
+            expect(markdown).toContain('title: Override');
+            expect(markdown).not.toContain('title: Original');
+        });
+
+        it('includes frontmatter in token estimate and content hash', () => {
+            const html = '<html><head><title>Hi</title></head><body><p>Text</p></body></html>';
+            const withFm = convert(html);
+            const withoutFm = convert(html, { frontmatter: false });
+            expect(withFm.tokenEstimate.characters).toBeGreaterThan(withoutFm.tokenEstimate.characters);
+            expect(withFm.contentHash).not.toBe(withoutFm.contentHash);
+        });
+    });
+
     describe('tokenCounter option', () => {
         it('uses custom tokenCounter when provided', () => {
             const customCounter = vi.fn(

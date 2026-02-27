@@ -19,6 +19,7 @@
         "changeset": "changeset",
         "version-packages": "changeset version",
         "release": "pnpm build && changeset publish",
+        "release:jsr": "cd packages/core && npx jsr publish && cd ../audit && npx jsr publish",
         "prepare": "lefthook install"
     },
     "devDependencies": {
@@ -28,6 +29,7 @@
         "@types/node": "^22.0.0",
         "eslint": "^10.0.2",
         "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-import-x": "^4.16.1",
         "eslint-plugin-prettier": "^5.5.5",
         "eslint-plugin-unicorn": "^63.0.0",
         "lefthook": "^2.1.1",
