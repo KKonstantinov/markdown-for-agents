@@ -7,7 +7,9 @@ Convert any HTML page into clean, token-efficient Markdown — with built-in con
 ## Features
 
 - **Runtime-agnostic** — Node.js, Bun, Deno, Cloudflare Workers, Vercel Edge, browsers
+- **Frontmatter** — automatically extracts title, description, and image from `<head>` and prepends YAML frontmatter
 - **Content extraction** — strip nav, footer, ads, sidebars, cookie banners automatically
+- **Content-signal header** — opt-in `content-signal` HTTP header for publisher consent (AI training, search, AI input)
 - **Framework middleware** — drop-in support for Express, Fastify, Hono, Next.js, and any Web Standard server
 - **Content negotiation** — respond with Markdown when clients send `Accept: text/markdown`
 - **Token estimation** — built-in heuristic token counter for LLM cost planning, with support for custom tokenizers
@@ -55,6 +57,41 @@ const { markdown } = convert(html, { extract: true });
 ```
 
 This strips `<nav>`, `<header>`, `<footer>`, `<aside>`, `<script>`, `<style>`, ad-related elements, cookie banners, social widgets, and more.
+
+## Frontmatter
+
+By default, metadata is extracted from the HTML `<head>` element and prepended as YAML frontmatter. This aligns with [Cloudflare's Markdown for Agents](https://developers.cloudflare.com/agents/guides/enable-markdown-for-agents/) convention.
+
+```ts
+const html = `<html>
+  <head>
+    <title>My Page</title>
+    <meta name="description" content="A great page about things">
+    <meta property="og:image" content="https://example.com/hero.png">
+  </head>
+  <body><p>Content here</p></body>
+</html>`;
+
+const { markdown } = convert(html);
+// ---
+// title: My Page
+// description: A great page about things
+// image: https://example.com/hero.png
+// ---
+// Content here
+```
+
+Extracted fields: `title` (from `<title>`), `description` (from `<meta name="description">`), `image` (from `<meta property="og:image">`).
+
+Disable it or merge custom fields:
+
+```ts
+// Disable frontmatter
+convert(html, { frontmatter: false });
+
+// Merge custom fields (custom overrides extracted)
+convert(html, { frontmatter: { author: 'Jane', title: 'Custom Title' } });
+```
 
 ## Middleware
 
@@ -117,6 +154,9 @@ All options are optional. Defaults are shown below:
 
 ```ts
 convert(html, {
+    // YAML frontmatter from <head> metadata
+    frontmatter: true, // false | Record<string, string>
+
     // Content extraction
     extract: false, // true | ExtractOptions
 
@@ -187,6 +227,25 @@ const { markdown } = convert(html, {
 ```
 
 The `minLength` option (default: `10`) controls the minimum block length eligible for deduplication. Blocks shorter than this are always kept. Lower it to catch short repeated phrases, raise it for more conservative deduplication.
+
+### Content-Signal Header
+
+Middleware can set a `content-signal` HTTP header to communicate publisher consent for AI training, search indexing, and AI input. This is opt-in — the header is only set when explicitly configured:
+
+```ts
+app.use(
+    markdown({
+        contentSignal: {
+            aiTrain: true, // ai-train=yes
+            search: true, // search=yes
+            aiInput: true // ai-input=yes
+        }
+    })
+);
+// Sets header: content-signal: ai-train=yes, search=yes, ai-input=yes
+```
+
+Only explicitly set fields are included. Set a field to `false` to signal denial (e.g. `aiTrain: false` → `ai-train=no`). Omit a field to exclude it from the header entirely.
 
 ## Supported Elements
 

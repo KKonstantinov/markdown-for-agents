@@ -87,6 +87,43 @@ describe('nextjs middleware', () => {
     });
 });
 
+describe('Content-Signal header', () => {
+    const htmlHandler = async () =>
+        new Response('<h1>Title</h1><p>Body</p>', {
+            headers: { 'content-type': 'text/html' }
+        });
+
+    it('sets content-signal on converted responses when configured', async () => {
+        const handler = withMarkdown(htmlHandler, { contentSignal: { aiTrain: true, search: true, aiInput: true } });
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        expect(response!.headers.get('content-signal')).toBe('ai-train=yes, search=yes, ai-input=yes');
+    });
+
+    it('does not set content-signal when not configured', async () => {
+        const handler = withMarkdown(htmlHandler);
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        expect(response!.headers.get('content-signal')).toBeNull();
+    });
+
+    it('does not set content-signal on pass-through responses', async () => {
+        const handler = withMarkdown(htmlHandler, { contentSignal: { aiTrain: true } });
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/html' }
+        });
+
+        const response = await handler(request);
+        expect(response!.headers.get('content-signal')).toBeNull();
+    });
+});
+
 describe('ETag header', () => {
     const htmlHandler = async () =>
         new Response('<h1>Title</h1><p>Body</p>', {

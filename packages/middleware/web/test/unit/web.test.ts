@@ -88,6 +88,38 @@ describe('web middleware', () => {
         });
     });
 
+    describe('Content-Signal header', () => {
+        it('sets content-signal on converted responses when configured', async () => {
+            const mw = markdownMiddleware({ contentSignal: { aiTrain: true, search: true, aiInput: true } });
+            const req = new Request('https://example.com', {
+                headers: { accept: 'text/markdown' }
+            });
+
+            const res = await mw(req, htmlHandler);
+            expect(res.headers.get('content-signal')).toBe('ai-train=yes, search=yes, ai-input=yes');
+        });
+
+        it('does not set content-signal when not configured', async () => {
+            const mw = markdownMiddleware();
+            const req = new Request('https://example.com', {
+                headers: { accept: 'text/markdown' }
+            });
+
+            const res = await mw(req, htmlHandler);
+            expect(res.headers.get('content-signal')).toBeNull();
+        });
+
+        it('does not set content-signal on pass-through responses', async () => {
+            const mw = markdownMiddleware({ contentSignal: { aiTrain: true } });
+            const req = new Request('https://example.com', {
+                headers: { accept: 'text/html' }
+            });
+
+            const res = await mw(req, htmlHandler);
+            expect(res.headers.get('content-signal')).toBeNull();
+        });
+    });
+
     describe('Vary header', () => {
         it('sets Vary: Accept on converted responses', async () => {
             const mw = markdownMiddleware();

@@ -19,6 +19,7 @@
         "changeset": "changeset",
         "version-packages": "changeset version",
         "release": "pnpm build && changeset publish",
+        "release:jsr": "cd packages/core && npx jsr publish && cd ../audit && npx jsr publish",
         "prepare": "lefthook install"
     },
     "devDependencies": {

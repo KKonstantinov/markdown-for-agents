@@ -179,6 +179,41 @@ describe('express middleware', () => {
         });
     });
 
+    describe('Content-Signal header', () => {
+        it('sets content-signal on converted responses when configured', () => {
+            const mw = markdown({ contentSignal: { aiTrain: true, search: true, aiInput: true } });
+            const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
+            const next = vi.fn();
+
+            mw(req, res, next);
+            res.send('<h1>Title</h1>');
+
+            expect(getSentHeader('content-signal')).toBe('ai-train=yes, search=yes, ai-input=yes');
+        });
+
+        it('does not set content-signal when not configured', () => {
+            const mw = markdown();
+            const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
+            const next = vi.fn();
+
+            mw(req, res, next);
+            res.send('<h1>Title</h1>');
+
+            expect(getSentHeader('content-signal')).toBeUndefined();
+        });
+
+        it('does not set content-signal on pass-through responses', () => {
+            const mw = markdown({ contentSignal: { aiTrain: true } });
+            const { req, res, getSentHeader } = createMockReqRes('text/html', 'text/html');
+            const next = vi.fn();
+
+            mw(req, res, next);
+            res.send('<h1>Title</h1>');
+
+            expect(getSentHeader('content-signal')).toBeUndefined();
+        });
+    });
+
     describe('Vary header', () => {
         it('sets Vary: Accept on converted responses', () => {
             const mw = markdown();

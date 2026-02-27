@@ -12,6 +12,7 @@ The middleware uses content negotiation. When a client sends `Accept: text/markd
 - `x-markdown-tokens` header with the token count
 - `ETag` header with a content hash for cache validation
 - `Vary: Accept` header so CDNs cache HTML and Markdown separately
+- `content-signal` header with publisher consent signals (when configured)
 
 ## Install
 
@@ -60,7 +61,10 @@ app.use(
         deduplicate: true,
 
         // Custom token counter (e.g. tiktoken)
-        tokenCounter: text => ({ tokens: enc.encode(text).length, characters: text.length, words: text.split(/\s+/).filter(Boolean).length })
+        tokenCounter: text => ({ tokens: enc.encode(text).length, characters: text.length, words: text.split(/\s+/).filter(Boolean).length }),
+
+        // Publisher consent signal header
+        contentSignal: { aiTrain: true, search: true, aiInput: true }
     })
 );
 ```

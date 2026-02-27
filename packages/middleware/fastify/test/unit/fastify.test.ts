@@ -144,6 +144,26 @@ describe('fastify middleware', () => {
         });
     });
 
+    describe('Content-Signal header', () => {
+        it('sets content-signal on converted responses when configured', async () => {
+            const send = invokeHook({ contentSignal: { aiTrain: true, search: true, aiInput: true } });
+            const { getHeader } = await send('text/markdown', 'text/html', '<h1>Title</h1>');
+            expect(getHeader('content-signal')).toBe('ai-train=yes, search=yes, ai-input=yes');
+        });
+
+        it('does not set content-signal when not configured', async () => {
+            const send = invokeHook();
+            const { getHeader } = await send('text/markdown', 'text/html', '<h1>Title</h1>');
+            expect(getHeader('content-signal')).toBeUndefined();
+        });
+
+        it('does not set content-signal on pass-through responses', async () => {
+            const send = invokeHook({ contentSignal: { aiTrain: true } });
+            const { getHeader } = await send('text/html', 'text/html', '<h1>Title</h1>');
+            expect(getHeader('content-signal')).toBeUndefined();
+        });
+    });
+
     describe('Vary header', () => {
         it('sets Vary: Accept on converted responses', async () => {
             const send = invokeHook();

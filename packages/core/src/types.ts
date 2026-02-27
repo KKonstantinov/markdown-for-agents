@@ -101,6 +101,19 @@ export interface ConvertOptions {
     deduplicate?: boolean | DeduplicateOptions;
 
     /**
+     * Prepend YAML frontmatter (title, description, image) extracted from
+     * the HTML `<head>` element.
+     *
+     * - `true` — extract metadata from `<head>` and prepend frontmatter
+     * - `false` — skip frontmatter entirely
+     * - `Record<string, string>` — merge custom fields with extracted metadata
+     *   (custom fields override extracted ones)
+     *
+     * @defaultValue `true`
+     */
+    frontmatter?: boolean | Record<string, string>;
+
+    /**
      * Custom token counter to replace the built-in heuristic.
      *
      * Receives the final markdown string and must return a
@@ -291,12 +304,32 @@ export interface ConvertResult {
  *
  * @internal Used by the conversion pipeline; not typically needed by consumers.
  */
-export type ResolvedOptions = Required<Omit<ConvertOptions, 'extract' | 'rules' | 'tokenCounter' | 'deduplicate'>> & {
+export type ResolvedOptions = Required<Omit<ConvertOptions, 'extract' | 'rules' | 'tokenCounter' | 'deduplicate' | 'frontmatter'>> & {
     extract: boolean | ExtractOptions;
     deduplicate: boolean | DeduplicateOptions;
+    frontmatter: boolean | Record<string, string>;
     rules: Rule[];
     tokenCounter?: (text: string) => TokenEstimate;
 };
+
+/**
+ * Content-signal header options for publisher consent signals.
+ *
+ * Each field maps to a directive in the `content-signal` HTTP header.
+ * Only explicitly set fields are included in the header value.
+ *
+ * @see https://developers.cloudflare.com/agents/guides/enable-markdown-for-agents/
+ */
+export interface ContentSignalOptions {
+    /** Signal whether content may be used for AI training. Maps to `ai-train=yes/no`. */
+    aiTrain?: boolean;
+
+    /** Signal whether content may appear in search results. Maps to `search=yes/no`. */
+    search?: boolean;
+
+    /** Signal whether content may be used as AI input/context. Maps to `ai-input=yes/no`. */
+    aiInput?: boolean;
+}
 
 /**
  * Options accepted by all framework middleware adapters.
@@ -309,4 +342,12 @@ export interface MiddlewareOptions extends ConvertOptions {
      * @defaultValue `"x-markdown-tokens"`
      */
     tokenHeader?: string;
+
+    /**
+     * Set a `content-signal` HTTP header on converted responses to communicate
+     * publisher consent for AI training, search indexing, and AI input usage.
+     *
+     * Only set when explicitly configured (opt-in).
+     */
+    contentSignal?: ContentSignalOptions;
 }

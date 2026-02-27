@@ -88,6 +88,38 @@ describe('hono middleware', () => {
         });
     });
 
+    describe('Content-Signal header', () => {
+        it('sets content-signal on converted responses when configured', async () => {
+            const mw = markdown({ contentSignal: { aiTrain: true, search: true, aiInput: true } });
+            const c = createMockContext('text/markdown', '<h1>Title</h1>', 'text/html');
+
+            const next = vi.fn().mockResolvedValue(undefined);
+            await mw(c as any, next);
+
+            expect(c.res.headers.get('content-signal')).toBe('ai-train=yes, search=yes, ai-input=yes');
+        });
+
+        it('does not set content-signal when not configured', async () => {
+            const mw = markdown();
+            const c = createMockContext('text/markdown', '<h1>Title</h1>', 'text/html');
+
+            const next = vi.fn().mockResolvedValue(undefined);
+            await mw(c as any, next);
+
+            expect(c.res.headers.get('content-signal')).toBeNull();
+        });
+
+        it('does not set content-signal on pass-through responses', async () => {
+            const mw = markdown({ contentSignal: { aiTrain: true } });
+            const c = createMockContext('text/html', '<h1>Title</h1>', 'text/html');
+
+            const next = vi.fn().mockResolvedValue(undefined);
+            await mw(c as any, next);
+
+            expect(c.res.headers.get('content-signal')).toBeNull();
+        });
+    });
+
     describe('Vary header', () => {
         it('sets Vary: Accept on converted responses', async () => {
             const mw = markdown();

@@ -1,4 +1,4 @@
-import { convert } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -67,6 +67,10 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
             reply.header('content-type', 'text/markdown; charset=utf-8');
             reply.header(tokenHeader, String(tokenEstimate.tokens));
             reply.header('etag', `"${contentHash}"`);
+            if (options?.contentSignal) {
+                const signalValue = buildContentSignalHeader(options.contentSignal);
+                if (signalValue) reply.header('content-signal', signalValue);
+            }
             return Promise.resolve(md);
         });
 
