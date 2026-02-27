@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { convert } from 'markdown-for-agents';
 import { withMarkdown, nextImageRule } from '../../src/index.js';
-import { describeContentSignalHeader, describeVaryHeader, type HeaderTestHarness } from '../../../header-test-helpers.js';
+import { describeContentSignalHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 const htmlHandler = async () =>
     new Response('<h1>Title</h1><p>Body</p>', {

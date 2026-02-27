@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { markdown, type MiddlewareOptions } from '../../src/index.js';
-import { describeContentSignalHeader, describeVaryHeader, type HeaderTestHarness } from '../../../header-test-helpers.js';
+import { markdown } from '../../src/index.js';
+import type { MiddlewareOptions } from '../../src/index.js';
+import { describeContentSignalHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 type OnSendHook = (
     request: { headers: Record<string, string | string[] | undefined> },

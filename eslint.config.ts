@@ -1,6 +1,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import unicorn from 'eslint-plugin-unicorn';
+import importX from 'eslint-plugin-import-x';
 import prettier from 'eslint-plugin-prettier/recommended';
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated -- defineConfig not yet available in this version
@@ -26,6 +27,11 @@ export default tseslint.config(
     },
     unicorn.configs['recommended'],
     {
+        plugins: {
+            'import-x': importX
+        }
+    },
+    {
         rules: {
             // The codebase uses null returns in rules extensively
             'unicorn/no-null': 'off',
@@ -40,7 +46,11 @@ export default tseslint.config(
             // Disable filename check - our files use camelCase
             'unicorn/filename-case': 'off',
             // Allow switch cases without default
-            'unicorn/no-lonely-if': 'off'
+            'unicorn/no-lonely-if': 'off',
+            // Enforce `import type` for type-only imports
+            '@typescript-eslint/consistent-type-imports': ['error', { disallowTypeAnnotations: false }],
+            // Prefer `import type` over `import { type ... }`
+            'import-x/consistent-type-specifier-style': ['error', 'prefer-top-level']
         }
     },
     // Relaxed rules for test files

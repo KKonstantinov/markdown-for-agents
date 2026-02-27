@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { markdownMiddleware } from '../../src/index.js';
-import { describeContentSignalHeader, describeVaryHeader, type HeaderTestHarness } from '../../../header-test-helpers.js';
+import { describeContentSignalHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 describe('web middleware', () => {
     const htmlHandler = () =>

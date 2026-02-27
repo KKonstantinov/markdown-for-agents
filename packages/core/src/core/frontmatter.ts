@@ -1,5 +1,5 @@
-import { isTag, type Element } from 'domhandler';
-import type { Document } from 'domhandler';
+import { isTag } from 'domhandler';
+import type { Document, Element } from 'domhandler';
 import { getTextContent } from '../rules/util.js';
 
 /**
