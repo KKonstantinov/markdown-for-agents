@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { markdownMiddleware } from '../../src/index.js';
+import { describeContentSignalHeader, describeVaryHeader, type HeaderTestHarness } from '../../../header-test-helpers.js';
 
 describe('web middleware', () => {
     const htmlHandler = () =>
@@ -88,76 +89,21 @@ describe('web middleware', () => {
         });
     });
 
-    describe('Content-Signal header', () => {
-        it('sets content-signal on converted responses when configured', async () => {
-            const mw = markdownMiddleware({ contentSignal: { aiTrain: true, search: true, aiInput: true } });
+    const webHarness: HeaderTestHarness = {
+        async send(options, accept, contentType, body, extraHeaders) {
+            const mw = markdownMiddleware(options);
             const req = new Request('https://example.com', {
-                headers: { accept: 'text/markdown' }
+                headers: { accept }
             });
-
-            const res = await mw(req, htmlHandler);
-            expect(res.headers.get('content-signal')).toBe('ai-train=yes, search=yes, ai-input=yes');
-        });
-
-        it('does not set content-signal when not configured', async () => {
-            const mw = markdownMiddleware();
-            const req = new Request('https://example.com', {
-                headers: { accept: 'text/markdown' }
-            });
-
-            const res = await mw(req, htmlHandler);
-            expect(res.headers.get('content-signal')).toBeNull();
-        });
-
-        it('does not set content-signal on pass-through responses', async () => {
-            const mw = markdownMiddleware({ contentSignal: { aiTrain: true } });
-            const req = new Request('https://example.com', {
-                headers: { accept: 'text/html' }
-            });
-
-            const res = await mw(req, htmlHandler);
-            expect(res.headers.get('content-signal')).toBeNull();
-        });
-    });
-
-    describe('Vary header', () => {
-        it('sets Vary: Accept on converted responses', async () => {
-            const mw = markdownMiddleware();
-            const req = new Request('https://example.com', {
-                headers: { accept: 'text/markdown' }
-            });
-
-            const res = await mw(req, htmlHandler);
-            expect(res.headers.get('vary')).toContain('Accept');
-        });
-
-        it('sets Vary: Accept on pass-through responses', async () => {
-            const mw = markdownMiddleware();
-            const req = new Request('https://example.com', {
-                headers: { accept: 'text/html' }
-            });
-
-            const res = await mw(req, htmlHandler);
-            expect(res.headers.get('vary')).toContain('Accept');
-        });
-
-        it('appends to existing Vary header', async () => {
-            const mw = markdownMiddleware();
-            const req = new Request('https://example.com', {
-                headers: { accept: 'text/markdown' }
-            });
-            const handlerWithVary = () =>
-                new Response('<h1>Title</h1>', {
-                    headers: {
-                        'content-type': 'text/html',
-                        vary: 'Accept-Encoding'
-                    }
+            const handler = () =>
+                new Response(body, {
+                    headers: { 'content-type': contentType, ...extraHeaders }
                 });
+            const res = await mw(req, handler);
+            return { getHeader: (name: string) => res.headers.get(name) };
+        }
+    };
 
-            const res = await mw(req, handlerWithVary);
-            const vary = res.headers.get('vary')!;
-            expect(vary).toContain('Accept-Encoding');
-            expect(vary).toContain('Accept');
-        });
-    });
+    describeContentSignalHeader(webHarness);
+    describeVaryHeader(webHarness);
 });

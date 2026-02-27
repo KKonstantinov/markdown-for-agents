@@ -49,7 +49,8 @@ export default tseslint.config(
             'packages/core/test/**/*.ts',
             'packages/core/test/**/*.mts',
             'packages/audit/test/**/*.ts',
-            'packages/middleware/*/test/**/*.ts'
+            'packages/middleware/*/test/**/*.ts',
+            'packages/middleware/header-test-helpers.ts'
         ],
         rules: {
             // Tests use `any` casts for mock objects

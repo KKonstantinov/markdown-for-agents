@@ -1,13 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { convert } from 'markdown-for-agents';
 import { withMarkdown, nextImageRule } from '../../src/index.js';
+import { describeContentSignalHeader, describeVaryHeader, type HeaderTestHarness } from '../../../header-test-helpers.js';
+
+const htmlHandler = async () =>
+    new Response('<h1>Title</h1><p>Body</p>', {
+        headers: { 'content-type': 'text/html' }
+    });
 
 describe('nextjs middleware', () => {
-    const htmlHandler = async () =>
-        new Response('<h1>Title</h1><p>Body</p>', {
-            headers: { 'content-type': 'text/html' }
-        });
-
     it('converts HTML to markdown when Accept: text/markdown', async () => {
         const handler = withMarkdown(htmlHandler);
         const request = new Request('https://example.com', {
@@ -87,49 +88,24 @@ describe('nextjs middleware', () => {
     });
 });
 
-describe('Content-Signal header', () => {
-    const htmlHandler = async () =>
-        new Response('<h1>Title</h1><p>Body</p>', {
-            headers: { 'content-type': 'text/html' }
-        });
-
-    it('sets content-signal on converted responses when configured', async () => {
-        const handler = withMarkdown(htmlHandler, { contentSignal: { aiTrain: true, search: true, aiInput: true } });
+const nextjsHarness: HeaderTestHarness = {
+    async send(options, accept, contentType, body, extraHeaders) {
+        const innerHandler = async () =>
+            new Response(body, {
+                headers: { 'content-type': contentType, ...extraHeaders }
+            });
+        const handler = withMarkdown(innerHandler, options);
         const request = new Request('https://example.com', {
-            headers: { accept: 'text/markdown' }
+            headers: { accept }
         });
-
         const response = await handler(request);
-        expect(response!.headers.get('content-signal')).toBe('ai-train=yes, search=yes, ai-input=yes');
-    });
+        return { getHeader: (name: string) => response!.headers.get(name) };
+    }
+};
 
-    it('does not set content-signal when not configured', async () => {
-        const handler = withMarkdown(htmlHandler);
-        const request = new Request('https://example.com', {
-            headers: { accept: 'text/markdown' }
-        });
-
-        const response = await handler(request);
-        expect(response!.headers.get('content-signal')).toBeNull();
-    });
-
-    it('does not set content-signal on pass-through responses', async () => {
-        const handler = withMarkdown(htmlHandler, { contentSignal: { aiTrain: true } });
-        const request = new Request('https://example.com', {
-            headers: { accept: 'text/html' }
-        });
-
-        const response = await handler(request);
-        expect(response!.headers.get('content-signal')).toBeNull();
-    });
-});
+describeContentSignalHeader(nextjsHarness);
 
 describe('ETag header', () => {
-    const htmlHandler = async () =>
-        new Response('<h1>Title</h1><p>Body</p>', {
-            headers: { 'content-type': 'text/html' }
-        });
-
     it('sets ETag on converted responses', async () => {
         const handler = withMarkdown(htmlHandler);
         const request = new Request('https://example.com', {
@@ -151,52 +127,9 @@ describe('ETag header', () => {
     });
 });
 
-describe('Vary header', () => {
-    const htmlHandler = async () =>
-        new Response('<h1>Title</h1><p>Body</p>', {
-            headers: { 'content-type': 'text/html' }
-        });
+describeVaryHeader(nextjsHarness);
 
-    it('sets Vary: Accept on converted responses', async () => {
-        const handler = withMarkdown(htmlHandler);
-        const request = new Request('https://example.com', {
-            headers: { accept: 'text/markdown' }
-        });
-
-        const response = await handler(request);
-        expect(response!.headers.get('vary')).toContain('Accept');
-    });
-
-    it('sets Vary: Accept on pass-through responses', async () => {
-        const handler = withMarkdown(htmlHandler);
-        const request = new Request('https://example.com', {
-            headers: { accept: 'text/html' }
-        });
-
-        const response = await handler(request);
-        expect(response!.headers.get('vary')).toContain('Accept');
-    });
-
-    it('appends to existing Vary header', async () => {
-        const handlerWithVary = async () =>
-            new Response('<h1>Title</h1>', {
-                headers: {
-                    'content-type': 'text/html',
-                    vary: 'Accept-Encoding'
-                }
-            });
-
-        const handler = withMarkdown(handlerWithVary);
-        const request = new Request('https://example.com', {
-            headers: { accept: 'text/markdown' }
-        });
-
-        const response = await handler(request);
-        const vary = response!.headers.get('vary')!;
-        expect(vary).toContain('Accept-Encoding');
-        expect(vary).toContain('Accept');
-    });
-
+describe('Vary header (nextjs-specific)', () => {
     it('sets Vary: Accept on non-HTML responses', async () => {
         const jsonHandler = async () =>
             new Response('{"ok":true}', {

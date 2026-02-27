@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { markdown } from '../../src/index.js';
+import { describeContentSignalHeader, describeVaryHeader, type HeaderTestHarness } from '../../../header-test-helpers.js';
 
 function createMockReqRes(acceptHeader: string, contentType: string) {
     const req = {
@@ -179,73 +180,22 @@ describe('express middleware', () => {
         });
     });
 
-    describe('Content-Signal header', () => {
-        it('sets content-signal on converted responses when configured', () => {
-            const mw = markdown({ contentSignal: { aiTrain: true, search: true, aiInput: true } });
-            const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
+    const expressHarness: HeaderTestHarness = {
+        async send(options, accept, contentType, body, extraHeaders) {
+            const mw = markdown(options);
+            const { req, res, getSentHeader } = createMockReqRes(accept, contentType);
+            if (extraHeaders) {
+                for (const [k, v] of Object.entries(extraHeaders)) {
+                    res.setHeader(k, v);
+                }
+            }
             const next = vi.fn();
-
             mw(req, res, next);
-            res.send('<h1>Title</h1>');
+            res.send(body);
+            return { getHeader: (name: string) => getSentHeader(name) as string | undefined };
+        }
+    };
 
-            expect(getSentHeader('content-signal')).toBe('ai-train=yes, search=yes, ai-input=yes');
-        });
-
-        it('does not set content-signal when not configured', () => {
-            const mw = markdown();
-            const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
-            const next = vi.fn();
-
-            mw(req, res, next);
-            res.send('<h1>Title</h1>');
-
-            expect(getSentHeader('content-signal')).toBeUndefined();
-        });
-
-        it('does not set content-signal on pass-through responses', () => {
-            const mw = markdown({ contentSignal: { aiTrain: true } });
-            const { req, res, getSentHeader } = createMockReqRes('text/html', 'text/html');
-            const next = vi.fn();
-
-            mw(req, res, next);
-            res.send('<h1>Title</h1>');
-
-            expect(getSentHeader('content-signal')).toBeUndefined();
-        });
-    });
-
-    describe('Vary header', () => {
-        it('sets Vary: Accept on converted responses', () => {
-            const mw = markdown();
-            const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
-            const next = vi.fn();
-
-            mw(req, res, next);
-            res.send('<h1>Title</h1>');
-
-            expect(getSentHeader('vary')).toBe('Accept');
-        });
-
-        it('sets Vary: Accept on pass-through responses', () => {
-            const mw = markdown();
-            const { req, res, getSentHeader } = createMockReqRes('text/html', 'text/html');
-            const next = vi.fn();
-
-            mw(req, res, next);
-
-            expect(getSentHeader('vary')).toBe('Accept');
-        });
-
-        it('appends to existing Vary header', () => {
-            const mw = markdown();
-            const { req, res, getSentHeader } = createMockReqRes('text/markdown', 'text/html');
-            res.setHeader('vary', 'Accept-Encoding');
-            const next = vi.fn();
-
-            mw(req, res, next);
-            res.send('<h1>Title</h1>');
-
-            expect(getSentHeader('vary')).toBe('Accept-Encoding, Accept');
-        });
-    });
+    describeContentSignalHeader(expressHarness);
+    describeVaryHeader(expressHarness);
 });

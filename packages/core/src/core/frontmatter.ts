@@ -1,3 +1,4 @@
+import { isTag, type Element } from 'domhandler';
 import type { Document } from 'domhandler';
 import { getTextContent } from '../rules/util.js';
 
@@ -24,30 +25,31 @@ export function extractMetadata(document: Document): Record<string, string> {
     if (!head) return meta;
 
     for (const child of head.children) {
-        if (!('name' in child) || typeof child.name !== 'string') continue;
+        if (!isTag(child)) continue;
 
         if (child.name === 'title') {
             const text = getTextContent(child).trim();
             if (text) meta.title = text;
         }
 
-        if (child.name === 'meta' && 'attribs' in child) {
-            const attrs = child.attribs as Record<string, string>;
-            const name = 'name' in attrs ? attrs.name.toLowerCase() : undefined;
-            const property = 'property' in attrs ? attrs.property.toLowerCase() : undefined;
-            const content = 'content' in attrs ? attrs.content.trim() : undefined;
-
-            if (!content) continue;
-
-            if (name === 'description') {
-                meta.description = content;
-            } else if (property === 'og:image') {
-                meta.image = content;
-            }
+        if (child.name === 'meta') {
+            const entry = extractFromMeta(child.attribs);
+            if (entry) meta[entry[0]] = entry[1];
         }
     }
 
     return meta;
+}
+
+function extractFromMeta(attrs: Record<string, string>): [string, string] | undefined {
+    if (!('content' in attrs)) return undefined;
+    const content = attrs.content.trim();
+    if (!content) return undefined;
+
+    if ('name' in attrs && attrs.name.toLowerCase() === 'description') return ['description', content];
+    if ('property' in attrs && attrs.property.toLowerCase() === 'og:image') return ['image', content];
+
+    return undefined;
 }
 
 /**
@@ -62,7 +64,7 @@ export function serializeFrontmatter(meta: Record<string, string>): string {
 
     const priority = ['title', 'description', 'image'];
     const rest = keys.filter(k => !priority.includes(k));
-    rest.sort();
+    rest.sort((a, b) => a.localeCompare(b));
     const ordered = [...priority.filter(k => k in meta), ...rest];
 
     const lines = ordered.map(key => `${key}: ${yamlQuote(meta[key])}`);
@@ -71,7 +73,8 @@ export function serializeFrontmatter(meta: Record<string, string>): string {
 
 function yamlQuote(value: string): string {
     if (NEEDS_QUOTING.test(value)) {
-        return `"${value.replaceAll('\\', '\\\\').replaceAll('"', String.raw`\"`)}"`;
+        const escaped = value.replaceAll('\\', String.raw`\\`).replaceAll('"', String.raw`\"`);
+        return `"${escaped}"`;
     }
     return value;
 }
@@ -80,15 +83,16 @@ function yamlQuote(value: string): string {
  * Walk the document to find a `<head>` element.
  * Handles both `<html><head>…` and bare `<head>` as a direct document child.
  */
-function findHead(document: Document): import('domhandler').Element | undefined {
+function findHead(document: Document): Element | undefined {
     for (const child of document.children) {
-        if ('name' in child && child.name === 'head') {
-            return child as import('domhandler').Element;
-        }
-        if ('name' in child && child.name === 'html' && 'children' in child) {
+        if (!isTag(child)) continue;
+
+        if (child.name === 'head') return child;
+
+        if (child.name === 'html') {
             for (const grandchild of child.children) {
-                if ('name' in grandchild && (grandchild as import('domhandler').Element).name === 'head') {
-                    return grandchild as import('domhandler').Element;
+                if (isTag(grandchild) && grandchild.name === 'head') {
+                    return grandchild;
                 }
             }
         }
