@@ -78,7 +78,10 @@ function buildImportsMap(pkg) {
                 imports[name] = `npm:${name}@*`;
             }
         } else {
-            imports[name] = `npm:${name}@${version}`;
+            // JSR cannot resolve >= ranges for documentation generation;
+            // convert them to caret ranges (e.g. >=4.0.0 -> ^4.0.0)
+            const jsrVersion = version.replace(/^>=/, '^');
+            imports[name] = `npm:${name}@${jsrVersion}`;
         }
     }
 

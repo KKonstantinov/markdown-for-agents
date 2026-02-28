@@ -7,7 +7,7 @@
     },
     "imports": {
         "markdown-for-agents": "npm:markdown-for-agents@^0.3.1",
-        "hono": "npm:hono@>=4.0.0"
+        "hono": "npm:hono@^4.0.0"
     },
     "publish": {
         "include": ["src/", "LICENSE", "README.md", "jsr.json"]
