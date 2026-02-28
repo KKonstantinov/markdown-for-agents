@@ -7,6 +7,6 @@
     },
     "imports": {
         "markdown-for-agents": "npm:markdown-for-agents@^0.2.1",
-        "hono": "npm:hono@>=4.0.0"
+        "hono": "npm:hono@^4.0.0"
     }
 }
