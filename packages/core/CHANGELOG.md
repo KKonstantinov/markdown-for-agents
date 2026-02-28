@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 0.3.0
+
+### Minor Changes
+
+- jsr publishing bump
+
 ## 0.2.1
 
 ### Patch Changes

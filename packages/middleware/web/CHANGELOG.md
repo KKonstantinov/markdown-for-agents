@@ -1,5 +1,16 @@
 # @markdown-for-agents/web
 
+## 0.3.0
+
+### Minor Changes
+
+- jsr publishing bump
+
+### Patch Changes
+
+- Updated dependencies
+    - markdown-for-agents@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes
