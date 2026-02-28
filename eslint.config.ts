@@ -12,7 +12,9 @@ export default tseslint.config(
             '**/node_modules/',
             '**/bin/',
             'packages/core/test/integration/bun.test.ts',
-            'packages/core/test/integration/deno.test.ts'
+            'packages/core/test/integration/deno.test.ts',
+            'docs/.vitepress/cache/',
+            'docs/.vitepress/dist/'
         ]
     },
     eslint.configs.recommended,

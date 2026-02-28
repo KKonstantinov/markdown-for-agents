@@ -268,6 +268,8 @@ import { estimateTokens } from 'markdown-for-agents/tokens';
 
 ## Documentation
 
+**[View the full documentation](https://kkonstantinov.github.io/markdown-for-agents/)**
+
 - [Getting Started](docs/getting-started.md) — installation, first conversion, common patterns
 - [Content Extraction](docs/extraction.md) — stripping non-content elements from web pages
 - [Middleware](docs/middleware.md) — Express, Fastify, Hono, Next.js, and Web Standard middleware

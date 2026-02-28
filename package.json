@@ -20,7 +20,10 @@
         "version-packages": "changeset version",
         "release": "pnpm build && changeset publish",
         "release:jsr": "cd packages/core && npx jsr publish && cd ../audit && npx jsr publish",
-        "prepare": "lefthook install"
+        "prepare": "lefthook install",
+        "docs:dev": "vitepress dev docs",
+        "docs:build": "vitepress build docs",
+        "docs:preview": "vitepress preview docs"
     },
     "devDependencies": {
         "@changesets/changelog-github": "^0.5.2",
@@ -37,6 +40,7 @@
         "tsdown": "^0.20.3",
         "typescript": "^5.7.0",
         "typescript-eslint": "^8.56.1",
+        "vitepress": "^1.6.4",
         "vitest": "^3.0.0"
     },
     "pnpm": {
