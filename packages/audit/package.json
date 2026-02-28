@@ -28,7 +28,8 @@
         "dev": "tsdown --watch",
         "test": "vitest run",
         "test:watch": "vitest",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "release:jsr": "npx jsr publish"
     },
     "dependencies": {
         "markdown-for-agents": "workspace:*"

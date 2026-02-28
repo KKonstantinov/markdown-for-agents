@@ -36,7 +36,8 @@
         "test:integration:bun": "bun test test/integration/bun.test.ts",
         "test:integration:deno": "deno test --no-check --allow-read test/integration/deno.test.ts",
         "test:integration": "pnpm run build && pnpm run test:integration:node && pnpm run test:integration:bun && pnpm run test:integration:deno",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "release:jsr": "npx jsr publish"
     },
     "dependencies": {
         "domhandler": "^5.0.3",

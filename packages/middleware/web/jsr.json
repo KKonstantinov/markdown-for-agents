@@ -1,6 +1,7 @@
 {
     "name": "@markdown-for-agents/web",
-    "version": "0.1.3",
+    "version": "0.2.1",
+    "license": "MIT",
     "exports": {
         ".": "./src/index.ts"
     }

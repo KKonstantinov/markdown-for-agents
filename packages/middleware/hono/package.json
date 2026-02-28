@@ -25,7 +25,8 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "test:integration": "vitest run test/integration",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "release:jsr": "npx jsr publish"
     },
     "dependencies": {
         "markdown-for-agents": "workspace:*"
