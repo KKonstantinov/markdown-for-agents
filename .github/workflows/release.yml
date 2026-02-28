@@ -38,5 +38,5 @@ jobs:
             - name: Publish to JSR
               if: steps.changesets.outputs.published == 'true'
               run: |
-                  cd packages/core && npx jsr publish --allow-dirty
-                  cd ../audit && npx jsr publish --allow-dirty
+                  cd packages/core && npx jsr publish --allow-dirty --provenance
+                  cd ../audit && npx jsr publish --allow-dirty --provenance

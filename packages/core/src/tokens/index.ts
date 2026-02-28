@@ -1,3 +1,16 @@
+/**
+ * @module
+ *
+ * Fast token estimation utilities for LLM context budgeting.
+ *
+ * ```ts
+ * import { estimateTokens } from "@markdown-for-agents/core/tokens";
+ *
+ * const estimate = estimateTokens("Hello world");
+ * console.log(estimate.tokens);
+ * ```
+ */
+
 import type { TokenEstimate } from '../types.js';
 
 /**
