@@ -1,6 +1,4 @@
 /**
- * @module
- *
  * Content extraction utilities for pulling main content from HTML pages.
  *
  * ```ts
@@ -9,6 +7,7 @@
  * const result = extractContent("<html><body><main>Content</main></body></html>");
  * console.log(result.markdown);
  * ```
+ * @module
  */
 
 export { extractContent } from './extractor.js';

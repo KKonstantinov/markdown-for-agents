@@ -1,3 +1,16 @@
+/**
+ * Audit utility that fetches a URL, converts the HTML to Markdown,
+ * and reports token/byte reduction metrics.
+ *
+ * ```ts
+ * import { audit } from "@markdown-for-agents/audit";
+ *
+ * const result = await audit("https://example.com");
+ * console.log(`${result.reduction.tokenPercent.toFixed(1)}% token reduction`);
+ * ```
+ * @module
+ */
+
 import { convert, estimateTokens } from 'markdown-for-agents';
 import type { ConvertOptions, TokenEstimate } from 'markdown-for-agents';
 

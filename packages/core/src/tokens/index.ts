@@ -1,6 +1,4 @@
 /**
- * @module
- *
  * Fast token estimation utilities for LLM context budgeting.
  *
  * ```ts
@@ -9,6 +7,7 @@
  * const estimate = estimateTokens("Hello world");
  * console.log(estimate.tokens);
  * ```
+ * @module
  */
 
 import type { TokenEstimate } from '../types.js';

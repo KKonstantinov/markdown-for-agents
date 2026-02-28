@@ -1,6 +1,4 @@
 /**
- * @module
- *
  * Runtime-agnostic HTML to Markdown converter with content extraction and plugin system.
  *
  * ```ts
@@ -9,6 +7,7 @@
  * const result = convert("<h1>Hello</h1><p>World</p>");
  * console.log(result.markdown);
  * ```
+ * @module
  */
 
 export { convert } from './core/converter.js';

@@ -1,3 +1,17 @@
+/**
+ * Hono middleware that converts HTML responses to Markdown
+ * when the client sends an `Accept: text/markdown` header.
+ *
+ * ```ts
+ * import { Hono } from "hono";
+ * import { markdown } from "@markdown-for-agents/hono";
+ *
+ * const app = new Hono();
+ * app.use("*", markdown());
+ * ```
+ * @module
+ */
+
 import type { MiddlewareHandler } from 'hono';
 import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';

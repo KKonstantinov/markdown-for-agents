@@ -1,3 +1,19 @@
+/**
+ * Web-standard middleware that converts HTML responses to Markdown
+ * when the client sends an `Accept: text/markdown` header.
+ *
+ * Compatible with any runtime that supports the Fetch API
+ * (Cloudflare Workers, Deno, Bun, etc.).
+ *
+ * ```ts
+ * import { markdownMiddleware } from "@markdown-for-agents/web";
+ *
+ * const md = markdownMiddleware({ extract: true });
+ * const response = await md(request, handler);
+ * ```
+ * @module
+ */
+
 import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
