@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/core",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "license": "MIT",
     "exports": {
         ".": "./src/index.ts",
@@ -12,6 +12,6 @@
         "htmlparser2": "npm:htmlparser2@^10.1.0"
     },
     "publish": {
-        "include": ["src/", "LICENSE", "jsr.json"]
+        "include": ["src/", "LICENSE", "README.md", "jsr.json"]
     }
 }

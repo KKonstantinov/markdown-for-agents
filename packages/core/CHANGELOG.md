@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 0.3.1
+
+### Patch Changes
+
+- jsr include fix
+
 ## 0.3.0
 
 ### Minor Changes

@@ -1,15 +1,15 @@
 {
     "name": "@markdown-for-agents/hono",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "license": "MIT",
     "exports": {
         ".": "./src/index.ts"
     },
     "imports": {
-        "markdown-for-agents": "npm:markdown-for-agents@^0.3.0",
+        "markdown-for-agents": "npm:markdown-for-agents@^0.3.1",
         "hono": "npm:hono@>=4.0.0"
     },
     "publish": {
-        "include": ["src/", "LICENSE", "jsr.json"]
+        "include": ["src/", "LICENSE", "README.md", "jsr.json"]
     }
 }
