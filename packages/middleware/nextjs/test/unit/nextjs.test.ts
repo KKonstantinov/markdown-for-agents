@@ -9,6 +9,11 @@ const htmlHandler = async () =>
         headers: { 'content-type': 'text/html' }
     });
 
+const jsonHandler = async () =>
+    new Response('{"ok":true}', {
+        headers: { 'content-type': 'application/json' }
+    });
+
 describe('nextjs middleware', () => {
     it('converts HTML to markdown when Accept: text/markdown', async () => {
         const handler = withMarkdown(htmlHandler);
@@ -36,11 +41,6 @@ describe('nextjs middleware', () => {
     });
 
     it('passes through non-HTML responses', async () => {
-        const jsonHandler = async () =>
-            new Response('{"ok":true}', {
-                headers: { 'content-type': 'application/json' }
-            });
-
         const handler = withMarkdown(jsonHandler);
         const request = new Request('https://example.com', {
             headers: { accept: 'text/markdown' }
@@ -132,11 +132,6 @@ describeVaryHeader(nextjsHarness);
 
 describe('Vary header (nextjs-specific)', () => {
     it('sets Vary: Accept on non-HTML responses', async () => {
-        const jsonHandler = async () =>
-            new Response('{"ok":true}', {
-                headers: { 'content-type': 'application/json' }
-            });
-
         const handler = withMarkdown(jsonHandler);
         const request = new Request('https://example.com', {
             headers: { accept: 'text/markdown' }

@@ -82,8 +82,7 @@ function shouldStrip(
 
 function matchesAny(value: string, patterns: (string | RegExp)[]): boolean {
     for (const pattern of patterns) {
-        if (typeof pattern === 'string' && value.includes(pattern)) return true;
-        else if (pattern instanceof RegExp && pattern.test(value)) return true;
+        if ((typeof pattern === 'string' && value.includes(pattern)) || (pattern instanceof RegExp && pattern.test(value))) return true;
     }
     return false;
 }

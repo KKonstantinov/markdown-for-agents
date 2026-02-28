@@ -28,7 +28,7 @@ type NextMiddleware = (request: NextRequest) => Promise<NextResponse | Response 
 function extractStreamedMetadata(html: string): Record<string, string> {
     const meta: Record<string, string> = {};
 
-    const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+    const titleMatch = /<title[^>]*>([^<]+)<\/title>/i.exec(html);
     if (titleMatch) {
         const text = titleMatch[1].trim();
         if (text) meta.title = text;
@@ -39,7 +39,7 @@ function extractStreamedMetadata(html: string): Record<string, string> {
     while ((match = metaTagRegex.exec(html)) !== null) {
         const tag = match[0];
         const content = tag.match(/content=["']([^"']*?)["']/i);
-        if (!content || !content[1].trim()) continue;
+        if (!content?.[1].trim()) continue;
 
         const name = tag.match(/name=["']([^"']*?)["']/i);
         if (name && name[1].toLowerCase() === 'description' && !meta.description) {
