@@ -10,5 +10,8 @@
     "imports": {
         "domhandler": "npm:domhandler@^5.0.3",
         "htmlparser2": "npm:htmlparser2@^10.1.0"
+    },
+    "publish": {
+        "include": ["src/", "LICENSE", "jsr.json"]
     }
 }
