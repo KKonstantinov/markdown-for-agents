@@ -59,7 +59,7 @@
         "url": "git+https://github.com/KKonstantinov/markdown-for-agents.git",
         "directory": "packages/core"
     },
-    "homepage": "https://github.com/KKonstantinov/markdown-for-agents/tree/main/packages/core#readme",
+    "homepage": "https://kkonstantinov.github.io/markdown-for-agents/",
     "bugs": {
         "url": "https://github.com/KKonstantinov/markdown-for-agents/issues"
     },

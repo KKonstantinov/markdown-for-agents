@@ -1,6 +1,9 @@
 # Test fixtures contain expected converter output and must not be reformatted
 packages/core/test/fixtures/
 
+# Symlinked package READMEs (Prettier cannot follow symlinks)
+docs/packages/
+
 # Build output
 **/dist/
 

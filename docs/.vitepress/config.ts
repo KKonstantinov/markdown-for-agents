@@ -34,6 +34,18 @@ export default defineConfig({
                 ]
             },
             {
+                text: 'Packages',
+                items: [
+                    { text: 'Core', link: '/packages/core' },
+                    { text: 'Audit', link: '/packages/audit' },
+                    { text: 'Express', link: '/packages/express' },
+                    { text: 'Fastify', link: '/packages/fastify' },
+                    { text: 'Hono', link: '/packages/hono' },
+                    { text: 'Next.js', link: '/packages/nextjs' },
+                    { text: 'Web Standard', link: '/packages/web' }
+                ]
+            },
+            {
                 text: 'Reference',
                 items: [
                     { text: 'API Reference', link: '/api' },
