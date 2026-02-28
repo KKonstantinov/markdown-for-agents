@@ -4,5 +4,9 @@
     "license": "MIT",
     "exports": {
         ".": "./src/index.ts"
+    },
+    "imports": {
+        "markdown-for-agents": "npm:markdown-for-agents@^0.2.1",
+        "hono": "npm:hono@>=4.0.0"
     }
 }

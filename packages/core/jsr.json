@@ -6,5 +6,9 @@
         ".": "./src/index.ts",
         "./extract": "./src/extract/index.ts",
         "./tokens": "./src/tokens/index.ts"
+    },
+    "imports": {
+        "domhandler": "npm:domhandler@^5.0.3",
+        "htmlparser2": "npm:htmlparser2@^10.1.0"
     }
 }
