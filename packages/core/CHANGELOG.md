@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 0.3.2
+
+### Patch Changes
+
+- remove custom typing for middleware packages
+
 ## 0.3.1
 
 ### Patch Changes

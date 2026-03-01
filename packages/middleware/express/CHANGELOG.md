@@ -1,5 +1,13 @@
 # @markdown-for-agents/express
 
+## 0.3.2
+
+### Patch Changes
+
+- remove custom typing for middleware packages
+- Updated dependencies
+    - markdown-for-agents@0.3.2
+
 ## 0.3.1
 
 ### Patch Changes
