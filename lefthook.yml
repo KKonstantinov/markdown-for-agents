@@ -12,5 +12,8 @@ pre-commit:
           run: pnpm prettier --write {staged_files}
           stage_fixed: true
 
+        - name: typecheck
+          run: pnpm typecheck
+
         - name: test
           run: pnpm build && pnpm vitest run --changed
