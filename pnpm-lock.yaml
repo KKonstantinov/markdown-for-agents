@@ -113,8 +113,9 @@ importers:
       markdown-for-agents:
         specifier: workspace:*
         version: link:../../core
+    devDependencies:
       next:
-        specifier: '>=14.0.0'
+        specifier: ^16.1.6
         version: 16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   packages/middleware/web:

@@ -1,20 +1,8 @@
+import type { NextProxy } from 'next/server';
 import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions, Rule } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
-
-interface NextRequest {
-    headers: Headers;
-    url: string;
-}
-
-interface NextResponse {
-    status: number;
-    headers: Headers;
-    text(): Promise<string>;
-}
-
-type NextMiddleware = (request: NextRequest) => Promise<NextResponse | Response | undefined | null>;
 
 /**
  * Extract page metadata (`title`, `description`, `image`) from raw HTML by
@@ -123,14 +111,14 @@ export const nextImageRule: Rule = {
  * });
  * ```
  */
-export function withMarkdown(handler: NextMiddleware, options?: MiddlewareOptions): NextMiddleware {
+export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): NextProxy {
     const tokenHeader = options?.tokenHeader ?? 'x-markdown-tokens';
 
-    return async request => {
+    return async (request, event) => {
         const accept = request.headers.get('accept') ?? '';
 
         if (!accept.includes('text/markdown')) {
-            const response = await handler(request);
+            const response = await handler(request, event);
             if (response) {
                 // Always signal that responses vary by Accept so caches store
                 // separate entries for HTML and Markdown representations.
@@ -139,7 +127,7 @@ export function withMarkdown(handler: NextMiddleware, options?: MiddlewareOption
             return response;
         }
 
-        const response = await handler(request);
+        const response = await handler(request, event);
         if (!response) return response;
 
         const contentType = response.headers.get('content-type') ?? '';

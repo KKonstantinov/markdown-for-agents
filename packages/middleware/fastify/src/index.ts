@@ -1,23 +1,10 @@
+import type { FastifyPluginCallback } from 'fastify';
 import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
 
-// Minimal Fastify types — avoids requiring fastify as a compile-time dependency
-interface FastifyRequest {
-    headers: Record<string, string | string[] | undefined>;
-}
-
-interface FastifyReply {
-    getHeader(name: string): string | undefined;
-    header(name: string, value: string): this;
-}
-
-interface FastifyInstance {
-    addHook(name: 'onSend', hook: (request: FastifyRequest, reply: FastifyReply, payload: unknown) => Promise<unknown>): void;
-}
-
-export type FastifyPlugin = (instance: FastifyInstance, opts: Record<string, unknown>, done: () => void) => void;
+export type FastifyPlugin = FastifyPluginCallback;
 
 /**
  * Fastify plugin that converts HTML responses to markdown
@@ -46,7 +33,7 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
             // Always signal that responses vary by Accept so caches store
             // separate entries for HTML and Markdown representations.
             const existing = reply.getHeader('vary');
-            reply.header('vary', existing ? `${existing}, Accept` : 'Accept');
+            reply.header('vary', existing ? `${String(existing)}, Accept` : 'Accept');
 
             const accept = typeof request.headers.accept === 'string' ? request.headers.accept : '';
 
@@ -54,7 +41,7 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
                 return Promise.resolve(payload);
             }
 
-            const contentType = reply.getHeader('content-type') ?? '';
+            const contentType = String(reply.getHeader('content-type') ?? '');
             if (!contentType.includes('text/html')) {
                 return Promise.resolve(payload);
             }

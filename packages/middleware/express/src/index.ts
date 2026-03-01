@@ -1,22 +1,10 @@
+import type { Request, Response, NextFunction } from 'express';
 import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
 
-// Minimal Express types — avoids requiring express as a compile-time dependency
-interface ExpressRequest {
-    headers: Record<string, string | string[] | undefined>;
-}
-
-interface ExpressResponse {
-    getHeader(name: string): string | number | string[] | undefined;
-    setHeader(name: string, value: string | number): this;
-    send(body?: unknown): this;
-}
-
-type ExpressNextFunction = (error?: unknown) => void;
-
-export type ExpressMiddleware = (req: ExpressRequest, res: ExpressResponse, next: ExpressNextFunction) => void;
+export type ExpressMiddleware = (req: Request, res: Response, next: NextFunction) => void;
 
 /**
  * Express middleware that converts HTML responses to markdown

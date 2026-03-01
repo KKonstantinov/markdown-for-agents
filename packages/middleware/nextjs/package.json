@@ -52,5 +52,8 @@
     "publishConfig": {
         "access": "public"
     },
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "next": "^16.1.6"
+    }
 }
