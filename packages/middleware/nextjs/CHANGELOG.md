@@ -1,5 +1,13 @@
 # @markdown-for-agents/nextjs
 
+## 0.3.3
+
+### Patch Changes
+
+- pnpm audit fix
+- Updated dependencies
+    - markdown-for-agents@0.3.3
+
 ## 0.3.2
 
 ### Patch Changes
