@@ -56,6 +56,31 @@ describe('block rules', () => {
             const { markdown } = convert('<pre><code>plain code</code></pre>');
             expect(markdown).toContain('```\nplain code\n```');
         });
+
+        it('detects language from pre class with language- prefix', () => {
+            const { markdown } = convert('<pre class="language-js"><code>const x = 1;</code></pre>');
+            expect(markdown).toContain('```js\nconst x = 1;\n```');
+        });
+
+        it('detects mermaid from bare pre class', () => {
+            const { markdown } = convert('<pre class="mermaid">graph TD\n  A-->B</pre>');
+            expect(markdown).toContain('```mermaid\ngraph TD\n  A-->B\n```');
+        });
+
+        it('detects language-mermaid from pre class', () => {
+            const { markdown } = convert('<pre class="language-mermaid">graph TD\n  A-->B</pre>');
+            expect(markdown).toContain('```mermaid\ngraph TD\n  A-->B\n```');
+        });
+
+        it('prefers code child language over pre class', () => {
+            const { markdown } = convert('<pre class="language-text"><code class="language-js">const x = 1;</code></pre>');
+            expect(markdown).toContain('```js\nconst x = 1;\n```');
+        });
+
+        it('ignores non-language bare classes on pre', () => {
+            const { markdown } = convert('<pre class="highlight">plain code</pre>');
+            expect(markdown).toContain('```\nplain code\n```');
+        });
     });
 
     describe('horizontal rules', () => {
