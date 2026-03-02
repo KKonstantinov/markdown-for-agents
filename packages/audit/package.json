@@ -21,6 +21,7 @@
     "main": "./dist/index.mjs",
     "types": "./dist/index.d.mts",
     "bin": {
+        "audit": "./bin/agent-markdown-audit.mjs",
         "agent-markdown-audit": "./bin/agent-markdown-audit.mjs"
     },
     "scripts": {
