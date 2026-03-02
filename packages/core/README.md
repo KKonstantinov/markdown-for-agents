@@ -298,6 +298,24 @@ import { estimateTokens } from 'markdown-for-agents/tokens';
 | Vercel Edge        | -       | Compatible |
 | Browsers           | ES2022+ | Compatible |
 
+## Audit
+
+The [`@markdown-for-agents/audit`](https://www.npmjs.com/package/@markdown-for-agents/audit) package lets you measure token savings when converting HTML to Markdown. Fetch any URL and see exactly how many bytes and tokens you save:
+
+```bash
+npx agent-markdown-audit https://example.com
+```
+
+```
+┌─────────┬──────────┬────────┐
+│         │ Bytes    │ Tokens │
+├─────────┼──────────┼────────┤
+│ HTML    │ 48,291   │ 12,073 │
+│ Markdown│ 8,412    │ 2,103  │
+│ Saved   │ 82.6%    │ 82.6%  │
+└─────────┴──────────┴────────┘
+```
+
 ## License
 
 MIT
