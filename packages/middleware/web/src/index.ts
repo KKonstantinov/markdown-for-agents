@@ -19,9 +19,17 @@ import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
 
+/** A request handler that produces a `Response` (sync or async). */
 type Handler = (request: Request) => Response | Promise<Response>;
+/** A middleware function that wraps a {@link Handler} with pre/post-processing. */
 type Middleware = (request: Request, next: Handler) => Response | Promise<Response>;
 
+/**
+ * Checks whether the client is requesting markdown content.
+ *
+ * @param request - The incoming `Request` object.
+ * @returns `true` if the `Accept` header includes `text/markdown`.
+ */
 function wantsMarkdown(request: Request): boolean {
     const accept = request.headers.get('accept') ?? '';
     return accept.includes('text/markdown');

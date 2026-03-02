@@ -1,6 +1,13 @@
 import { isTag } from 'domhandler';
 import type { Rule } from '../types.js';
 
+/**
+ * Built-in rules for list elements (`ul`, `ol`, `li`).
+ *
+ * Handles ordered and unordered lists with proper nesting, indentation,
+ * and multi-line continuation. Respects the `ol[start]` attribute and
+ * the `bulletChar` option for unordered list markers.
+ */
 export const listRules: Rule[] = [
     {
         filter: ['ul', 'ol'],

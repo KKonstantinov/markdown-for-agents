@@ -1,6 +1,14 @@
 import type { Text } from 'domhandler';
 import type { Rule } from '../types.js';
 
+/**
+ * Built-in rules for inline HTML elements.
+ *
+ * Handles bold (`strong`, `b`), italic (`em`, `i`), strikethrough (`del`, `s`),
+ * inline code, links, images, abbreviations, subscript, and superscript.
+ * Delimiter styles for bold and italic are configurable via the `strongDelimiter`
+ * and `emDelimiter` options.
+ */
 export const inlineRules: Rule[] = [
     {
         filter: ['strong', 'b'],

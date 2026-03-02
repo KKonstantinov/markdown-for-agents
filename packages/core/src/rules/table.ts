@@ -1,6 +1,14 @@
 import type { Rule } from '../types.js';
 import type { Element } from 'domhandler';
 
+/**
+ * Built-in rules for HTML table elements.
+ *
+ * Converts `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, and `<td>`
+ * into GitHub-Flavored Markdown (GFM) pipe tables. Automatically generates a
+ * separator row (`| --- | --- |`) after the header row in `<thead>`.
+ * Pipe characters inside cell content are escaped.
+ */
 export const tableRules: Rule[] = [
     {
         filter: 'table',

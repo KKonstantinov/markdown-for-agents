@@ -16,21 +16,40 @@ Examples:
   agent-markdown-audit https://example.com/article --json
   agent-markdown-audit https://example.com --output article.md`;
 
+/**
+ * Formats a number with locale-aware thousands separators.
+ *
+ * @param n - The number to format.
+ * @returns A formatted string (e.g. `"1,234"`).
+ */
 function formatNumber(n: number): string {
     return n.toLocaleString('en-US');
 }
 
+/**
+ * Formats a byte count as a human-readable string.
+ *
+ * @param n - The byte count.
+ * @returns A formatted string (e.g. `"1.5 KB"`).
+ */
 function formatBytes(n: number): string {
     if (n < 1024) return `${String(n)} B`;
     if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
     return `${(n / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+/**
+ * Formats a percentage as a reduction or increase string.
+ *
+ * @param n - The percentage value (positive = savings, negative = increase).
+ * @returns A formatted string (e.g. `"-12.3%"` for savings or `"+5.1%"` for increase).
+ */
 function formatPercent(n: number): string {
     if (n >= 0) return `-${n.toFixed(1)}%`;
     return `+${Math.abs(n).toFixed(1)}%`;
 }
 
+/** CLI entry point — parses arguments, runs the audit, and prints results. */
 async function main(): Promise<void> {
     const args = process.argv.slice(2);
 

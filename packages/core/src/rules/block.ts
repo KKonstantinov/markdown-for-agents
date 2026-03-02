@@ -3,6 +3,13 @@ import { isTag } from 'domhandler';
 import type { Rule } from '../types.js';
 import { getTextContent } from './util.js';
 
+/**
+ * Built-in rules for block-level HTML elements.
+ *
+ * Handles headings (`h1`–`h6`), paragraphs, blockquotes, preformatted code blocks,
+ * horizontal rules, line breaks, and stripped elements (`script`, `style`, `head`, etc.).
+ * Headings support both ATX (`#`) and setext (underline) styles via the `headingStyle` option.
+ */
 export const blockRules: Rule[] = [
     {
         filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],

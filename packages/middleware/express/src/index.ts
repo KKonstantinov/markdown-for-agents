@@ -4,6 +4,7 @@ import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
 
+/** Standard Express middleware function signature used by the `markdown()` factory. */
 export type ExpressMiddleware = (req: Request, res: Response, next: NextFunction) => void;
 
 /**

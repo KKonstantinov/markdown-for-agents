@@ -1,3 +1,17 @@
+/**
+ * Normalizes raw markdown output into clean, well-formatted text.
+ *
+ * Performs the following transformations:
+ * - Normalizes line endings to `\n`
+ * - Collapses whitespace-only lines into empty lines
+ * - Collapses 3+ consecutive newlines into exactly 2
+ * - Trims trailing whitespace from each line (preserving intentional `  ` line breaks)
+ * - Ensures the output ends with a single newline
+ *
+ * @param raw - The raw markdown string produced by the walker.
+ * @returns The cleaned and normalized markdown string.
+ * @internal
+ */
 export function render(raw: string): string {
     return (
         raw

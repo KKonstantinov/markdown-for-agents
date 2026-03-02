@@ -9,14 +9,15 @@ import { getTextContent } from '../rules/util.js';
 const NEEDS_QUOTING = /: |[#"'{}[\]|>\n\\]|^\s|\s$/;
 
 /**
- * Extract page metadata from the `<head>` element of an HTML document.
+ * Extracts page metadata from the `<head>` element of an HTML document.
  *
  * Extracts:
  * - `title` from `<title>` text content
  * - `description` from `<meta name="description">`
  * - `image` from `<meta property="og:image">`
  *
- * @returns Only fields with non-empty values.
+ * @param document - The parsed DOM document.
+ * @returns A record containing only fields with non-empty values.
  */
 export function extractMetadata(document: Document): Record<string, string> {
     const meta: Record<string, string> = {};
@@ -41,6 +42,14 @@ export function extractMetadata(document: Document): Record<string, string> {
     return meta;
 }
 
+/**
+ * Extracts a key-value pair from a `<meta>` element's attributes.
+ *
+ * Recognizes `<meta name="description">` and `<meta property="og:image">`.
+ *
+ * @param attrs - The element's attribute map.
+ * @returns A `[key, value]` tuple, or `undefined` for unrecognized or empty meta elements.
+ */
 function extractFromMeta(attrs: Record<string, string>): [string, string] | undefined {
     if (!('content' in attrs)) return undefined;
     const content = attrs.content.trim();
@@ -53,10 +62,12 @@ function extractFromMeta(attrs: Record<string, string>): [string, string] | unde
 }
 
 /**
- * Serialize a metadata record into a YAML frontmatter block.
+ * Serializes a metadata record into a YAML frontmatter block.
  *
  * Output order: `title`, `description`, `image`, then remaining keys alphabetically.
- * Returns an empty string if the record has no entries.
+ *
+ * @param meta - The key-value metadata record to serialize.
+ * @returns A `---`-delimited YAML frontmatter string, or an empty string if `meta` is empty.
  */
 export function serializeFrontmatter(meta: Record<string, string>): string {
     const keys = Object.keys(meta);
@@ -71,6 +82,13 @@ export function serializeFrontmatter(meta: Record<string, string>): string {
     return `---\n${lines.join('\n')}\n---\n`;
 }
 
+/**
+ * Wraps a YAML value in double quotes if it contains characters that
+ * require quoting (colons, hashes, brackets, leading/trailing whitespace, etc.).
+ *
+ * @param value - The raw YAML value string.
+ * @returns The value as-is or wrapped in escaped double quotes.
+ */
 function yamlQuote(value: string): string {
     if (NEEDS_QUOTING.test(value)) {
         const escaped = value.replaceAll('\\', String.raw`\\`).replaceAll('"', String.raw`\"`);
@@ -80,8 +98,12 @@ function yamlQuote(value: string): string {
 }
 
 /**
- * Walk the document to find a `<head>` element.
- * Handles both `<html><head>…` and bare `<head>` as a direct document child.
+ * Walks the document to find a `<head>` element.
+ *
+ * Handles both `<html><head>...` and bare `<head>` as a direct document child.
+ *
+ * @param document - The parsed DOM document.
+ * @returns The `<head>` element, or `undefined` if not found.
  */
 function findHead(document: Document): Element | undefined {
     for (const child of document.children) {

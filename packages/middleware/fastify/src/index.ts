@@ -4,6 +4,7 @@ import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
 
+/** Fastify plugin callback signature used by the `markdown()` factory. */
 export type FastifyPlugin = FastifyPluginCallback;
 
 /**

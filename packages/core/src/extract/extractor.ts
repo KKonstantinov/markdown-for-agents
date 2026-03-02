@@ -28,6 +28,17 @@ export function extractContent(document: Document, options?: ExtractOptions): vo
     pruneTree(document, stripTags, stripRoles, stripClasses, stripIds);
 }
 
+/**
+ * Recursively walks the DOM tree and removes elements that match any
+ * of the strip criteria. Removal is done in-place by splicing the
+ * parent's `children` array.
+ *
+ * @param node - The parent node whose children will be inspected.
+ * @param stripTags - Tag names to remove (e.g. `nav`, `footer`).
+ * @param stripRoles - ARIA roles to remove (e.g. `navigation`, `banner`).
+ * @param stripClasses - CSS class substrings or regex patterns to match for removal.
+ * @param stripIds - Element ID substrings or regex patterns to match for removal.
+ */
 function pruneTree(
     node: Document | Element,
     stripTags: Set<string>,
@@ -59,6 +70,18 @@ function pruneTree(
     }
 }
 
+/**
+ * Determines whether an element should be stripped from the DOM tree.
+ *
+ * Checks against tag name, ARIA role, CSS class, and element ID in that order.
+ *
+ * @param el - The element to evaluate.
+ * @param stripTags - Tag names to match.
+ * @param stripRoles - ARIA roles to match.
+ * @param stripClasses - CSS class substrings or regex patterns to match.
+ * @param stripIds - Element ID substrings or regex patterns to match.
+ * @returns `true` if the element matches any strip criterion.
+ */
 function shouldStrip(
     el: Element,
     stripTags: Set<string>,
@@ -80,6 +103,13 @@ function shouldStrip(
     return false;
 }
 
+/**
+ * Tests a string against a list of patterns.
+ *
+ * @param value - The string to test (e.g. a class name or element ID).
+ * @param patterns - String substrings (checked with `includes`) or `RegExp` instances.
+ * @returns `true` if `value` matches at least one pattern.
+ */
 function matchesAny(value: string, patterns: (string | RegExp)[]): boolean {
     for (const pattern of patterns) {
         if ((typeof pattern === 'string' && value.includes(pattern)) || (pattern instanceof RegExp && pattern.test(value))) return true;
