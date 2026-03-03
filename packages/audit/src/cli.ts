@@ -8,12 +8,14 @@ Fetch a URL and compare HTML vs Markdown token counts.
 Options:
   --no-extract    Skip content extraction
   --json          Output as JSON
+  --print         Print the converted Markdown to stdout
   --output <file> Save the converted Markdown to a file
   -h, --help      Show this help message
 
 Examples:
   agent-markdown-audit https://example.com
   agent-markdown-audit https://example.com/article --json
+  agent-markdown-audit https://example.com --print
   agent-markdown-audit https://example.com --output article.md`;
 
 /**
@@ -68,6 +70,7 @@ async function main(): Promise<void> {
 
     const noExtract = args.includes('--no-extract');
     const jsonOutput = args.includes('--json');
+    const printMarkdown = args.includes('--print');
     const outputIndex = args.indexOf('--output');
     const outputFile = outputIndex === -1 ? undefined : args[outputIndex + 1];
 
@@ -86,10 +89,7 @@ async function main(): Promise<void> {
                 {
                     url: result.url,
                     html: result.html,
-                    markdown: {
-                        bytes: result.markdown.bytes,
-                        tokens: result.markdown.tokens
-                    },
+                    markdown: result.markdown,
                     reduction: result.reduction
                 },
                 null,
@@ -118,6 +118,11 @@ async function main(): Promise<void> {
     console.log(
         `${'Size'.padEnd(col1)}${formatBytes(result.html.bytes).padEnd(col2)}${formatBytes(result.markdown.bytes).padEnd(col3)}${formatPercent(result.reduction.bytePercent)}`
     );
+    if (printMarkdown) {
+        console.log('─'.repeat(col1 + col2 + col3 + 8));
+        console.log(result.markdown.content);
+    }
+
     console.log();
 }
 

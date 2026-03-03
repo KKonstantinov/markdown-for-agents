@@ -11,18 +11,11 @@
  * Run automatically after `changeset version` via the `version-packages` script.
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, globSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { execSync } from 'node:child_process';
 
 const root = new URL('..', import.meta.url).pathname;
-const jsrFiles = execSync('find packages -name jsr.json', {
-    cwd: root,
-    encoding: 'utf-8'
-})
-    .trim()
-    .split('\n')
-    .filter(Boolean);
+const jsrFiles = globSync('packages/**/jsr.json', { cwd: root });
 
 /** Cache of package name -> version for workspace packages */
 const workspaceVersions = new Map();
@@ -37,13 +30,7 @@ function resolveWorkspaceVersion(packageName) {
     }
 
     // Find all package.json files and look for the matching name
-    const pkgFiles = execSync('find packages -name package.json -not -path "*/node_modules/*"', {
-        cwd: root,
-        encoding: 'utf-8'
-    })
-        .trim()
-        .split('\n')
-        .filter(Boolean);
+    const pkgFiles = globSync('packages/**/package.json', { cwd: root, exclude: p => p.includes('node_modules') });
 
     for (const relPath of pkgFiles) {
         const pkg = JSON.parse(readFileSync(join(root, relPath), 'utf-8'));
