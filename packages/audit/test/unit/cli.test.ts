@@ -3,6 +3,7 @@ import type { Server } from 'node:http';
 import { execFile } from 'node:child_process';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 
+const NODE = process.execPath; // absolute path, e.g. /usr/local/bin/node
 const BIN = new URL('../../bin/agent-markdown-audit.mjs', import.meta.url).pathname;
 const HTML = '<html><body><h1>Hello</h1><p>World</p></body></html>';
 
@@ -11,7 +12,7 @@ let baseUrl: string;
 
 function run(...args: string[]): Promise<{ stdout: string; stderr: string; code: number | null }> {
     return new Promise(resolve => {
-        execFile('node', [BIN, ...args], (error, stdout, stderr) => {
+        execFile(NODE, [BIN, ...args], (error, stdout, stderr) => {
             resolve({ stdout, stderr, code: error?.code ? 1 : error ? (error as { code: number }).code : 0 });
         });
     });
