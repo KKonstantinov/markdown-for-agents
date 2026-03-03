@@ -1,5 +1,16 @@
 # @markdown-for-agents/fastify
 
+## 1.0.0
+
+### Major Changes
+
+- major version bump
+
+### Patch Changes
+
+- Updated dependencies
+    - markdown-for-agents@1.0.0
+
 ## 0.3.3
 
 ### Patch Changes

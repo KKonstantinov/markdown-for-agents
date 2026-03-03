@@ -1,12 +1,12 @@
 {
     "name": "@markdown-for-agents/web",
-    "version": "0.3.3",
+    "version": "1.0.0",
     "license": "MIT",
     "exports": {
         ".": "./src/index.ts"
     },
     "imports": {
-        "markdown-for-agents": "npm:markdown-for-agents@^0.3.3"
+        "markdown-for-agents": "npm:markdown-for-agents@^1.0.0"
     },
     "publish": {
         "include": ["src/", "LICENSE", "README.md", "jsr.json"]
