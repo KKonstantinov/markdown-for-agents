@@ -13,7 +13,13 @@ let baseUrl: string;
 function run(...args: string[]): Promise<{ stdout: string; stderr: string; code: number | null }> {
     return new Promise(resolve => {
         execFile(NODE, [BIN, ...args], (error, stdout, stderr) => {
-            resolve({ stdout, stderr, code: error?.code ? 1 : error ? (error as { code: number }).code : 0 });
+            let code: number | null = 0;
+            if (error?.code) {
+                code = 1;
+            } else if (error) {
+                code = (error as { code: number }).code;
+            }
+            resolve({ stdout, stderr, code });
         });
     });
 }
