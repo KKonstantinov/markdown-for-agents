@@ -47,39 +47,32 @@ describe('block rules', () => {
     });
 
     describe('code blocks', () => {
-        it('converts pre/code to fenced code blocks', () => {
-            const { markdown } = convert('<pre><code class="language-js">const x = 1;</code></pre>');
-            expect(markdown).toContain('```js\nconst x = 1;\n```');
-        });
-
-        it('handles pre without language', () => {
-            const { markdown } = convert('<pre><code>plain code</code></pre>');
-            expect(markdown).toContain('```\nplain code\n```');
-        });
-
-        it('detects language from pre class with language- prefix', () => {
-            const { markdown } = convert('<pre class="language-js"><code>const x = 1;</code></pre>');
-            expect(markdown).toContain('```js\nconst x = 1;\n```');
-        });
-
-        it('detects mermaid from bare pre class', () => {
-            const { markdown } = convert('<pre class="mermaid">graph TD\n  A-->B</pre>');
-            expect(markdown).toContain('```mermaid\ngraph TD\n  A-->B\n```');
-        });
-
-        it('detects language-mermaid from pre class', () => {
-            const { markdown } = convert('<pre class="language-mermaid">graph TD\n  A-->B</pre>');
-            expect(markdown).toContain('```mermaid\ngraph TD\n  A-->B\n```');
-        });
-
-        it('prefers code child language over pre class', () => {
-            const { markdown } = convert('<pre class="language-text"><code class="language-js">const x = 1;</code></pre>');
-            expect(markdown).toContain('```js\nconst x = 1;\n```');
-        });
-
-        it('ignores non-language bare classes on pre', () => {
-            const { markdown } = convert('<pre class="highlight">plain code</pre>');
-            expect(markdown).toContain('```\nplain code\n```');
+        it.each([
+            [
+                'converts pre/code to fenced code blocks',
+                '<pre><code class="language-js">const x = 1;</code></pre>',
+                '```js\nconst x = 1;\n```'
+            ],
+            ['handles pre without language', '<pre><code>plain code</code></pre>', '```\nplain code\n```'],
+            [
+                'detects language from pre class with language- prefix',
+                '<pre class="language-js"><code>const x = 1;</code></pre>',
+                '```js\nconst x = 1;\n```'
+            ],
+            ['detects mermaid from bare pre class', '<pre class="mermaid">graph TD\n  A-->B</pre>', '```mermaid\ngraph TD\n  A-->B\n```'],
+            [
+                'detects language-mermaid from pre class',
+                '<pre class="language-mermaid">graph TD\n  A-->B</pre>',
+                '```mermaid\ngraph TD\n  A-->B\n```'
+            ],
+            [
+                'prefers code child language over pre class',
+                '<pre class="language-text"><code class="language-js">const x = 1;</code></pre>',
+                '```js\nconst x = 1;\n```'
+            ],
+            ['ignores non-language bare classes on pre', '<pre class="highlight">plain code</pre>', '```\nplain code\n```']
+        ])('%s', (_name, html, expected) => {
+            expect(convert(html).markdown).toContain(expected);
         });
     });
 
