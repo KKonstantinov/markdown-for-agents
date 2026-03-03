@@ -4,16 +4,12 @@ Audit token savings when converting HTML to Markdown with [markdown-for-agents](
 
 Fetch any URL, convert the HTML to Markdown, and see exactly how many bytes and tokens you save. Useful for evaluating the impact of serving Markdown to AI agents instead of raw HTML.
 
-## Install
+## Quick Start
+
+No installation required — run directly with `npx`:
 
 ```bash
-npm install @markdown-for-agents/audit
-```
-
-## CLI
-
-```bash
-npx agent-markdown-audit https://example.com
+npx @markdown-for-agents/audit https://example.com
 ```
 
 ```
@@ -26,13 +22,14 @@ npx agent-markdown-audit https://example.com
 └─────────┴──────────┴────────┘
 ```
 
-### CLI Options
+### Options
 
 ```
-agent-markdown-audit <url> [options]
+npx @markdown-for-agents/audit <url> [options]
 
   --no-extract    Skip content extraction
   --json          Output as JSON
+  --print         Print converted Markdown to terminal
   --output <file> Save converted Markdown to file
   -h, --help      Show help
 ```
