@@ -1,1 +1,1 @@
-../../packages/middleware/web/README.md
+<!--@include: ../../packages/middleware/web/README.md-->

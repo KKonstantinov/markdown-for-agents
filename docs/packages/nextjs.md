@@ -1,1 +1,1 @@
-../../packages/middleware/nextjs/README.md
+<!--@include: ../../packages/middleware/nextjs/README.md-->

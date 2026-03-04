@@ -1,1 +1,1 @@
-../../packages/middleware/fastify/README.md
+<!--@include: ../../packages/middleware/fastify/README.md-->

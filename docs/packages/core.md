@@ -1,1 +1,1 @@
-../../packages/core/README.md
+<!--@include: ../../packages/core/README.md-->

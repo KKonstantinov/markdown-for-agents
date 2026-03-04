@@ -1,1 +1,1 @@
-../../packages/middleware/hono/README.md
+<!--@include: ../../packages/middleware/hono/README.md-->
