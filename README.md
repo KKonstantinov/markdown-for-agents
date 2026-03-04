@@ -1,5 +1,8 @@
 # markdown-for-agents
 
+[![npm version](https://img.shields.io/npm/v/markdown-for-agents)](https://www.npmjs.com/package/markdown-for-agents) [![npm downloads](https://img.shields.io/npm/dm/markdown-for-agents)](https://www.npmjs.com/package/markdown-for-agents)
+[![types](https://img.shields.io/npm/types/markdown-for-agents)](https://www.npmjs.com/package/markdown-for-agents) [![license](https://img.shields.io/npm/l/markdown-for-agents)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
+
 Runtime-agnostic HTML to Markdown converter built for AI agents. One dependency, works everywhere.
 
 Convert any HTML page into clean, token-efficient Markdown — with built-in content extraction to strip away navigation, ads, and boilerplate. Inspired by [Cloudflare's Markdown for Agents](https://blog.cloudflare.com/markdown-for-agents/).

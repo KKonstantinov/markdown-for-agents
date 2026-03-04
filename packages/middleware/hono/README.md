@@ -1,5 +1,8 @@
 # @markdown-for-agents/hono
 
+[![npm version](https://img.shields.io/npm/v/@markdown-for-agents/hono)](https://www.npmjs.com/package/@markdown-for-agents/hono) [![npm downloads](https://img.shields.io/npm/dm/@markdown-for-agents/hono)](https://www.npmjs.com/package/@markdown-for-agents/hono)
+[![types](https://img.shields.io/npm/types/@markdown-for-agents/hono)](https://www.npmjs.com/package/@markdown-for-agents/hono) [![license](https://img.shields.io/npm/l/@markdown-for-agents/hono)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
+
 Hono middleware for [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
 Add one line to your Hono app and AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched.

@@ -16,7 +16,7 @@
         "packages/middleware/*/*.config.ts",
         "packages/middleware/*.ts",
         "*.config.ts",
-        "docs/.vitepress/*.ts"
+        "docs/.vitepress/**/*.ts"
     ],
     "exclude": ["node_modules", "**/dist", "**/node_modules"]
 }

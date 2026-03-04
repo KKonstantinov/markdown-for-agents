@@ -1,5 +1,8 @@
 # @markdown-for-agents/web
 
+[![npm version](https://img.shields.io/npm/v/@markdown-for-agents/web)](https://www.npmjs.com/package/@markdown-for-agents/web) [![npm downloads](https://img.shields.io/npm/dm/@markdown-for-agents/web)](https://www.npmjs.com/package/@markdown-for-agents/web)
+[![types](https://img.shields.io/npm/types/@markdown-for-agents/web)](https://www.npmjs.com/package/@markdown-for-agents/web) [![license](https://img.shields.io/npm/l/@markdown-for-agents/web)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
+
 Web Standard (Request/Response) middleware for [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
 Works anywhere the Web Standard Request/Response API is available: Cloudflare Workers, Deno, Bun, and Node.js. AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched.

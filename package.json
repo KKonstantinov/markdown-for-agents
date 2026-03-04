@@ -42,6 +42,7 @@
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.56.1",
         "vitepress": "^1.6.4",
+        "vitepress-mermaid-renderer": "^1.1.11",
         "vitest": "^3.0.0"
     },
     "pnpm": {

@@ -1,5 +1,8 @@
 # @markdown-for-agents/audit
 
+[![npm version](https://img.shields.io/npm/v/@markdown-for-agents/audit)](https://www.npmjs.com/package/@markdown-for-agents/audit) [![npm downloads](https://img.shields.io/npm/dm/@markdown-for-agents/audit)](https://www.npmjs.com/package/@markdown-for-agents/audit)
+[![types](https://img.shields.io/npm/types/@markdown-for-agents/audit)](https://www.npmjs.com/package/@markdown-for-agents/audit) [![license](https://img.shields.io/npm/l/@markdown-for-agents/audit)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
+
 Audit token savings when converting HTML to Markdown with [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
 Fetch any URL, convert the HTML to Markdown, and see exactly how many bytes and tokens you save. Useful for evaluating the impact of serving Markdown to AI agents instead of raw HTML.

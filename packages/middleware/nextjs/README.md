@@ -1,5 +1,8 @@
 # @markdown-for-agents/nextjs
 
+[![npm version](https://img.shields.io/npm/v/@markdown-for-agents/nextjs)](https://www.npmjs.com/package/@markdown-for-agents/nextjs) [![npm downloads](https://img.shields.io/npm/dm/@markdown-for-agents/nextjs)](https://www.npmjs.com/package/@markdown-for-agents/nextjs)
+[![types](https://img.shields.io/npm/types/@markdown-for-agents/nextjs)](https://www.npmjs.com/package/@markdown-for-agents/nextjs) [![license](https://img.shields.io/npm/l/@markdown-for-agents/nextjs)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
+
 Next.js middleware for [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
 Wrap your route handlers and AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched. Includes a built-in rule that unwraps Next.js `/_next/image` optimization URLs back to their original paths.

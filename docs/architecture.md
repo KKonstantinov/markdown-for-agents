@@ -6,44 +6,20 @@ This document describes how `markdown-for-agents` works internally.
 
 Every conversion follows a six-stage pipeline:
 
-```
-HTML string
-  |
-  v
-[1. Parser] ──────── htmlparser2.parseDocument()
-  |
-  v
-DOM tree (domhandler Document)
-  |
-  v
-[2. Extractor] ────── prune non-content elements (optional)
-  |
-  v
-Pruned DOM tree
-  |
-  v
-[3. Walker] ───────── depth-first traversal, apply rules
-  |
-  v
-Raw Markdown string
-  |
-  v
-[4. Renderer] ─────── normalize whitespace, collapse blank lines
-  |
-  v
-Clean Markdown string
-  |
-  v
-[5. Deduplicator] ─── remove duplicate content blocks (optional)
-  |
-  v
-Final Markdown string
-  |
-  v
-[6. Tokens] ───────── estimate token/word/character counts
-  |
-  v
-ConvertResult { markdown, tokenEstimate }
+```mermaid
+flowchart TD
+    A["HTML string"] --> B["1. Parser<br/>htmlparser2.parseDocument()"]
+    B --> C["DOM tree<br/>(domhandler Document)"]
+    C --> D["2. Extractor<br/>prune non-content elements (optional)"]
+    D --> E["Pruned DOM tree"]
+    E --> F["3. Walker<br/>depth-first traversal, apply rules"]
+    F --> G["Raw Markdown string"]
+    G --> H["4. Renderer<br/>normalize whitespace, collapse blank lines"]
+    H --> I["Clean Markdown string"]
+    I --> J["5. Deduplicator<br/>remove duplicate content blocks (optional)"]
+    J --> K["Final Markdown string"]
+    K --> L["6. Tokens<br/>estimate token/word/character counts"]
+    L --> M["ConvertResult { markdown, tokenEstimate }"]
 ```
 
 ## Stage Details
