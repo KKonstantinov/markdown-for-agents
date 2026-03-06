@@ -8,5 +8,5 @@ export default defineConfig({
     target: 'es2022',
     clean: true,
     outDir: 'dist',
-    external: ['markdown-for-agents', 'fastify']
+    deps: { neverBundle: ['markdown-for-agents', 'fastify'] }
 });

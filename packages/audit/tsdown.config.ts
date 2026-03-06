@@ -11,5 +11,5 @@ export default defineConfig({
     target: 'es2022',
     clean: true,
     outDir: 'dist',
-    external: ['markdown-for-agents']
+    deps: { neverBundle: ['markdown-for-agents'] }
 });

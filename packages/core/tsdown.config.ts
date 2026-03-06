@@ -12,5 +12,5 @@ export default defineConfig({
     target: 'es2022',
     clean: true,
     outDir: 'dist',
-    external: ['htmlparser2', 'domhandler']
+    deps: { neverBundle: ['htmlparser2', 'domhandler'] }
 });
