@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 1.0.1
+
+### Patch Changes
+
+- version updates
+
 ## 1.0.0
 
 ### Major Changes

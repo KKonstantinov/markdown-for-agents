@@ -1,12 +1,12 @@
 {
     "name": "@markdown-for-agents/audit",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": "MIT",
     "exports": {
         ".": "./src/index.ts"
     },
     "imports": {
-        "markdown-for-agents": "npm:markdown-for-agents@^1.0.0"
+        "markdown-for-agents": "npm:markdown-for-agents@^1.0.1"
     },
     "publish": {
         "include": ["src/", "LICENSE", "README.md", "jsr.json"]
