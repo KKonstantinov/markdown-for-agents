@@ -29,7 +29,7 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "typecheck": "tsgo --noEmit",
-        "release:jsr": "npx jsr publish --allow-dirty --provenance"
+        "release:jsr": "npx jsr publish --allow-dirty"
     },
     "dependencies": {
         "markdown-for-agents": "workspace:*"

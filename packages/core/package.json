@@ -37,7 +37,7 @@
         "test:integration:deno": "deno test --no-check --allow-read test/integration/deno.test.ts",
         "test:integration": "pnpm run build && pnpm run test:integration:node && pnpm run test:integration:bun && pnpm run test:integration:deno",
         "typecheck": "tsgo --noEmit",
-        "release:jsr": "npx jsr publish --allow-dirty --provenance"
+        "release:jsr": "npx jsr publish --allow-dirty"
     },
     "dependencies": {
         "domhandler": "^5.0.3",
