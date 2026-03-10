@@ -1,6 +1,6 @@
 {
     "name": "markdown-for-agents",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "Runtime-agnostic HTML to Markdown converter with content extraction and plugin system",
     "type": "module",
     "sideEffects": false,
@@ -63,6 +63,10 @@
     "homepage": "https://kkonstantinov.github.io/markdown-for-agents/",
     "bugs": {
         "url": "https://github.com/KKonstantinov/markdown-for-agents/issues"
+    },
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
     },
     "license": "MIT"
 }

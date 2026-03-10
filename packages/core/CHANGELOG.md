@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 1.1.0
+
+### Minor Changes
+
+- c27f3ae: npm provenance added
+
 ## 1.0.1
 
 ### Patch Changes

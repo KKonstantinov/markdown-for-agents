@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/nextjs",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "Next.js middleware for markdown-for-agents",
     "type": "module",
     "sideEffects": false,
@@ -50,7 +50,8 @@
         "url": "https://github.com/KKonstantinov/markdown-for-agents/issues"
     },
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "provenance": true
     },
     "license": "MIT",
     "devDependencies": {
