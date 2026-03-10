@@ -21,7 +21,13 @@ jobs:
               with:
                   node-version: 24
                   cache: pnpm
+                  registry-url: 'https://registry.npmjs.org'
             - run: pnpm install --frozen-lockfile
+            - name: Fetch npm OIDC token
+              run: |
+                  OIDC_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+                    "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=https://registry.npmjs.org" | jq -r '.value')
+                  echo "NODE_AUTH_TOKEN=${OIDC_TOKEN}" >> $GITHUB_ENV
             - name: Create Release Pull Request or Publish
               id: changesets
               uses: changesets/action@v1
