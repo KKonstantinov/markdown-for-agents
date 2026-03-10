@@ -22,6 +22,7 @@ jobs:
                   node-version: 24
                   cache: pnpm
                   registry-url: 'https://registry.npmjs.org'
+            - run: npm config delete //registry.npmjs.org/:_authToken
             - run: pnpm install --frozen-lockfile
             - name: Create Release Pull Request or Publish
               id: changesets
