@@ -64,5 +64,9 @@
     "bugs": {
         "url": "https://github.com/KKonstantinov/markdown-for-agents/issues"
     },
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
+    },
     "license": "MIT"
 }
