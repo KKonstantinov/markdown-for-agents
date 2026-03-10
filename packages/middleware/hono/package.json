@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/hono",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "Hono middleware for markdown-for-agents",
     "type": "module",
     "sideEffects": false,

@@ -1,5 +1,16 @@
 # @markdown-for-agents/express
 
+## 1.1.0
+
+### Minor Changes
+
+- c27f3ae: npm provenance added
+
+### Patch Changes
+
+- Updated dependencies [c27f3ae]
+    - markdown-for-agents@1.1.0
+
 ## 1.0.1
 
 ### Patch Changes
