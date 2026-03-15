@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 1.1.1
+
+### Patch Changes
+
+- 2d0aba2: docs update
+
 ## 1.1.0
 
 ### Minor Changes
