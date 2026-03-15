@@ -1,7 +1,7 @@
 {
     "name": "@markdown-for-agents/web",
     "version": "1.1.0",
-    "description": "Web Standard (Request/Response) middleware for markdown-for-agents",
+    "description": "Web Standard middleware — serve Markdown to AI agents from any runtime via content negotiation",
     "type": "module",
     "sideEffects": false,
     "engines": {

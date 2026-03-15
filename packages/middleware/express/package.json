@@ -1,7 +1,7 @@
 {
     "name": "@markdown-for-agents/express",
     "version": "1.1.0",
-    "description": "Express middleware for markdown-for-agents",
+    "description": "Express middleware — serve Markdown to AI agents via content negotiation",
     "type": "module",
     "sideEffects": false,
     "engines": {

@@ -1,7 +1,7 @@
 {
     "name": "@markdown-for-agents/hono",
     "version": "1.1.1",
-    "description": "Hono middleware for markdown-for-agents",
+    "description": "Hono middleware — serve Markdown to AI agents via content negotiation",
     "type": "module",
     "sideEffects": false,
     "engines": {
