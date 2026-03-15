@@ -1,5 +1,11 @@
 # @markdown-for-agents/hono
 
+## 1.1.1
+
+### Patch Changes
+
+- 6d6e8ee: version bumps
+
 ## 1.1.0
 
 ### Minor Changes
