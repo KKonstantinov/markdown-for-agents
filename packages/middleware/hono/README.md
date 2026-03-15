@@ -7,7 +7,7 @@
 
 Hono middleware for [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
-![markdown-for-agents](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/docs/markdown_for_agents_header.png)
+![markdown-for-agents + Hono](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/packages/middleware/hono/mda_hono_header.png)
 
 > [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) converts HTML to clean, token-efficient Markdown for AI agents — typically saving 80–90% of tokens. This package adds automatic content negotiation to your Hono app via `Accept: text/markdown`.
 
