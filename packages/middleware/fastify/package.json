@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/fastify",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Fastify plugin — serve Markdown to AI agents via content negotiation",
     "type": "module",
     "sideEffects": false,
