@@ -1,9 +1,7 @@
 # @markdown-for-agents/fastify
 
 [![npm version](https://img.shields.io/npm/v/@markdown-for-agents/fastify)](https://www.npmjs.com/package/@markdown-for-agents/fastify) [![npm downloads](https://img.shields.io/npm/dm/@markdown-for-agents/fastify)](https://www.npmjs.com/package/@markdown-for-agents/fastify)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/@markdown-for-agents/fastify)](https://bundlephobia.com/package/@markdown-for-agents/fastify)
 [![types](https://img.shields.io/npm/types/@markdown-for-agents/fastify)](https://www.npmjs.com/package/@markdown-for-agents/fastify) [![license](https://img.shields.io/npm/l/@markdown-for-agents/fastify)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/KKonstantinov/markdown-for-agents)](https://github.com/KKonstantinov/markdown-for-agents)
 
 Fastify plugin for [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 

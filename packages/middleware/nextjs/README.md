@@ -1,9 +1,7 @@
 # @markdown-for-agents/nextjs
 
 [![npm version](https://img.shields.io/npm/v/@markdown-for-agents/nextjs)](https://www.npmjs.com/package/@markdown-for-agents/nextjs) [![npm downloads](https://img.shields.io/npm/dm/@markdown-for-agents/nextjs)](https://www.npmjs.com/package/@markdown-for-agents/nextjs)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/@markdown-for-agents/nextjs)](https://bundlephobia.com/package/@markdown-for-agents/nextjs)
 [![types](https://img.shields.io/npm/types/@markdown-for-agents/nextjs)](https://www.npmjs.com/package/@markdown-for-agents/nextjs) [![license](https://img.shields.io/npm/l/@markdown-for-agents/nextjs)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/KKonstantinov/markdown-for-agents)](https://github.com/KKonstantinov/markdown-for-agents)
 
 Next.js middleware for [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
