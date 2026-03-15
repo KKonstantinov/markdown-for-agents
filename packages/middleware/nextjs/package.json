@@ -36,9 +36,15 @@
     "keywords": [
         "html",
         "markdown",
-        "middleware",
+        "converter",
+        "ai",
+        "agents",
+        "llm",
+        "tokens",
         "nextjs",
-        "next"
+        "next",
+        "middleware",
+        "content-negotiation"
     ],
     "repository": {
         "type": "git",

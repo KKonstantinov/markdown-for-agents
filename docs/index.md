@@ -17,20 +17,28 @@ hero:
 
 features:
     - title: Runtime-agnostic
+      icon: 🌍
       details: Node.js, Bun, Deno, Cloudflare Workers, Vercel Edge, browsers — works everywhere.
     - title: Content Extraction
+      icon: ✂️
       details: Strip navigation, ads, sidebars, and cookie banners automatically to get just the main content.
     - title: Framework Middleware
+      icon: 🔌
       details: Drop-in support for Express, Fastify, Hono, Next.js, and any Web Standard server.
     - title: Frontmatter
+      icon: 📋
       details: Automatically extracts title, description, and image from HTML head as YAML frontmatter.
     - title: Token Estimation
+      icon: 🔢
       details: Built-in heuristic token counter for LLM cost planning, with support for custom tokenizers.
     - title: Plugin System
+      icon: 🧩
       details: Override or extend any element conversion with custom rules that take priority over defaults.
     - title: Content-Signal Header
+      icon: 📡
       details: Opt-in HTTP header for publisher consent — signal AI training, search, and AI input permissions.
     - title: Single Dependency
+      icon: 📦
       details: Only htmlparser2 — no DOM required. ESM only, fully typed, tree-shakeable.
 ---
 

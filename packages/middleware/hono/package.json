@@ -40,8 +40,15 @@
     "keywords": [
         "html",
         "markdown",
+        "converter",
+        "ai",
+        "agents",
+        "llm",
+        "tokens",
+        "hono",
+        "hono-middleware",
         "middleware",
-        "hono"
+        "content-negotiation"
     ],
     "repository": {
         "type": "git",

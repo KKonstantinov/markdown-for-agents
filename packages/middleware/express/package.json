@@ -40,8 +40,15 @@
     "keywords": [
         "html",
         "markdown",
+        "converter",
+        "ai",
+        "agents",
+        "llm",
+        "tokens",
+        "express",
+        "express-middleware",
         "middleware",
-        "express"
+        "content-negotiation"
     ],
     "repository": {
         "type": "git",

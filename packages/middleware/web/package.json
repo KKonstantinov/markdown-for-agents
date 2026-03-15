@@ -34,11 +34,20 @@
     "keywords": [
         "html",
         "markdown",
+        "converter",
+        "ai",
+        "agents",
+        "llm",
+        "tokens",
         "middleware",
         "web",
         "fetch",
         "request",
-        "response"
+        "response",
+        "cloudflare-workers",
+        "deno",
+        "bun",
+        "content-negotiation"
     ],
     "repository": {
         "type": "git",

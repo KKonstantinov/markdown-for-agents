@@ -1,12 +1,38 @@
 import { defineConfig } from 'vitepress';
 
+const ogImage = 'https://kkonstantinov.github.io/markdown-for-agents/og-image.png';
+const siteUrl = 'https://kkonstantinov.github.io/markdown-for-agents/';
+const title = 'markdown-for-agents';
+const description = 'Runtime-agnostic HTML to Markdown converter built for AI agents. One dependency, works everywhere.';
+
 export default defineConfig({
-    title: 'markdown-for-agents',
-    description: 'Runtime-agnostic HTML to Markdown converter built for AI agents. One dependency, works everywhere.',
+    title,
+    description,
 
     base: '/markdown-for-agents/',
+    cleanUrls: true,
+    lastUpdated: true,
+
+    head: [
+        ['link', { rel: 'icon', type: 'image/svg+xml', href: '/markdown-for-agents/favicon.svg' }],
+
+        // Open Graph
+        ['meta', { property: 'og:type', content: 'website' }],
+        ['meta', { property: 'og:title', content: title }],
+        ['meta', { property: 'og:description', content: description }],
+        ['meta', { property: 'og:url', content: siteUrl }],
+        ['meta', { property: 'og:image', content: ogImage }],
+
+        // Twitter Card
+        ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+        ['meta', { name: 'twitter:title', content: title }],
+        ['meta', { name: 'twitter:description', content: description }],
+        ['meta', { name: 'twitter:image', content: ogImage }]
+    ],
 
     themeConfig: {
+        logo: '/favicon.svg',
+
         nav: [
             { text: 'Guide', link: '/getting-started' },
             { text: 'API', link: '/api' },
@@ -21,14 +47,6 @@ export default defineConfig({
                     { text: 'Next.js (@markdown-for-agents/nextjs)', link: '/packages/nextjs' },
                     { text: 'Web Standard (@markdown-for-agents/web)', link: '/packages/web' }
                 ]
-            },
-            {
-                text: 'npm',
-                link: 'https://www.npmjs.com/package/markdown-for-agents'
-            },
-            {
-                text: 'GitHub',
-                link: 'https://github.com/KKonstantinov/markdown-for-agents'
             }
         ],
 
@@ -37,10 +55,7 @@ export default defineConfig({
                 text: 'Guide',
                 items: [
                     { text: 'Getting Started', link: '/getting-started' },
-                    {
-                        text: 'Content Extraction',
-                        link: '/extraction'
-                    },
+                    { text: 'Content Extraction', link: '/extraction' },
                     { text: 'Middleware', link: '/middleware' },
                     { text: 'Custom Rules', link: '/rules' }
                 ]
@@ -66,15 +81,24 @@ export default defineConfig({
             }
         ],
 
+        outline: [2, 3],
+
+        editLink: {
+            pattern: 'https://github.com/KKonstantinov/markdown-for-agents/edit/main/docs/:path'
+        },
+
+        footer: {
+            message: 'Released under the <a href="https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE">MIT License</a>.',
+            copyright: 'Copyright &copy; 2025-present'
+        },
+
         search: {
             provider: 'local'
         },
 
         socialLinks: [
-            {
-                icon: 'github',
-                link: 'https://github.com/KKonstantinov/markdown-for-agents'
-            }
+            { icon: 'github', link: 'https://github.com/KKonstantinov/markdown-for-agents' },
+            { icon: 'npm', link: 'https://www.npmjs.com/package/markdown-for-agents' }
         ]
     }
 });

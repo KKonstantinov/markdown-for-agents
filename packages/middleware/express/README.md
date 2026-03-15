@@ -1,26 +1,15 @@
 # @markdown-for-agents/express
 
 [![npm version](https://img.shields.io/npm/v/@markdown-for-agents/express)](https://www.npmjs.com/package/@markdown-for-agents/express) [![npm downloads](https://img.shields.io/npm/dm/@markdown-for-agents/express)](https://www.npmjs.com/package/@markdown-for-agents/express)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@markdown-for-agents/express)](https://bundlephobia.com/package/@markdown-for-agents/express)
 [![types](https://img.shields.io/npm/types/@markdown-for-agents/express)](https://www.npmjs.com/package/@markdown-for-agents/express) [![license](https://img.shields.io/npm/l/@markdown-for-agents/express)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/KKonstantinov/markdown-for-agents)](https://github.com/KKonstantinov/markdown-for-agents)
 
 Express middleware for [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
-![markdown-for-agents](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/docs/markdown_for_agents_header.png)
+![markdown-for-agents + Express](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/packages/middleware/express/mda_express_header.png)
 
-Audit any URL — no installation required:
-
-```bash
-npx @markdown-for-agents/audit https://docs.github.com/en/copilot/get-started/quickstart
-```
-
-```
-           HTML            Markdown        Savings
-───────────────────────────────────────────────────
-Tokens     138,550         9,364           -93.2%
-Chars      554,200         37,456          -93.2%
-Words      27,123          4,044
-Size       541.3 KB        36.6 KB         -93.2%
-```
+> [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) converts HTML to clean, token-efficient Markdown for AI agents — typically saving 80–90% of tokens. This package adds automatic content negotiation to your Express app via `Accept: text/markdown`.
 
 Add one line to your Express app and AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched.
 
@@ -39,6 +28,8 @@ The middleware uses content negotiation. When a client sends `Accept: text/markd
 ```bash
 npm install @markdown-for-agents/express markdown-for-agents
 ```
+
+> `markdown-for-agents` is a peer dependency — you may already have it installed.
 
 ## Usage
 

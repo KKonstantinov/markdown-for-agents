@@ -1,26 +1,15 @@
 # @markdown-for-agents/fastify
 
 [![npm version](https://img.shields.io/npm/v/@markdown-for-agents/fastify)](https://www.npmjs.com/package/@markdown-for-agents/fastify) [![npm downloads](https://img.shields.io/npm/dm/@markdown-for-agents/fastify)](https://www.npmjs.com/package/@markdown-for-agents/fastify)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@markdown-for-agents/fastify)](https://bundlephobia.com/package/@markdown-for-agents/fastify)
 [![types](https://img.shields.io/npm/types/@markdown-for-agents/fastify)](https://www.npmjs.com/package/@markdown-for-agents/fastify) [![license](https://img.shields.io/npm/l/@markdown-for-agents/fastify)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/KKonstantinov/markdown-for-agents)](https://github.com/KKonstantinov/markdown-for-agents)
 
 Fastify plugin for [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
-![markdown-for-agents](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/docs/markdown_for_agents_header.png)
+![markdown-for-agents + Fastify](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/packages/middleware/fastify/mda_fastify_header.png)
 
-Audit any URL — no installation required:
-
-```bash
-npx @markdown-for-agents/audit https://docs.github.com/en/copilot/get-started/quickstart
-```
-
-```
-           HTML            Markdown        Savings
-───────────────────────────────────────────────────
-Tokens     138,550         9,364           -93.2%
-Chars      554,200         37,456          -93.2%
-Words      27,123          4,044
-Size       541.3 KB        36.6 KB         -93.2%
-```
+> [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) converts HTML to clean, token-efficient Markdown for AI agents — typically saving 80–90% of tokens. This package adds automatic content negotiation to your Fastify app via `Accept: text/markdown`.
 
 Add one line to your Fastify app and AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched.
 
@@ -39,6 +28,8 @@ The plugin uses content negotiation. When a client sends `Accept: text/markdown`
 ```bash
 npm install @markdown-for-agents/fastify markdown-for-agents
 ```
+
+> `markdown-for-agents` is a peer dependency — you may already have it installed.
 
 ## Usage
 

@@ -39,9 +39,15 @@
     "keywords": [
         "html",
         "markdown",
-        "middleware",
+        "converter",
+        "ai",
+        "agents",
+        "llm",
+        "tokens",
         "fastify",
-        "plugin"
+        "fastify-plugin",
+        "middleware",
+        "content-negotiation"
     ],
     "repository": {
         "type": "git",
