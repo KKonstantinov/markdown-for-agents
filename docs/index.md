@@ -34,6 +34,23 @@ features:
       details: Only htmlparser2 — no DOM required. ESM only, fully typed, tree-shakeable.
 ---
 
+## See Your Savings
+
+Audit any URL — no installation required:
+
+```bash
+npx @markdown-for-agents/audit https://docs.github.com/en/copilot/get-started/quickstart
+```
+
+```
+           HTML            Markdown        Savings
+───────────────────────────────────────────────────
+Tokens     138,550         9,364           -93.2%
+Chars      554,200         37,456          -93.2%
+Words      27,123          4,044
+Size       541.3 KB        36.6 KB         -93.2%
+```
+
 ## Why?
 
 AI agents consume web pages as context, but raw HTML is full of markup noise — navigation, ads, sidebars, cookie banners, and deeply nested `<div>` soup. This wastes tokens and degrades LLM output quality.

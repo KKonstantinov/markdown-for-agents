@@ -11,6 +11,18 @@ export default defineConfig({
             { text: 'Guide', link: '/getting-started' },
             { text: 'API', link: '/api' },
             {
+                text: 'Packages',
+                items: [
+                    { text: 'Core (markdown-for-agents)', link: '/packages/core' },
+                    { text: 'Audit (@markdown-for-agents/audit)', link: '/packages/audit' },
+                    { text: 'Express (@markdown-for-agents/express)', link: '/packages/express' },
+                    { text: 'Fastify (@markdown-for-agents/fastify)', link: '/packages/fastify' },
+                    { text: 'Hono (@markdown-for-agents/hono)', link: '/packages/hono' },
+                    { text: 'Next.js (@markdown-for-agents/nextjs)', link: '/packages/nextjs' },
+                    { text: 'Web Standard (@markdown-for-agents/web)', link: '/packages/web' }
+                ]
+            },
+            {
                 text: 'npm',
                 link: 'https://www.npmjs.com/package/markdown-for-agents'
             },

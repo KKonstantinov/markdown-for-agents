@@ -7,6 +7,23 @@ Runtime-agnostic HTML to Markdown converter built for AI agents. One dependency,
 
 Convert any HTML page into clean, token-efficient Markdown — with built-in content extraction to strip away navigation, ads, and boilerplate. Inspired by [Cloudflare's Markdown for Agents](https://blog.cloudflare.com/markdown-for-agents/).
 
+![markdown-for-agents](docs/markdown_for_agents_header.png)
+
+Audit any URL — no installation required:
+
+```bash
+npx @markdown-for-agents/audit https://docs.github.com/en/copilot/get-started/quickstart
+```
+
+```
+           HTML            Markdown        Savings
+───────────────────────────────────────────────────
+Tokens     138,550         9,364           -93.2%
+Chars      554,200         37,456          -93.2%
+Words      27,123          4,044
+Size       541.3 KB        36.6 KB         -93.2%
+```
+
 ## Features
 
 - **Runtime-agnostic** — Node.js, Bun, Deno, Cloudflare Workers, Vercel Edge, browsers

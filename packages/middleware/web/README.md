@@ -5,6 +5,23 @@
 
 Web Standard (Request/Response) middleware for [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
+![markdown-for-agents](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/docs/markdown_for_agents_header.png)
+
+Audit any URL — no installation required:
+
+```bash
+npx @markdown-for-agents/audit https://docs.github.com/en/copilot/get-started/quickstart
+```
+
+```
+           HTML            Markdown        Savings
+───────────────────────────────────────────────────
+Tokens     138,550         9,364           -93.2%
+Chars      554,200         37,456          -93.2%
+Words      27,123          4,044
+Size       541.3 KB        36.6 KB         -93.2%
+```
+
 Works anywhere the Web Standard Request/Response API is available: Cloudflare Workers, Deno, Bun, and Node.js. AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched.
 
 ## How it works
