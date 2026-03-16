@@ -21,7 +21,7 @@ All middleware packages depend on `markdown-for-agents` (the core library), whic
 2. Your server generates an HTML response as usual
 3. The middleware intercepts the response, converts the HTML to Markdown
 4. The client receives `Content-Type: text/markdown; charset=utf-8`
-5. The response includes an `x-markdown-tokens` header with the estimated token count and an `ETag` for cache validation
+5. The response includes an `x-markdown-tokens` header with the estimated token count, an `ETag` for cache validation, and a `content-signal` header with publisher consent signals (when configured)
 
 All responses (converted or not) include `Vary: Accept` so that CDNs and proxies cache HTML and Markdown representations separately.
 
@@ -346,6 +346,9 @@ const mw = markdownMiddleware({
         /* custom rules */
     ],
 
+    // Publisher consent signals
+    contentSignal: { aiTrain: true, search: true, aiInput: true },
+
     // Middleware-specific
     tokenHeader: 'x-token-count' // Custom header name
 });
@@ -361,6 +364,7 @@ When the middleware converts a response, it sets these headers:
 | `x-markdown-tokens` | `123`                          | Estimated token count (configurable header name)                                                     |
 | `ETag`              | `"2f-1a3b4c5"`                 | Content hash of the markdown output for cache validation                                             |
 | `Vary`              | `Accept`                       | Ensures caches store separate entries per content type (always set, even on non-converted responses) |
+| `content-signal`    | `aiTrain; search; aiInput`     | Publisher consent signals (only set when `contentSignal` option is configured)                       |
 
 ## Caching
 
