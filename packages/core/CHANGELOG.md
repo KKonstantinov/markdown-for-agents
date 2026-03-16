@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 1.1.4
+
+### Patch Changes
+
+- cd07bf6: docs update
+
 ## 1.1.3
 
 ### Patch Changes

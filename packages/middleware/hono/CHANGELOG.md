@@ -1,5 +1,13 @@
 # @markdown-for-agents/hono
 
+## 1.1.5
+
+### Patch Changes
+
+- cd07bf6: docs update
+- Updated dependencies [cd07bf6]
+    - markdown-for-agents@1.1.4
+
 ## 1.1.4
 
 ### Patch Changes
