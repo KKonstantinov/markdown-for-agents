@@ -37,13 +37,13 @@ export function Playground() {
             </div>
 
             {/* Input / Output columns */}
-            <div className="grid h-[clamp(400px,60vh,800px)] gap-4 lg:grid-cols-2">
-                <div className="flex min-h-0 flex-col">
+            <div className="grid gap-4 lg:h-[clamp(400px,60vh,800px)] lg:grid-cols-2">
+                <div className="flex h-[50vh] min-h-0 min-w-0 flex-col lg:h-auto">
                     {inputMode === 'url' ? (
-                        <div className="flex min-h-0 flex-1 flex-col gap-4">
+                        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">
                             <UrlInput initialUrl={SAMPLE_URL} autoFetch onHtmlFetched={handleUrlFetched} />
                             {htmlValue && (
-                                <div className="relative min-h-0 flex-1">
+                                <div className="relative min-h-0 min-w-0 flex-1">
                                     <div className="absolute top-2 left-3 z-10 text-xs font-medium text-gray-400 dark:text-gray-500">
                                         Fetched HTML
                                     </div>
@@ -57,7 +57,7 @@ export function Playground() {
                         <HtmlInput value={htmlValue} onChange={setHtmlValue} />
                     )}
                 </div>
-                <div className="min-h-0">
+                <div className="h-[50vh] min-h-0 min-w-0 lg:h-auto">
                     <MarkdownOutput markdown={result?.markdown ?? null} />
                 </div>
             </div>
