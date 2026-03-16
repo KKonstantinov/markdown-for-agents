@@ -1,5 +1,16 @@
 # @markdown-for-agents/hono
 
+## 1.2.0
+
+### Minor Changes
+
+- 645ba5f: add node 22 support
+
+### Patch Changes
+
+- Updated dependencies [645ba5f]
+    - markdown-for-agents@1.2.0
+
 ## 1.1.5
 
 ### Patch Changes
