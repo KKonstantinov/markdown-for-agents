@@ -201,24 +201,6 @@ import { convert } from 'markdown-for-agents';
 const { markdown } = convert(html, { rules: [nextImageRule] });
 ```
 
-### Next.js Middleware (Edge)
-
-You can also use it in Next.js middleware for site-wide conversion:
-
-```ts
-// middleware.ts
-import { withMarkdown } from '@markdown-for-agents/nextjs';
-
-const handler = withMarkdown(async request => {
-    const response = await fetch(request.url, {
-        headers: { accept: 'text/html' }
-    });
-    return response;
-});
-
-export default handler;
-```
-
 ## Web Standard (Generic)
 
 ```bash
