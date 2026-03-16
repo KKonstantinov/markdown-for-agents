@@ -9,6 +9,7 @@ docs/packages/
 
 # Next.js
 packages/playground/.next/
+packages/playground/next-env.d.ts
 
 # Lock files
 pnpm-lock.yaml
