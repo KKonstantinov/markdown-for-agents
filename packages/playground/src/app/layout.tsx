@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
     title: 'Playground — markdown-for-agents',
@@ -14,7 +15,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <head>
                 <script dangerouslySetInnerHTML={{ __html: themeScript }} />
             </head>
-            <body className="bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">{children}</body>
+            <body className="bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
+                {children}
+                <Analytics />
+            </body>
         </html>
     );
 }
