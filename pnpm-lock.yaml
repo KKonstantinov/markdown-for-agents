@@ -66,6 +66,49 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(@types/node@25.5.0)(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.31.1))
 
+  examples/express:
+    dependencies:
+      '@markdown-for-agents/express':
+        specifier: workspace:*
+        version: link:../../packages/middleware/express
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1
+      markdown-for-agents:
+        specifier: workspace:*
+        version: link:../../packages/core
+    devDependencies:
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
+
+  examples/fastify:
+    dependencies:
+      '@markdown-for-agents/fastify':
+        specifier: workspace:*
+        version: link:../../packages/middleware/fastify
+      fastify:
+        specifier: ^5.8.2
+        version: 5.8.2
+      markdown-for-agents:
+        specifier: workspace:*
+        version: link:../../packages/core
+
+  examples/hono:
+    dependencies:
+      '@hono/node-server':
+        specifier: ^1.19.11
+        version: 1.19.11(hono@4.12.8)
+      '@markdown-for-agents/hono':
+        specifier: workspace:*
+        version: link:../../packages/middleware/hono
+      hono:
+        specifier: ^4.12.8
+        version: 4.12.8
+      markdown-for-agents:
+        specifier: workspace:*
+        version: link:../../packages/core
+
   examples/nextjs:
     dependencies:
       '@markdown-for-agents/nextjs':
@@ -90,6 +133,15 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
+
+  examples/web:
+    dependencies:
+      '@markdown-for-agents/web':
+        specifier: workspace:*
+        version: link:../../packages/middleware/web
+      markdown-for-agents:
+        specifier: workspace:*
+        version: link:../../packages/core
 
   packages/audit:
     dependencies:
@@ -136,8 +188,8 @@ importers:
         version: link:../../core
     devDependencies:
       hono:
-        specifier: ^4.12.7
-        version: 4.12.7
+        specifier: ^4.12.8
+        version: 4.12.8
 
   packages/middleware/nextjs:
     dependencies:
@@ -795,6 +847,12 @@ packages:
 
   '@fastify/proxy-addr@5.1.0':
     resolution: {integrity: sha512-INS+6gh91cLUjB+PVHfu1UqcB76Sqtpyp7bnL+FYojhjygvOPA9ctiD/JDKsyD9Xgu4hUhCSJBPig/w7duNajw==}
+
+  '@hono/node-server@1.19.11':
+    resolution: {integrity: sha512-dr8/3zEaB+p0D2n/IUrlPF1HZm586qgJNXK1a9fhg/PzdtkK7Ksd5l312tJX2yBuALqDYBlG20QEbayqPyxn+g==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -2810,8 +2868,8 @@ packages:
   hast-util-whitespace@3.0.0:
     resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
 
-  hono@4.12.7:
-    resolution: {integrity: sha512-jq9l1DM0zVIvsm3lv9Nw9nlJnMNPOcAtsbsgiUhWcFzPE99Gvo6yRTlszSLLYacMeQ6quHD6hMfId8crVHvexw==}
+  hono@4.12.8:
+    resolution: {integrity: sha512-VJCEvtrezO1IAR+kqEYnxUOoStaQPGrCmX3j4wDTNOcD1uRPFpGlwQUIW8niPuvHXaTUxeOUl5MMDGrl+tmO9A==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -4676,6 +4734,10 @@ snapshots:
     dependencies:
       '@fastify/forwarded': 3.0.1
       ipaddr.js: 2.3.0
+
+  '@hono/node-server@1.19.11(hono@4.12.8)':
+    dependencies:
+      hono: 4.12.8
 
   '@humanfs/core@0.19.1': {}
 
@@ -6667,7 +6729,7 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
 
-  hono@4.12.7: {}
+  hono@4.12.8: {}
 
   hookable@5.5.3: {}
 

@@ -55,6 +55,8 @@ curl http://localhost:3000
 curl -H "Accept: text/markdown" http://localhost:3000
 ```
 
+> **Full working example:** See [`examples/fastify/`](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/fastify) for a complete Fastify app with integration tests.
+
 ## Options
 
 Accepts all [`markdown-for-agents` options](https://www.npmjs.com/package/markdown-for-agents#options):

@@ -93,6 +93,8 @@ curl http://localhost:3000
 curl -H "Accept: text/markdown" http://localhost:3000
 ```
 
+> **Full working example:** See [`examples/web/`](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/web) for a complete Web Standard app (Node.js) with integration tests.
+
 ## Options
 
 Accepts all [`markdown-for-agents` options](https://www.npmjs.com/package/markdown-for-agents#options):

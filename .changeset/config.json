@@ -7,5 +7,12 @@
     "access": "public",
     "baseBranch": "main",
     "updateInternalDependencies": "patch",
-    "ignore": ["@markdown-for-agents/playground", "@markdown-for-agents/example-nextjs"]
+    "ignore": [
+        "@markdown-for-agents/playground",
+        "@markdown-for-agents/example-nextjs",
+        "@markdown-for-agents/example-express",
+        "@markdown-for-agents/example-fastify",
+        "@markdown-for-agents/example-hono",
+        "@markdown-for-agents/example-web"
+    ]
 }

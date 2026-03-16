@@ -9,13 +9,13 @@ hero:
           text: Get Started
           link: /getting-started
         - theme: alt
-          text: Playground
+          text: Playground ↗
           link: https://markdown-for-agents-playground.vercel.app
         - theme: alt
           text: API Reference
           link: /api
         - theme: alt
-          text: GitHub
+          text: GitHub ↗
           link: https://github.com/KKonstantinov/markdown-for-agents
 
 features:

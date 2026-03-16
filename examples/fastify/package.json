@@ -1,0 +1,15 @@
+{
+    "name": "@markdown-for-agents/example-fastify",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "tsx src/index.ts",
+        "test:integration": "vitest run test/integration"
+    },
+    "dependencies": {
+        "@markdown-for-agents/fastify": "workspace:*",
+        "markdown-for-agents": "workspace:*",
+        "fastify": "^5.8.2"
+    }
+}
