@@ -201,23 +201,68 @@ import { convert } from 'markdown-for-agents';
 const { markdown } = convert(html, { rules: [nextImageRule] });
 ```
 
-### Next.js Middleware (Edge)
+### Next.js Proxy (Site-wide)
 
-You can also use it in Next.js middleware for site-wide conversion:
+For site-wide conversion without wrapping every route handler, you can use a [Next.js proxy](https://nextjs.org/docs/app/building-your-application/routing/middleware). The proxy checks the `Accept` header and fetches the page as HTML before converting:
 
 ```ts
-// middleware.ts
+// proxy.ts
+import { NextRequest, NextResponse, NextFetchEvent } from 'next/server';
 import { withMarkdown } from '@markdown-for-agents/nextjs';
 
-const handler = withMarkdown(async request => {
-    const response = await fetch(request.url, {
-        headers: { accept: 'text/html' }
-    });
-    return response;
-});
+const options = {
+    extract: true,
+    deduplicate: true,
+    contentSignal: { aiTrain: true, search: true, aiInput: true }
+};
 
-export default handler;
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
+    const accept = request.headers.get('accept') ?? '';
+    if (!accept.includes('text/markdown')) {
+        return NextResponse.next();
+    }
+
+    const handler = withMarkdown(async (req: NextRequest) => fetch(req.url, { headers: { accept: 'text/html' } }), { ...options, baseUrl: request.nextUrl.origin });
+
+    return (await handler(request, event)) ?? NextResponse.next();
+}
+
+export const config = {
+    matcher: ['/', '/about', '/blog/:slug*']
+};
 ```
+
+#### How it works
+
+The inner `fetch` sends `accept: 'text/html'`, so when the request re-enters the proxy it hits the early `return NextResponse.next()` and renders the page normally — no infinite loop. Only `Accept: text/markdown` requests take this path; all other traffic passes straight through.
+
+#### Tradeoffs
+
+This pattern makes a **second HTTP request** to your own server for every Markdown conversion. Next.js proxy runs _before_ page rendering and has no access to the response body, so there is no way to avoid this round trip within Next.js itself.
+
+In practice this is usually fine:
+
+- **Latency** — the second request is localhost-to-localhost (or edge-to-edge on Vercel), so it adds minimal overhead.
+- **Compute** — your page renders twice for AI agent requests. For static or ISR pages this is a cache hit. For dynamic pages the extra render is the main cost.
+- **Scope control** — use `config.matcher` to limit which routes are eligible, so non-content pages (API routes, auth, assets) are never double-fetched.
+
+To avoid the double fetch, wrap individual route handlers instead. This gives you direct access to the response body with no extra round trip:
+
+```ts
+// app/api/article/route.ts
+import { withMarkdown } from '@markdown-for-agents/nextjs';
+
+async function handler(request: Request) {
+    const html = await renderArticle();
+    return new Response(html, {
+        headers: { 'content-type': 'text/html' }
+    });
+}
+
+export const GET = withMarkdown(handler, { extract: true });
+```
+
+The route handler pattern is per-route, so you need to wrap each endpoint individually. Choose the proxy pattern for broad coverage with minimal setup, or route handler wrapping when you want zero-overhead conversion on specific endpoints.
 
 ## Web Standard (Generic)
 
