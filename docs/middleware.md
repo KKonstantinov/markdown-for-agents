@@ -201,6 +201,40 @@ import { convert } from 'markdown-for-agents';
 const { markdown } = convert(html, { rules: [nextImageRule] });
 ```
 
+### Next.js Proxy (Site-wide)
+
+For site-wide conversion without wrapping every route handler, you can use a [Next.js proxy](https://nextjs.org/docs/app/building-your-application/routing/middleware). The proxy checks the `Accept` header and fetches the page as HTML before converting:
+
+```ts
+// proxy.ts
+import { NextRequest, NextResponse, NextFetchEvent } from 'next/server';
+import { withMarkdown } from '@markdown-for-agents/nextjs';
+
+const options = {
+    extract: true,
+    deduplicate: true,
+    contentSignal: { aiTrain: true, search: true, aiInput: true }
+};
+
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
+    const accept = request.headers.get('accept') ?? '';
+    if (!accept.includes('text/markdown')) {
+        return NextResponse.next();
+    }
+
+    const handler = withMarkdown(async (req: NextRequest) => fetch(req.url, { headers: { accept: 'text/html' } }), { ...options, baseUrl: request.nextUrl.origin });
+
+    return (await handler(request, event)) ?? NextResponse.next();
+}
+
+export const config = {
+    matcher: ['/', '/about', '/blog/:slug*']
+};
+```
+
+> **Note:** This pattern makes a second HTTP request to your own server to fetch the HTML before converting it. The inner `fetch` uses `accept: 'text/html'`, so it bypasses the proxy and renders the page normally — no infinite loop. The extra round trip only happens for
+> `Accept: text/markdown` requests. For zero-overhead site-wide conversion, use a reverse proxy with [`@markdown-for-agents/web`](#web-standard-generic) instead.
+
 ## Web Standard (Generic)
 
 ```bash

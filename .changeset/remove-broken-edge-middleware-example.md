@@ -2,4 +2,4 @@
 '@markdown-for-agents/nextjs': patch
 ---
 
-Remove broken "Next.js Middleware (Edge)" example from docs that used `fetch(request.url)` inside edge middleware, which causes an infinite loop. Next.js edge middleware cannot intercept response bodies — use `withMarkdown` with App Router route handlers instead.
+Replace broken "Next.js Middleware (Edge)" example with a working "Next.js Proxy (Site-wide)" pattern that avoids infinite loops by using `accept: 'text/html'` on the inner fetch.
