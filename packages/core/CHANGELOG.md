@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 1.2.0
+
+### Minor Changes
+
+- 645ba5f: add node 22 support
+
 ## 1.1.4
 
 ### Patch Changes
