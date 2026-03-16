@@ -1,9 +1,10 @@
 import type { FastifyInstance } from 'fastify';
+import { randomPort } from '../../../shared/setup-helpers.js';
 
 let app: FastifyInstance | undefined;
 
 export async function setup() {
-    const port = 3000 + Math.floor(Math.random() * 5000);
+    const port = randomPort();
     process.env['PORT'] = String(port);
 
     const mod = await import('../../src/index.js');
