@@ -4,14 +4,12 @@ import type { HighlighterGeneric } from 'shiki/bundle/web';
 let highlighterPromise: Promise<HighlighterGeneric<never, never>> | null = null;
 
 function getHighlighter(): Promise<HighlighterGeneric<never, never>> {
-    if (!highlighterPromise) {
-        highlighterPromise = import('shiki/bundle/web').then(({ createHighlighter }) =>
-            createHighlighter({
-                themes: ['github-light', 'github-dark'],
-                langs: ['markdown']
-            })
-        );
-    }
+    highlighterPromise ??= import('shiki/bundle/web').then(({ createHighlighter }) =>
+        createHighlighter({
+            themes: ['github-light', 'github-dark'],
+            langs: ['markdown']
+        })
+    );
     return highlighterPromise;
 }
 

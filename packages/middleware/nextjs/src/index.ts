@@ -26,16 +26,16 @@ function extractStreamedMetadata(html: string): Record<string, string> {
     let match;
     while ((match = metaTagRegex.exec(html)) !== null) {
         const tag = match[0];
-        const content = tag.match(/content=["']([^"']*?)["']/i);
-        if (!content?.[1].trim()) continue;
+        const content = /content=["']([^"']*?)["']/i.exec(tag);
+        if (!content?.[1]?.trim()) continue;
 
-        const name = tag.match(/name=["']([^"']*?)["']/i);
-        if (name && name[1].toLowerCase() === 'description' && !meta.description) {
+        const name = /name=["']([^"']*?)["']/i.exec(tag);
+        if (name?.[1]?.toLowerCase() === 'description' && !meta.description) {
             meta.description = content[1].trim();
         }
 
-        const property = tag.match(/property=["']([^"']*?)["']/i);
-        if (property && property[1].toLowerCase() === 'og:image' && !meta.image) {
+        const property = /property=["']([^"']*?)["']/i.exec(tag);
+        if (property?.[1]?.toLowerCase() === 'og:image' && !meta.image) {
             meta.image = content[1].trim();
         }
     }

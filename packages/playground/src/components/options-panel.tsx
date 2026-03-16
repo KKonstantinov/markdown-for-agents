@@ -7,7 +7,7 @@ interface OptionsPanelProps {
     onChange: (options: ConverterOptions) => void;
 }
 
-function Tooltip({ text }: { text: string }) {
+function Tooltip({ text }: Readonly<{ text: string }>) {
     return (
         <span className="group relative">
             <span className="inline-flex h-4 w-4 cursor-help items-center justify-center rounded-full border border-gray-300 text-[10px] font-medium text-gray-400 dark:border-gray-600 dark:text-gray-500">
@@ -26,12 +26,12 @@ function Toggle({
     tooltip,
     checked,
     onChange
-}: {
+}: Readonly<{
     label: string;
     tooltip: string;
     checked: boolean;
     onChange: (v: boolean) => void;
-}) {
+}>) {
     return (
         <label className="flex cursor-pointer items-center gap-2">
             <button
@@ -59,7 +59,7 @@ function Toggle({
     );
 }
 
-export function OptionsPanel({ options, onChange }: OptionsPanelProps) {
+export function OptionsPanel({ options, onChange }: Readonly<OptionsPanelProps>) {
     return (
         <div className="flex gap-6">
             <Toggle

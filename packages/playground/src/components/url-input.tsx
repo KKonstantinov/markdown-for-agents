@@ -8,7 +8,7 @@ interface UrlInputProps {
     onHtmlFetched: (html: string) => void;
 }
 
-export function UrlInput({ initialUrl = '', autoFetch = false, onHtmlFetched }: UrlInputProps) {
+export function UrlInput({ initialUrl = '', autoFetch = false, onHtmlFetched }: Readonly<UrlInputProps>) {
     const [url, setUrl] = useState(initialUrl);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);

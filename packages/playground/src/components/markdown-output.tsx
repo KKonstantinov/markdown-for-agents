@@ -7,7 +7,19 @@ interface MarkdownOutputProps {
     markdown: string | null;
 }
 
-export function MarkdownOutput({ markdown }: MarkdownOutputProps) {
+function renderMarkdownContent(highlightedHtml: string | null, markdown: string) {
+    if (highlightedHtml) {
+        return (
+            <div
+                className="shiki-wrapper h-full text-sm [&_pre]:h-full [&_pre]:overflow-auto [&_pre]:bg-transparent! [&_pre]:p-4 [&_pre]:font-mono [&_code]:break-words [&_code]:whitespace-pre-wrap"
+                dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+            />
+        );
+    }
+    return <pre className="p-4 font-mono text-sm whitespace-pre-wrap break-words text-gray-800 dark:text-gray-200">{markdown}</pre>;
+}
+
+export function MarkdownOutput({ markdown }: Readonly<MarkdownOutputProps>) {
     const [copied, setCopied] = useState(false);
     const highlightedHtml = useHighlighter(markdown);
 
@@ -36,16 +48,7 @@ export function MarkdownOutput({ markdown }: MarkdownOutputProps) {
             </div>
             <div className="markdown-output flex-1 overflow-auto">
                 {markdown ? (
-                    highlightedHtml ? (
-                        <div
-                            className="shiki-wrapper h-full text-sm [&_pre]:h-full [&_pre]:overflow-auto [&_pre]:bg-transparent! [&_pre]:p-4 [&_pre]:font-mono [&_code]:break-words [&_code]:whitespace-pre-wrap"
-                            dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-                        />
-                    ) : (
-                        <pre className="p-4 font-mono text-sm whitespace-pre-wrap break-words text-gray-800 dark:text-gray-200">
-                            {markdown}
-                        </pre>
-                    )
+                    renderMarkdownContent(highlightedHtml, markdown)
                 ) : (
                     <p className="p-4 text-sm text-gray-400 italic dark:text-gray-500">
                         Enter HTML or a URL to see the converted Markdown here.

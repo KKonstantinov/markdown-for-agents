@@ -15,7 +15,7 @@ const PLACEHOLDER = `<article>
   </ul>
 </article>`;
 
-export function HtmlInput({ value, onChange }: HtmlInputProps) {
+export function HtmlInput({ value, onChange }: Readonly<HtmlInputProps>) {
     return (
         <textarea
             value={value}

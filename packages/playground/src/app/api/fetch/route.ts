@@ -19,6 +19,25 @@ function isPrivateIp(ip: string): boolean {
     return PRIVATE_IP_RANGES.some(range => range.test(ip));
 }
 
+async function resolveAndValidateHostname(hostname: string): Promise<string | null> {
+    const { resolve4, resolve6 } = await import('node:dns/promises');
+    const ips: string[] = [];
+    try {
+        ips.push(...(await resolve4(hostname)));
+    } catch {
+        /* no A records */
+    }
+    try {
+        ips.push(...(await resolve6(hostname)));
+    } catch {
+        /* no AAAA records */
+    }
+
+    if (ips.length === 0) return 'Could not resolve hostname';
+    if (ips.some(ip => isPrivateIp(ip))) return 'Private/internal URLs are not allowed';
+    return null;
+}
+
 async function handler(request: Request): Promise<Response> {
     const { searchParams } = new URL(request.url);
     const url = searchParams.get('url');
@@ -40,25 +59,9 @@ async function handler(request: Request): Promise<Response> {
 
     // SSRF protection: resolve hostname and check for private IPs
     try {
-        const { resolve4, resolve6 } = await import('node:dns/promises');
-        const ips: string[] = [];
-        try {
-            ips.push(...(await resolve4(parsed.hostname)));
-        } catch {
-            /* no A records */
-        }
-        try {
-            ips.push(...(await resolve6(parsed.hostname)));
-        } catch {
-            /* no AAAA records */
-        }
-
-        if (ips.length === 0) {
-            return NextResponse.json({ error: 'Could not resolve hostname' }, { status: 400 });
-        }
-
-        if (ips.some(ip => isPrivateIp(ip))) {
-            return NextResponse.json({ error: 'Private/internal URLs are not allowed' }, { status: 400 });
+        const dnsError = await resolveAndValidateHostname(parsed.hostname);
+        if (dnsError) {
+            return NextResponse.json({ error: dnsError }, { status: 400 });
         }
     } catch {
         return NextResponse.json({ error: 'DNS resolution failed' }, { status: 400 });

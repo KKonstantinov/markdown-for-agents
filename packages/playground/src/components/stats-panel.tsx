@@ -17,7 +17,7 @@ function formatNumber(n: number): string {
     return n.toLocaleString();
 }
 
-function ReductionCard({ label, before, after }: { label: string; before: string; after: string }) {
+function ReductionCard({ label, before, after }: Readonly<{ label: string; before: string; after: string }>) {
     return (
         <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-800">
             <p className="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">{label}</p>
@@ -30,7 +30,7 @@ function ReductionCard({ label, before, after }: { label: string; before: string
     );
 }
 
-function StatCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+function StatCard({ label, value, accent }: Readonly<{ label: string; value: string; accent?: boolean }>) {
     return (
         <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-800">
             <p className="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">{label}</p>
@@ -43,7 +43,7 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
     );
 }
 
-export function StatsPanel({ result, originalHtmlSize, htmlTokenEstimate }: StatsPanelProps) {
+export function StatsPanel({ result, originalHtmlSize, htmlTokenEstimate }: Readonly<StatsPanelProps>) {
     if (!result) {
         return (
             <div className="rounded-lg border border-dashed border-gray-300 px-4 py-6 text-center text-sm text-gray-400 dark:border-gray-700 dark:text-gray-500">

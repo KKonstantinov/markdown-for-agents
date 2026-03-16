@@ -9,12 +9,12 @@ export function ThemeToggle() {
 
     useEffect(() => {
         const stored = localStorage.getItem('theme');
-        const initial: Theme =
-            stored === 'light' || stored === 'dark'
-                ? stored
-                : globalThis.matchMedia('(prefers-color-scheme: dark)').matches
-                  ? 'dark'
-                  : 'light';
+        let initial: Theme;
+        if (stored === 'light' || stored === 'dark') {
+            initial = stored;
+        } else {
+            initial = globalThis.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
         setTheme(initial);
         document.documentElement.classList.toggle('dark', initial === 'dark');
         document.documentElement.style.colorScheme = initial;

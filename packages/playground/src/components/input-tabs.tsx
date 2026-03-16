@@ -7,7 +7,7 @@ interface InputTabsProps {
     onChange: (mode: InputMode) => void;
 }
 
-export function InputTabs({ mode, onChange }: InputTabsProps) {
+export function InputTabs({ mode, onChange }: Readonly<InputTabsProps>) {
     return (
         <div className="inline-flex rounded-lg bg-gray-100 p-1 dark:bg-gray-800">
             <button

@@ -1,4 +1,4 @@
-export function FeatureList({ items }: { items: string[] }) {
+export function FeatureList({ items }: Readonly<{ items: string[] }>) {
     return (
         <ul>
             {items.map(item => (
