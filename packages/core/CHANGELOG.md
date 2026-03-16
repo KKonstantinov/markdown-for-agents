@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 1.1.3
+
+### Patch Changes
+
+- 066c10c: docs update
+
 ## 1.1.2
 
 ### Patch Changes
