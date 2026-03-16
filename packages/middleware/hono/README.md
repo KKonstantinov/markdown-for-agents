@@ -8,6 +8,7 @@ Hono middleware for [markdown-for-agents](https://www.npmjs.com/package/markdown
 ![markdown-for-agents + Hono](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/packages/middleware/hono/mda_hono_header.png)
 
 > [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) converts HTML to clean, token-efficient Markdown for AI agents — typically saving 80–90% of tokens. This package adds automatic content negotiation to your Hono app via `Accept: text/markdown`.
+> **[Try the playground](https://markdown-for-agents-playground.vercel.app)** to see the core conversion in action.
 
 Add one line to your Hono app and AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched.
 

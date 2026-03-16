@@ -21,6 +21,7 @@
         "release": "pnpm build && changeset publish",
         "release:jsr": "pnpm -r --if-present run release:jsr",
         "prepare": "lefthook install",
+        "playground:dev": "pnpm --filter @markdown-for-agents/playground dev",
         "docs:dev": "vitepress dev docs",
         "docs:build": "vitepress build docs",
         "docs:preview": "vitepress preview docs"

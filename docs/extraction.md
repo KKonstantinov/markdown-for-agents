@@ -4,6 +4,8 @@ When converting full web pages, you typically want the article content without n
 
 ## Basic Usage
 
+> **Tip:** See extraction in action in the [playground](https://markdown-for-agents-playground.vercel.app) — toggle "Extract content" to compare output with and without extraction.
+
 ```ts
 import { convert } from 'markdown-for-agents';
 

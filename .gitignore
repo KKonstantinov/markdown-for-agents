@@ -5,3 +5,4 @@ dist/
 docs/.vitepress/cache/
 docs/.vitepress/dist/
 .playwright-mcp
+.next/

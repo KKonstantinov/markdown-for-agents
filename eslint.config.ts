@@ -15,6 +15,9 @@ export default tseslint.config(
             'packages/core/test/integration/deno.test.ts',
             'docs/.vitepress/cache/',
             'docs/.vitepress/dist/',
+            'packages/playground/.next/',
+            'packages/playground/next-env.d.ts',
+            'packages/playground/*.config.*',
             'scripts/'
         ]
     },
@@ -79,6 +82,16 @@ export default tseslint.config(
             '@typescript-eslint/require-await': 'off',
             // mockResolvedValue(undefined) is idiomatic in vitest
             'unicorn/no-useless-undefined': 'off'
+        }
+    },
+    // Playground uses its own tsconfig (JSX + DOM types)
+    {
+        files: ['packages/playground/src/**/*.ts', 'packages/playground/src/**/*.tsx'],
+        languageOptions: {
+            parserOptions: {
+                project: 'packages/playground/tsconfig.json',
+                tsconfigRootDir: import.meta.dirname
+            }
         }
     },
     // Prettier must be last to override all formatting rules

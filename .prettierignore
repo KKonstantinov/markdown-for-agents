@@ -7,6 +7,9 @@ docs/packages/
 # Build output
 **/dist/
 
+# Next.js
+packages/playground/.next/
+
 # Lock files
 pnpm-lock.yaml
 .npmrc

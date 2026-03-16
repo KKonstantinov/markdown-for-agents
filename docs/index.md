@@ -9,6 +9,9 @@ hero:
           text: Get Started
           link: /getting-started
         - theme: alt
+          text: Playground
+          link: https://markdown-for-agents-playground.vercel.app
+        - theme: alt
           text: API Reference
           link: /api
         - theme: alt
@@ -44,7 +47,7 @@ features:
 
 ## See Your Savings
 
-Audit any URL — no installation required:
+**[Try the playground](https://markdown-for-agents-playground.vercel.app)** to see the conversion live in your browser, or audit any URL from the command line — no installation required:
 
 ```bash
 npx @markdown-for-agents/audit https://docs.github.com/en/copilot/get-started/quickstart

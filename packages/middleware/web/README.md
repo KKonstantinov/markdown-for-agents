@@ -8,6 +8,7 @@ Web Standard (Request/Response) middleware for [markdown-for-agents](https://www
 ![markdown-for-agents + Web Standard](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/packages/middleware/web/mda_web_header.png)
 
 > [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) converts HTML to clean, token-efficient Markdown for AI agents — typically saving 80–90% of tokens. This package adds automatic content negotiation to any Web Standard server via `Accept: text/markdown`.
+> **[Try the playground](https://markdown-for-agents-playground.vercel.app)** to see the core conversion in action.
 
 Works anywhere the Web Standard Request/Response API is available: Cloudflare Workers, Deno, Bun, and Node.js. AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched.
 

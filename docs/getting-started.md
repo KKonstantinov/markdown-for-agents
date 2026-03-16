@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide walks you through installing `markdown-for-agents` and using it in common scenarios.
+This guide walks you through installing `markdown-for-agents` and using it in common scenarios. Want to try it first? **[Open the playground](https://markdown-for-agents-playground.vercel.app)** to convert HTML to Markdown right in your browser.
 
 ## Installation
 
@@ -156,6 +156,7 @@ When a client sends `Accept: text/markdown`, the response is automatically conve
 
 ## What's Next
 
+- [Playground](https://markdown-for-agents-playground.vercel.app) — try the converter interactively with any URL or HTML
 - [Content Extraction](extraction.md) — fine-tune what gets stripped from web pages
 - [Middleware](middleware.md) — integrate with Express, Fastify, Hono, Next.js, or any Web Standard server
 - [Custom Rules](rules.md) — extend the converter with your own element handlers
