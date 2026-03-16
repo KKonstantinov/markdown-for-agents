@@ -305,9 +305,9 @@ import { estimateTokens } from 'markdown-for-agents/tokens';
 
 | Runtime            | Version | Status     |
 | ------------------ | ------- | ---------- |
-| Node.js            | >= 18   | Tested     |
+| Node.js            | >= 22   | Tested     |
 | Bun                | >= 1.0  | Tested     |
-| Deno               | >= 1.40 | Tested     |
+| Deno               | >= 2.0  | Tested     |
 | Cloudflare Workers | -       | Compatible |
 | Vercel Edge        | -       | Compatible |
 | Browsers           | ES2022+ | Compatible |
