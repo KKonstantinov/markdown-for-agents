@@ -1,5 +1,13 @@
 # @markdown-for-agents/fastify
 
+## 1.1.4
+
+### Patch Changes
+
+- 066c10c: docs update
+- Updated dependencies [066c10c]
+    - markdown-for-agents@1.1.3
+
 ## 1.1.3
 
 ### Patch Changes
