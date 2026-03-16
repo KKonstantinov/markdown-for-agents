@@ -76,3 +76,6 @@ jobs:
             - name: Middleware integration tests
               if: matrix.runtime == 'node'
               run: pnpm --filter './packages/middleware/*' run test:integration
+            - name: Example integration tests
+              if: matrix.runtime == 'node'
+              run: pnpm --filter './examples/*' run test:integration

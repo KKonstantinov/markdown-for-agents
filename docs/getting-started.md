@@ -152,7 +152,21 @@ const app = new Hono();
 app.use(markdown({ extract: true }));
 ```
 
-When a client sends `Accept: text/markdown`, the response is automatically converted. Normal requests pass through untouched. See the [Middleware guide](middleware.md) for all framework integrations.
+```ts
+// Next.js (route handler)
+import { withMarkdown } from '@markdown-for-agents/nextjs';
+
+function handler() {
+    return new Response('<h1>Title</h1><p>Content...</p>', {
+        headers: { 'content-type': 'text/html' }
+    });
+}
+
+export const GET = withMarkdown(handler, { extract: true });
+```
+
+When a client sends `Accept: text/markdown`, the response is automatically converted. Normal requests pass through untouched. See the [Middleware guide](middleware.md) for all framework integrations, or the
+[Next.js example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete working app with the proxy pattern.
 
 ## What's Next
 

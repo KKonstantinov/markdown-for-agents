@@ -1,0 +1,23 @@
+{
+    "name": "@markdown-for-agents/example-nextjs",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "next dev --turbopack",
+        "build": "next build",
+        "start": "next start",
+        "test:integration": "vitest run test/integration"
+    },
+    "dependencies": {
+        "@markdown-for-agents/nextjs": "workspace:*",
+        "markdown-for-agents": "workspace:*",
+        "next": "^16.1.6",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.3",
+        "@types/react-dom": "^19.2.3"
+    }
+}

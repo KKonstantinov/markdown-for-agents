@@ -3,6 +3,7 @@ packages:
     - 'packages/audit'
     - 'packages/middleware/*'
     - 'packages/playground'
+    - 'examples/*'
 
 overrides:
     esbuild: '>=0.25.0'

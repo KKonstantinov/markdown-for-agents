@@ -171,39 +171,7 @@ The Hono middleware uses `MiddlewareHandler` from Hono, so it integrates nativel
 npm install @markdown-for-agents/nextjs
 ```
 
-```ts
-// app/api/article/route.ts
-import { withMarkdown } from '@markdown-for-agents/nextjs';
-
-async function handler(request: Request) {
-    const html = await renderArticle();
-    return new Response(html, {
-        headers: { 'content-type': 'text/html' }
-    });
-}
-
-export const GET = withMarkdown(handler, {
-    extract: true,
-    baseUrl: 'https://example.com'
-});
-```
-
-`withMarkdown` wraps a Next.js route handler. It checks the `Accept` header and converts the response if needed.
-
-The Next.js middleware automatically includes `nextImageRule`, which unwraps `/_next/image` optimization URLs back to their original paths. For example, `/_next/image?url=%2Fphoto.png&w=640&q=75` becomes `/photo.png` in the markdown output.
-
-You can also use `nextImageRule` standalone with the core `convert` function:
-
-```ts
-import { nextImageRule } from '@markdown-for-agents/nextjs';
-import { convert } from 'markdown-for-agents';
-
-const { markdown } = convert(html, { rules: [nextImageRule] });
-```
-
-### Next.js Proxy (Site-wide)
-
-For site-wide conversion without wrapping every route handler, you can use a [Next.js proxy](https://nextjs.org/docs/app/building-your-application/routing/middleware). The proxy checks the `Accept` header and fetches the page as HTML before converting:
+Use a [Next.js proxy](https://nextjs.org/docs/app/building-your-application/routing/middleware) for site-wide conversion. The proxy checks the `Accept` header and fetches the page as HTML before converting:
 
 ```ts
 // proxy.ts
@@ -246,23 +214,18 @@ In practice this is usually fine:
 - **Compute** — your page renders twice for AI agent requests. For static or ISR pages this is a cache hit. For dynamic pages the extra render is the main cost.
 - **Scope control** — use `config.matcher` to limit which routes are eligible, so non-content pages (API routes, auth, assets) are never double-fetched.
 
-To avoid the double fetch, wrap individual route handlers instead. This gives you direct access to the response body with no extra round trip:
+`withMarkdown` automatically includes `nextImageRule`, which unwraps `/_next/image` optimization URLs back to their original paths. For example, `/_next/image?url=%2Fphoto.png&w=640&q=75` becomes `/photo.png` in the markdown output.
+
+You can also use `nextImageRule` standalone with the core `convert` function:
 
 ```ts
-// app/api/article/route.ts
-import { withMarkdown } from '@markdown-for-agents/nextjs';
+import { nextImageRule } from '@markdown-for-agents/nextjs';
+import { convert } from 'markdown-for-agents';
 
-async function handler(request: Request) {
-    const html = await renderArticle();
-    return new Response(html, {
-        headers: { 'content-type': 'text/html' }
-    });
-}
-
-export const GET = withMarkdown(handler, { extract: true });
+const { markdown } = convert(html, { rules: [nextImageRule] });
 ```
 
-The route handler pattern is per-route, so you need to wrap each endpoint individually. Choose the proxy pattern for broad coverage with minimal setup, or route handler wrapping when you want zero-overhead conversion on specific endpoints.
+> **Full working example:** See [`examples/nextjs/`](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete Next.js app demonstrating the proxy pattern with integration tests.
 
 ## Web Standard (Generic)
 

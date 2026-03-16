@@ -10,7 +10,7 @@ Next.js middleware for [markdown-for-agents](https://www.npmjs.com/package/markd
 > [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) converts HTML to clean, token-efficient Markdown for AI agents — typically saving 80–90% of tokens. This package adds automatic content negotiation to your Next.js app via `Accept: text/markdown`.
 > **[Try the playground](https://markdown-for-agents-playground.vercel.app)** to see the core conversion in action.
 
-Wrap your route handlers and AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched. Includes a built-in rule that unwraps Next.js `/_next/image` optimization URLs back to their original paths.
+Add a proxy and AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched. Includes a built-in rule that unwraps Next.js `/_next/image` optimization URLs back to their original paths.
 
 ## How it works
 
@@ -32,35 +32,7 @@ npm install @markdown-for-agents/nextjs markdown-for-agents
 
 ## Usage
 
-### App Router API Route
-
-```ts
-import { withMarkdown } from '@markdown-for-agents/nextjs';
-
-async function handler(request: Request) {
-    const html = await renderArticle();
-    return new Response(html, {
-        headers: { 'content-type': 'text/html' }
-    });
-}
-
-export const GET = withMarkdown(handler, {
-    extract: true,
-    baseUrl: 'https://example.com'
-});
-```
-
-```bash
-# Normal HTML response
-curl http://localhost:3000/api/article
-
-# Markdown response for AI agents
-curl -H "Accept: text/markdown" http://localhost:3000/api/article
-```
-
-### Next.js Proxy (Site-wide)
-
-For site-wide conversion without wrapping every route handler, you can use a [Next.js proxy](https://nextjs.org/docs/app/building-your-application/routing/middleware). The proxy checks the `Accept` header and fetches the page as HTML before converting:
+Use a [Next.js proxy](https://nextjs.org/docs/app/building-your-application/routing/middleware) for site-wide conversion. The proxy checks the `Accept` header and fetches the page as HTML before converting:
 
 ```ts
 // proxy.ts
@@ -103,29 +75,9 @@ In practice this is usually fine:
 - **Compute** — your page renders twice for AI agent requests. For static or ISR pages this is a cache hit. For dynamic pages the extra render is the main cost.
 - **Scope control** — use `config.matcher` to limit which routes are eligible, so non-content pages (API routes, auth, assets) are never double-fetched.
 
-To avoid the double fetch, wrap individual route handlers instead. This gives you direct access to the response body with no extra round trip:
+`withMarkdown` automatically includes `nextImageRule`, which unwraps `/_next/image` optimization URLs back to their original paths. For example, `/_next/image?url=%2Fphoto.png&w=640&q=75` becomes `/photo.png` in the markdown output.
 
-```ts
-// app/api/article/route.ts
-import { withMarkdown } from '@markdown-for-agents/nextjs';
-
-async function handler(request: Request) {
-    const html = await renderArticle();
-    return new Response(html, {
-        headers: { 'content-type': 'text/html' }
-    });
-}
-
-export const GET = withMarkdown(handler, { extract: true });
-```
-
-The route handler pattern is per-route, so you need to wrap each endpoint individually. Choose the proxy pattern for broad coverage with minimal setup, or route handler wrapping when you want zero-overhead conversion on specific endpoints.
-
-### Next.js Image Rule
-
-The `nextImageRule` is included automatically when using `withMarkdown`. It converts optimized image URLs like `/_next/image?url=%2Fphoto.png&w=640&q=75` back to `/photo.png`.
-
-You can also use it standalone with the core library:
+You can also use `nextImageRule` standalone with the core `convert` function:
 
 ```ts
 import { nextImageRule } from '@markdown-for-agents/nextjs';
@@ -134,12 +86,14 @@ import { convert } from 'markdown-for-agents';
 const { markdown } = convert(html, { rules: [nextImageRule] });
 ```
 
+> **Full working example:** See [`examples/nextjs/`](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete Next.js app demonstrating the proxy pattern with integration tests.
+
 ## Options
 
 Accepts all [`markdown-for-agents` options](https://www.npmjs.com/package/markdown-for-agents#options):
 
 ```ts
-export const GET = withMarkdown(handler, {
+const handler = withMarkdown(async req => fetch(req.url, { headers: { accept: 'text/html' } }), {
     // Strip nav, ads, sidebars, cookie banners
     extract: true,
 

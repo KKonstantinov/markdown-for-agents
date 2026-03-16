@@ -151,7 +151,8 @@ function markdown(options?: MiddlewareOptions): MiddlewareHandler;
 
 ### `withMarkdown(handler, options?)` (Next.js)
 
-Wraps a Next.js route handler with Markdown content negotiation. Automatically includes `nextImageRule` to unwrap `/_next/image` optimization URLs.
+Wraps a Next.js route handler with Markdown content negotiation. Automatically includes `nextImageRule` to unwrap `/_next/image` optimization URLs. See the [Next.js example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete working app
+with the proxy pattern.
 
 ```ts
 import { withMarkdown } from '@markdown-for-agents/nextjs';

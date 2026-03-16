@@ -54,6 +54,8 @@ packages/
     hono/                   # @markdown-for-agents/hono
     nextjs/                 # @markdown-for-agents/nextjs (+ nextImageRule)
     web/                    # @markdown-for-agents/web
+examples/
+  nextjs/                   # Next.js example app (route handler + proxy patterns)
 docs/                       # Documentation
 ```
 

@@ -15,6 +15,9 @@
         "packages/middleware/*/test",
         "packages/middleware/*/*.config.ts",
         "packages/middleware/*.ts",
+        "examples/*/src",
+        "examples/*/test",
+        "examples/*/*.config.ts",
         "*.config.ts",
         "docs/.vitepress/**/*.ts"
     ],

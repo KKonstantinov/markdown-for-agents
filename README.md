@@ -109,7 +109,8 @@ import { markdownMiddleware } from '@markdown-for-agents/web';
 const mw = markdownMiddleware();
 ```
 
-The middleware inspects the `Accept` header. Normal browser requests pass through untouched. When an AI agent sends `Accept: text/markdown`, the HTML response is automatically converted. See the [Middleware guide](docs/middleware.md) for full details.
+The middleware inspects the `Accept` header. Normal browser requests pass through untouched. When an AI agent sends `Accept: text/markdown`, the HTML response is automatically converted. See the [Middleware guide](docs/middleware.md) for full details and the
+[Next.js example](examples/nextjs) for a complete working app.
 
 ### Caching
 

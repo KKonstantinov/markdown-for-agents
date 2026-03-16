@@ -158,12 +158,12 @@ app.use(
 
 ## Packages
 
-| Package                                             | Description                                             |
-| --------------------------------------------------- | ------------------------------------------------------- |
-| [`markdown-for-agents`](/packages/core)             | Core HTML-to-Markdown converter                         |
-| [`@markdown-for-agents/audit`](/packages/audit)     | CLI & library to audit token/byte savings               |
-| [`@markdown-for-agents/express`](/packages/express) | Express middleware                                      |
-| [`@markdown-for-agents/fastify`](/packages/fastify) | Fastify plugin                                          |
-| [`@markdown-for-agents/hono`](/packages/hono)       | Hono middleware                                         |
-| [`@markdown-for-agents/nextjs`](/packages/nextjs)   | Next.js middleware                                      |
-| [`@markdown-for-agents/web`](/packages/web)         | Web Standard middleware (Cloudflare Workers, Deno, Bun) |
+| Package                                             | Description                                                                                                    |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| [`markdown-for-agents`](/packages/core)             | Core HTML-to-Markdown converter                                                                                |
+| [`@markdown-for-agents/audit`](/packages/audit)     | CLI & library to audit token/byte savings                                                                      |
+| [`@markdown-for-agents/express`](/packages/express) | Express middleware                                                                                             |
+| [`@markdown-for-agents/fastify`](/packages/fastify) | Fastify plugin                                                                                                 |
+| [`@markdown-for-agents/hono`](/packages/hono)       | Hono middleware                                                                                                |
+| [`@markdown-for-agents/nextjs`](/packages/nextjs)   | Next.js middleware ([example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs)) |
+| [`@markdown-for-agents/web`](/packages/web)         | Web Standard middleware (Cloudflare Workers, Deno, Bun)                                                        |

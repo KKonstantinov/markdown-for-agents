@@ -18,6 +18,9 @@ export default tseslint.config(
             'packages/playground/.next/',
             'packages/playground/next-env.d.ts',
             'packages/playground/*.config.*',
+            'examples/nextjs/.next/',
+            'examples/nextjs/next-env.d.ts',
+            'examples/nextjs/*.config.*',
             'scripts/'
         ]
     },
@@ -66,7 +69,8 @@ export default tseslint.config(
             'packages/core/test/**/*.mts',
             'packages/audit/test/**/*.ts',
             'packages/middleware/*/test/**/*.ts',
-            'packages/middleware/header-test-helpers.ts'
+            'packages/middleware/header-test-helpers.ts',
+            'examples/*/test/**/*.ts'
         ],
         rules: {
             // Tests use `any` casts for mock objects
@@ -90,6 +94,16 @@ export default tseslint.config(
         languageOptions: {
             parserOptions: {
                 project: 'packages/playground/tsconfig.json',
+                tsconfigRootDir: import.meta.dirname
+            }
+        }
+    },
+    // Next.js example uses its own tsconfig (JSX + DOM types)
+    {
+        files: ['examples/nextjs/src/**/*.ts', 'examples/nextjs/src/**/*.tsx'],
+        languageOptions: {
+            parserOptions: {
+                project: 'examples/nextjs/tsconfig.json',
                 tsconfigRootDir: import.meta.dirname
             }
         }
