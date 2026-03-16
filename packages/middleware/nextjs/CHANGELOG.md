@@ -1,5 +1,14 @@
 # @markdown-for-agents/nextjs
 
+## 1.1.3
+
+### Patch Changes
+
+- 066c10c: docs update
+- e32b6cf: Replace broken "Next.js Middleware (Edge)" example with a working "Next.js Proxy (Site-wide)" pattern that avoids infinite loops by using `accept: 'text/html'` on the inner fetch.
+- Updated dependencies [066c10c]
+    - markdown-for-agents@1.1.3
+
 ## 1.1.2
 
 ### Patch Changes
