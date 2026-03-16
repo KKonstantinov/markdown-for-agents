@@ -13,6 +13,7 @@
         "@markdown-for-agents/example-express",
         "@markdown-for-agents/example-fastify",
         "@markdown-for-agents/example-hono",
-        "@markdown-for-agents/example-web"
+        "@markdown-for-agents/example-web",
+        "@markdown-for-agents/example-shared"
     ]
 }
