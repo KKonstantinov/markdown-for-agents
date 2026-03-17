@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { markdown } from '../../src/index.js';
 import type { MiddlewareOptions } from '../../src/index.js';
-import { describeContentSignalHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import { describeContentSignalHeader, describeServerTimingHeader, describeVaryHeader } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 type OnSendHook = (
@@ -156,5 +156,6 @@ describe('fastify middleware', () => {
     };
 
     describeContentSignalHeader(fastifyHarness);
+    describeServerTimingHeader(fastifyHarness);
     describeVaryHeader(fastifyHarness);
 });

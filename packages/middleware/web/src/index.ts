@@ -74,12 +74,16 @@ export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
         }
 
         const html = await response.text();
-        const { markdown, tokenEstimate, contentHash } = convert(html, options);
+
+        const { markdown, tokenEstimate, contentHash, convertDuration } = convert(html, options);
 
         const headers = new Headers(response.headers);
         headers.set('content-type', 'text/markdown; charset=utf-8');
         headers.set(tokenHeader, String(tokenEstimate.tokens));
         headers.set('etag', `"${contentHash}"`);
+        if (convertDuration !== undefined) {
+            headers.set('server-timing', `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`);
+        }
         if (options?.contentSignal) {
             const signalValue = buildContentSignalHeader(options.contentSignal);
             if (signalValue) headers.set('content-signal', signalValue);

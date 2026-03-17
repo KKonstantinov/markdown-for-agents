@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "paths": {
+            "@/*": ["./src/*"],
+            "@markdown-for-agents/nextjs": ["../../packages/middleware/nextjs/src/index.ts"],
+            "markdown-for-agents": ["../../packages/core/src/index.ts"]
+        }
+    }
+}

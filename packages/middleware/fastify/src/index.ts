@@ -51,10 +51,14 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
                 return Promise.resolve(payload);
             }
 
-            const { markdown: md, tokenEstimate, contentHash } = convert(payload, options);
+            const { markdown: md, tokenEstimate, contentHash, convertDuration } = convert(payload, options);
+
             reply.header('content-type', 'text/markdown; charset=utf-8');
             reply.header(tokenHeader, String(tokenEstimate.tokens));
             reply.header('etag', `"${contentHash}"`);
+            if (convertDuration !== undefined) {
+                reply.header('server-timing', `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`);
+            }
             if (options?.contentSignal) {
                 const signalValue = buildContentSignalHeader(options.contentSignal);
                 if (signalValue) reply.header('content-signal', signalValue);

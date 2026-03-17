@@ -7,7 +7,8 @@ const app = new Hono();
 const md = markdown({
     extract: true,
     deduplicate: true,
-    contentSignal: { aiTrain: true, search: true, aiInput: true }
+    contentSignal: { aiTrain: true, search: true, aiInput: true },
+    serverTiming: true
 });
 
 app.use('*', md);

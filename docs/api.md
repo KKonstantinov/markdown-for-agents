@@ -196,23 +196,25 @@ interface ConvertOptions {
     linkStyle?: 'inlined' | 'referenced';
     deduplicate?: boolean | DeduplicateOptions;
     tokenCounter?: (text: string) => TokenEstimate;
+    serverTiming?: boolean;
 }
 ```
 
-| Property          | Type                              | Default            | Description                          |
-| ----------------- | --------------------------------- | ------------------ | ------------------------------------ |
-| `extract`         | `boolean \| ExtractOptions`       | `false`            | Enable content extraction            |
-| `rules`           | `Rule[]`                          | `[]`               | Custom conversion rules              |
-| `baseUrl`         | `string`                          | `""`               | Base URL for resolving relative URLs |
-| `headingStyle`    | `"atx" \| "setext"`               | `"atx"`            | Heading format                       |
-| `bulletChar`      | `"-" \| "*" \| "+"`               | `"-"`              | Unordered list bullet                |
-| `codeBlockStyle`  | `"fenced" \| "indented"`          | `"fenced"`         | Code block format                    |
-| `fenceChar`       | ``"`" \| "~"``                    | ``"`"``            | Fence character                      |
-| `strongDelimiter` | `"**" \| "__"`                    | `"**"`             | Bold delimiter                       |
-| `emDelimiter`     | `"*" \| "_"`                      | `"*"`              | Italic delimiter                     |
-| `linkStyle`       | `"inlined" \| "referenced"`       | `"inlined"`        | Link format                          |
-| `deduplicate`     | `boolean \| DeduplicateOptions`   | `false`            | Remove duplicate content blocks      |
-| `tokenCounter`    | `(text: string) => TokenEstimate` | Built-in heuristic | Custom token counter (see below)     |
+| Property          | Type                              | Default            | Description                                                              |
+| ----------------- | --------------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| `extract`         | `boolean \| ExtractOptions`       | `false`            | Enable content extraction                                                |
+| `rules`           | `Rule[]`                          | `[]`               | Custom conversion rules                                                  |
+| `baseUrl`         | `string`                          | `""`               | Base URL for resolving relative URLs                                     |
+| `headingStyle`    | `"atx" \| "setext"`               | `"atx"`            | Heading format                                                           |
+| `bulletChar`      | `"-" \| "*" \| "+"`               | `"-"`              | Unordered list bullet                                                    |
+| `codeBlockStyle`  | `"fenced" \| "indented"`          | `"fenced"`         | Code block format                                                        |
+| `fenceChar`       | ``"`" \| "~"``                    | ``"`"``            | Fence character                                                          |
+| `strongDelimiter` | `"**" \| "__"`                    | `"**"`             | Bold delimiter                                                           |
+| `emDelimiter`     | `"*" \| "_"`                      | `"*"`              | Italic delimiter                                                         |
+| `linkStyle`       | `"inlined" \| "referenced"`       | `"inlined"`        | Link format                                                              |
+| `deduplicate`     | `boolean \| DeduplicateOptions`   | `false`            | Remove duplicate content blocks                                          |
+| `tokenCounter`    | `(text: string) => TokenEstimate` | Built-in heuristic | Custom token counter (see below)                                         |
+| `serverTiming`    | `boolean`                         | `false`            | Measure conversion duration and return it in `ConvertResult` (see below) |
 
 #### `tokenCounter`
 
@@ -243,14 +245,16 @@ interface ConvertResult {
     markdown: string;
     tokenEstimate: TokenEstimate;
     contentHash: string;
+    convertDuration?: number;
 }
 ```
 
-| Property        | Type            | Description                                                        |
-| --------------- | --------------- | ------------------------------------------------------------------ |
-| `markdown`      | `string`        | The generated markdown string                                      |
-| `tokenEstimate` | `TokenEstimate` | Token / character / word estimates                                 |
-| `contentHash`   | `string`        | Deterministic content hash of the markdown output (FNV-1a, base36) |
+| Property          | Type            | Description                                                                  |
+| ----------------- | --------------- | ---------------------------------------------------------------------------- |
+| `markdown`        | `string`        | The generated markdown string                                                |
+| `tokenEstimate`   | `TokenEstimate` | Token / character / word estimates                                           |
+| `contentHash`     | `string`        | Deterministic content hash of the markdown output (FNV-1a, base36)           |
+| `convertDuration` | `number`        | Conversion time in milliseconds (only present when `serverTiming` is `true`) |
 
 The `contentHash` is useful as an `ETag` value or cache key — the same markdown always produces the same hash.
 
@@ -359,14 +363,18 @@ interface TokenEstimate {
 ```ts
 interface MiddlewareOptions extends ConvertOptions {
     tokenHeader?: string;
+    contentSignal?: ContentSignalOptions;
 }
 ```
 
 Extends `ConvertOptions` with:
 
-| Property      | Type     | Default               | Description                          |
-| ------------- | -------- | --------------------- | ------------------------------------ |
-| `tokenHeader` | `string` | `"x-markdown-tokens"` | Response header name for token count |
+| Property        | Type                   | Default               | Description                                               |
+| --------------- | ---------------------- | --------------------- | --------------------------------------------------------- |
+| `tokenHeader`   | `string`               | `"x-markdown-tokens"` | Response header name for token count                      |
+| `contentSignal` | `ContentSignalOptions` | -                     | Publisher consent signals for the `content-signal` header |
+
+When `serverTiming` is `true` (inherited from `ConvertOptions`), middleware sets a [`Server-Timing`](https://www.w3.org/TR/server-timing/) header with `mfa.convert` duration. The Next.js middleware additionally includes `mfa.fetch` duration for the proxy self-fetch.
 
 ---
 

@@ -35,6 +35,26 @@ export function describeContentSignalHeader(harness: HeaderTestHarness): void {
     });
 }
 
+export function describeServerTimingHeader(harness: HeaderTestHarness): void {
+    describe('Server-Timing header', () => {
+        it('includes mfa.convert timing when serverTiming is enabled', async () => {
+            const { getHeader } = await harness.send({ serverTiming: true }, 'text/markdown', 'text/html', '<h1>Title</h1>');
+            const timing = getHeader('server-timing');
+            expect(timing).toMatch(/mfa\.convert;dur=[\d.]+;desc="HTML to Markdown"/);
+        });
+
+        it('does not set Server-Timing when serverTiming is disabled', async () => {
+            const { getHeader } = await harness.send(undefined, 'text/markdown', 'text/html', '<h1>Title</h1>');
+            expect(getHeader('server-timing')).toBeFalsy();
+        });
+
+        it('does not set Server-Timing on pass-through responses', async () => {
+            const { getHeader } = await harness.send({ serverTiming: true }, 'text/html', 'text/html', '<h1>Title</h1>');
+            expect(getHeader('server-timing')).toBeFalsy();
+        });
+    });
+}
+
 export function describeVaryHeader(harness: HeaderTestHarness): void {
     describe('Vary header', () => {
         it('sets Vary: Accept on converted responses', async () => {

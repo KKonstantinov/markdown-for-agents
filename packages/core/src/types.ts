@@ -140,6 +140,17 @@ export interface ConvertOptions {
      * ```
      */
     tokenCounter?: (text: string) => TokenEstimate;
+
+    /**
+     * When `true`, measure the conversion duration and return it in
+     * {@link ConvertResult.convertDuration}.
+     *
+     * Middleware adapters use this to populate the
+     * {@link https://www.w3.org/TR/server-timing/ | Server-Timing} header.
+     *
+     * Disabled by default.
+     */
+    serverTiming?: boolean;
 }
 
 /**
@@ -296,6 +307,14 @@ export interface ConvertResult {
      * produces the same hash. Format: `"<length_base36>-<fnv1a_base36>"`.
      */
     contentHash: string;
+
+    /**
+     * Time spent in `convert()`, in milliseconds.
+     *
+     * Only populated when {@link ConvertOptions.serverTiming} is `true`;
+     * otherwise `undefined`.
+     */
+    convertDuration?: number;
 }
 
 /**
@@ -304,7 +323,9 @@ export interface ConvertResult {
  *
  * @internal Used by the conversion pipeline; not typically needed by consumers.
  */
-export type ResolvedOptions = Required<Omit<ConvertOptions, 'extract' | 'rules' | 'tokenCounter' | 'deduplicate' | 'frontmatter'>> & {
+export type ResolvedOptions = Required<
+    Omit<ConvertOptions, 'extract' | 'rules' | 'tokenCounter' | 'deduplicate' | 'frontmatter' | 'serverTiming'>
+> & {
     extract: boolean | ExtractOptions;
     deduplicate: boolean | DeduplicateOptions;
     frontmatter: boolean | Record<string, string>;

@@ -4,7 +4,8 @@ import { markdownMiddleware } from '@markdown-for-agents/web';
 const mw = markdownMiddleware({
     extract: true,
     deduplicate: true,
-    contentSignal: { aiTrain: true, search: true, aiInput: true }
+    contentSignal: { aiTrain: true, search: true, aiInput: true },
+    serverTiming: true
 });
 
 const nav = '<nav><a href="/">Home</a> <a href="/about">About</a> <a href="/article">Article</a></nav>';

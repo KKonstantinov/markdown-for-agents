@@ -13,6 +13,7 @@ export default tseslint.config(
             '**/bin/',
             'packages/core/test/integration/bun.test.ts',
             'packages/core/test/integration/deno.test.ts',
+            'packages/core/test/integration/node.test.mts',
             'docs/.vitepress/cache/',
             'docs/.vitepress/dist/',
             'packages/playground/.next/',
@@ -93,7 +94,7 @@ export default tseslint.config(
         files: ['packages/playground/src/**/*.ts', 'packages/playground/src/**/*.tsx'],
         languageOptions: {
             parserOptions: {
-                project: 'packages/playground/tsconfig.json',
+                project: 'packages/playground/tsconfig.typecheck.json',
                 tsconfigRootDir: import.meta.dirname
             }
         }
@@ -103,7 +104,7 @@ export default tseslint.config(
         files: ['examples/nextjs/src/**/*.ts', 'examples/nextjs/src/**/*.tsx'],
         languageOptions: {
             parserOptions: {
-                project: 'examples/nextjs/tsconfig.json',
+                project: 'examples/nextjs/tsconfig.typecheck.json',
                 tsconfigRootDir: import.meta.dirname
             }
         }

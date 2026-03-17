@@ -127,7 +127,11 @@ export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): N
             return response;
         }
 
+        const timing = options?.serverTiming;
+        const fetchStart = timing ? performance.now() : 0;
         const response = await handler(request, event);
+        const fetchDur = timing ? performance.now() - fetchStart : 0;
+
         if (!response) return response;
 
         const contentType = response.headers.get('content-type') ?? '';
@@ -153,13 +157,19 @@ export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): N
             resolvedOptions.frontmatter = { ...streamedMeta, ...userFields };
         }
 
-        const { markdown, tokenEstimate, contentHash } = convert(html, resolvedOptions);
+        const { markdown, tokenEstimate, contentHash, convertDuration } = convert(html, resolvedOptions);
 
         const headers = new Headers(response.headers);
         headers.append('vary', 'Accept');
         headers.set('content-type', 'text/markdown; charset=utf-8');
         headers.set(tokenHeader, String(tokenEstimate.tokens));
         headers.set('etag', `"${contentHash}"`);
+        if (convertDuration !== undefined) {
+            headers.set(
+                'server-timing',
+                `mfa.fetch;dur=${fetchDur.toFixed(1)};desc="Proxy fetch", mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`
+            );
+        }
         if (options?.contentSignal) {
             const signalValue = buildContentSignalHeader(options.contentSignal);
             if (signalValue) headers.set('content-signal', signalValue);

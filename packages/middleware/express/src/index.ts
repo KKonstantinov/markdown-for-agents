@@ -48,10 +48,14 @@ export function markdown(options?: MiddlewareOptions): ExpressMiddleware {
                 return originalSend.call(this, body);
             }
 
-            const { markdown: md, tokenEstimate, contentHash } = convert(body, options);
+            const { markdown: md, tokenEstimate, contentHash, convertDuration } = convert(body, options);
+
             res.setHeader('content-type', 'text/markdown; charset=utf-8');
             res.setHeader(tokenHeader, String(tokenEstimate.tokens));
             res.setHeader('etag', `"${contentHash}"`);
+            if (convertDuration !== undefined) {
+                res.setHeader('server-timing', `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`);
+            }
             if (options?.contentSignal) {
                 const signalValue = buildContentSignalHeader(options.contentSignal);
                 if (signalValue) res.setHeader('content-signal', signalValue);

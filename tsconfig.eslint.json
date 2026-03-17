@@ -2,7 +2,17 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "rootDir": ".",
-        "noEmit": true
+        "noEmit": true,
+        "paths": {
+            "markdown-for-agents": ["./packages/core/src/index.ts"],
+            "markdown-for-agents/tokens": ["./packages/core/src/tokens/index.ts"],
+            "markdown-for-agents/extract": ["./packages/core/src/extract/index.ts"],
+            "@markdown-for-agents/express": ["./packages/middleware/express/src/index.ts"],
+            "@markdown-for-agents/fastify": ["./packages/middleware/fastify/src/index.ts"],
+            "@markdown-for-agents/hono": ["./packages/middleware/hono/src/index.ts"],
+            "@markdown-for-agents/nextjs": ["./packages/middleware/nextjs/src/index.ts"],
+            "@markdown-for-agents/web": ["./packages/middleware/web/src/index.ts"]
+        }
     },
     "include": [
         "packages/core/src",

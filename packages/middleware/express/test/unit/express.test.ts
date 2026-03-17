@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { markdown } from '../../src/index.js';
-import { describeContentSignalHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import { describeContentSignalHeader, describeServerTimingHeader, describeVaryHeader } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 function createMockReqRes(acceptHeader: string, contentType: string) {
@@ -198,5 +198,6 @@ describe('express middleware', () => {
     };
 
     describeContentSignalHeader(expressHarness);
+    describeServerTimingHeader(expressHarness);
     describeVaryHeader(expressHarness);
 });

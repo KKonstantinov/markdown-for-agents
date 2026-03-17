@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { markdown } from '../../src/index.js';
-import { describeContentSignalHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import { describeContentSignalHeader, describeServerTimingHeader, describeVaryHeader } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 // Minimal mock of Hono's Context for testing
@@ -114,5 +114,6 @@ describe('hono middleware', () => {
     };
 
     describeContentSignalHeader(honoHarness);
+    describeServerTimingHeader(honoHarness);
     describeVaryHeader(honoHarness);
 });

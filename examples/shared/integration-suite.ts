@@ -46,6 +46,17 @@ export function middlewareIntegrationSuite(framework: string) {
             expect(body).toContain('**middleware pattern**');
         });
 
+        it('sets Server-Timing header with mfa.convert on markdown responses', async () => {
+            const res = await fetch(baseUrl, { headers: { accept: 'text/markdown' } });
+            const timing = res.headers.get('server-timing');
+            expect(timing).toMatch(/mfa\.convert;dur=[\d.]+;desc="HTML to Markdown"/);
+        });
+
+        it('does not set Server-Timing on HTML pass-through responses', async () => {
+            const res = await fetch(baseUrl, { headers: { accept: 'text/html' } });
+            expect(res.headers.get('server-timing')).toBeNull();
+        });
+
         it('converts /article to markdown', async () => {
             const res = await fetch(`${baseUrl}/article`, { headers: { accept: 'text/markdown' } });
             const body = await res.text();

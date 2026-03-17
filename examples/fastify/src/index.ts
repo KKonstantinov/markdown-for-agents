@@ -7,7 +7,8 @@ app.register(
     markdown({
         extract: true,
         deduplicate: true,
-        contentSignal: { aiTrain: true, search: true, aiInput: true }
+        contentSignal: { aiTrain: true, search: true, aiInput: true },
+        serverTiming: true
     })
 );
 

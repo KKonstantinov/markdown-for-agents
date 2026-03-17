@@ -5,7 +5,8 @@ import { withMarkdown } from '@markdown-for-agents/nextjs';
 const options = {
     extract: true,
     deduplicate: true,
-    contentSignal: { aiTrain: true, search: true, aiInput: true }
+    contentSignal: { aiTrain: true, search: true, aiInput: true },
+    serverTiming: true
 };
 
 export async function proxy(request: NextRequest, event: NextFetchEvent) {

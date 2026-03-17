@@ -9,7 +9,11 @@
         "isolatedModules": true,
         "declaration": false,
         "declarationMap": false,
-        "sourceMap": false
+        "sourceMap": false,
+        "paths": {
+            "@markdown-for-agents/fastify": ["../../packages/middleware/fastify/src/index.ts"],
+            "markdown-for-agents": ["../../packages/core/src/index.ts"]
+        }
     },
     "include": ["src/**/*.ts", "test/**/*.ts"],
     "exclude": ["node_modules"]

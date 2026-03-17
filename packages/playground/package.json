@@ -7,7 +7,7 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit -p tsconfig.typecheck.json"
     },
     "dependencies": {
         "@tailwindcss/postcss": "^4.2.1",

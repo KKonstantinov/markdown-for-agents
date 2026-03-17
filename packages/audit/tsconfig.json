@@ -2,7 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "rootDir": "src",
-        "outDir": "dist"
+        "outDir": "dist",
+        "paths": {
+            "markdown-for-agents": ["../core/src/index.ts"]
+        }
     },
     "include": ["src"],
     "exclude": ["node_modules", "dist", "test"]

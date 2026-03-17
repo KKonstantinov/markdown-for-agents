@@ -51,7 +51,8 @@ export function markdown(options?: MiddlewareOptions): MiddlewareHandler {
         if (!contentType.includes('text/html')) return;
 
         const html = await c.res.text();
-        const { markdown: md, tokenEstimate, contentHash } = convert(html, options);
+
+        const { markdown: md, tokenEstimate, contentHash, convertDuration } = convert(html, options);
 
         c.res = new Response(md, {
             status: c.res.status,
@@ -60,6 +61,9 @@ export function markdown(options?: MiddlewareOptions): MiddlewareHandler {
         c.res.headers.set('content-type', 'text/markdown; charset=utf-8');
         c.res.headers.set(tokenHeader, String(tokenEstimate.tokens));
         c.res.headers.set('etag', `"${contentHash}"`);
+        if (convertDuration !== undefined) {
+            c.res.headers.set('server-timing', `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`);
+        }
         if (options?.contentSignal) {
             const signalValue = buildContentSignalHeader(options.contentSignal);
             if (signalValue) c.res.headers.set('content-signal', signalValue);

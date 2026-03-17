@@ -37,6 +37,8 @@ const DEFAULTS: ResolvedOptions = {
  * ```
  */
 export function convert(html: string, options?: ConvertOptions): ConvertResult {
+    const timing = options?.serverTiming;
+    const start = timing ? performance.now() : 0;
     const opts: ResolvedOptions = { ...DEFAULTS, ...options };
 
     const document = parse(html);
@@ -78,5 +80,7 @@ export function convert(html: string, options?: ConvertOptions): ConvertResult {
 
     const tokenEstimate = opts.tokenCounter ? opts.tokenCounter(markdown) : estimateTokens(markdown);
 
-    return { markdown, tokenEstimate, contentHash: contentHash(markdown) };
+    const convertDuration = timing ? performance.now() - start : undefined;
+
+    return { markdown, tokenEstimate, contentHash: contentHash(markdown), convertDuration };
 }

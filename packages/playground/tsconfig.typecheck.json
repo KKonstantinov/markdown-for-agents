@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "paths": {
+            "@/*": ["./src/*"],
+            "markdown-for-agents": ["../core/src/index.ts"],
+            "markdown-for-agents/tokens": ["../core/src/tokens/index.ts"]
+        }
+    }
+}

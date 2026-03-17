@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "dev": "tsx src/index.ts",
-        "test:integration": "vitest run test/integration"
+        "test:integration": "vitest run test/integration",
+        "typecheck": "tsgo --noEmit"
     },
     "dependencies": {
         "@markdown-for-agents/web": "workspace:*",

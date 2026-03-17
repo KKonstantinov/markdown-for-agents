@@ -54,6 +54,22 @@ describe('proxy pattern (/, /about, /article)', () => {
         expect(body).toContain('**proxy pattern**');
     });
 
+    it('sets Server-Timing header with mfa.fetch and mfa.convert on markdown responses', async () => {
+        const res = await fetch(baseUrl, {
+            headers: { accept: 'text/markdown' }
+        });
+        const timing = res.headers.get('server-timing');
+        expect(timing).toMatch(/mfa\.fetch;dur=[\d.]+;desc="Proxy fetch"/);
+        expect(timing).toMatch(/mfa\.convert;dur=[\d.]+;desc="HTML to Markdown"/);
+    });
+
+    it('does not set Server-Timing on HTML pass-through responses', async () => {
+        const res = await fetch(baseUrl, {
+            headers: { accept: 'text/html' }
+        });
+        expect(res.headers.get('server-timing')).toBeNull();
+    });
+
     it('converts /article server component to markdown via proxy', async () => {
         const res = await fetch(`${baseUrl}/article`, {
             headers: { accept: 'text/markdown' }

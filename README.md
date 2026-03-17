@@ -198,9 +198,24 @@ convert(html, {
     deduplicate: false, // true | DeduplicateOptions
 
     // Custom token counter (replaces built-in heuristic)
-    tokenCounter: undefined // (text: string) => TokenEstimate
+    tokenCounter: undefined, // (text: string) => TokenEstimate
+
+    // Performance timing (populates convertDuration in result)
+    serverTiming: false // true to measure conversion duration
 });
 ```
+
+### Server Timing
+
+Enable `serverTiming` to measure conversion duration. The result includes `convertDuration` (in milliseconds), and middleware adapters use it to set a [`Server-Timing`](https://www.w3.org/TR/server-timing/) header:
+
+```ts
+const { markdown, convertDuration } = convert(html, { serverTiming: true });
+console.log(`Conversion took ${convertDuration}ms`);
+// Middleware sets: Server-Timing: mfa.convert;dur=4.7;desc="HTML to Markdown"
+```
+
+The Next.js middleware additionally includes `mfa.fetch` duration for the proxy self-fetch. The header surfaces in browser devtools and is useful for production performance monitoring.
 
 ### Custom Token Counter
 
