@@ -36,6 +36,7 @@ export type { MiddlewareOptions } from 'markdown-for-agents';
  */
 export function markdown(options?: MiddlewareOptions): MiddlewareHandler {
     const tokenHeader = options?.tokenHeader ?? 'x-markdown-tokens';
+    const timingHeader = options?.timingHeader ?? 'x-markdown-timing';
 
     return async (c, next) => {
         await next();
@@ -62,7 +63,9 @@ export function markdown(options?: MiddlewareOptions): MiddlewareHandler {
         c.res.headers.set(tokenHeader, String(tokenEstimate.tokens));
         c.res.headers.set('etag', `"${contentHash}"`);
         if (convertDuration !== undefined) {
-            c.res.headers.set('server-timing', `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`);
+            const timingValue = `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`;
+            c.res.headers.set('server-timing', timingValue);
+            c.res.headers.set(timingHeader, timingValue);
         }
         if (options?.contentSignal) {
             const signalValue = buildContentSignalHeader(options.contentSignal);

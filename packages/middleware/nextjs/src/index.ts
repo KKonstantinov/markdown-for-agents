@@ -113,6 +113,7 @@ export const nextImageRule: Rule = {
  */
 export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): NextProxy {
     const tokenHeader = options?.tokenHeader ?? 'x-markdown-tokens';
+    const timingHeader = options?.timingHeader ?? 'x-markdown-timing';
 
     return async (request, event) => {
         const accept = request.headers.get('accept') ?? '';
@@ -165,10 +166,9 @@ export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): N
         headers.set(tokenHeader, String(tokenEstimate.tokens));
         headers.set('etag', `"${contentHash}"`);
         if (convertDuration !== undefined) {
-            headers.set(
-                'server-timing',
-                `mfa.fetch;dur=${fetchDur.toFixed(1)};desc="Proxy fetch", mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`
-            );
+            const timingValue = `mfa.fetch;dur=${fetchDur.toFixed(1)};desc="Proxy fetch", mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`;
+            headers.set('server-timing', timingValue);
+            headers.set(timingHeader, timingValue);
         }
         if (options?.contentSignal) {
             const signalValue = buildContentSignalHeader(options.contentSignal);

@@ -55,6 +55,7 @@ function wantsMarkdown(request: Request): boolean {
  */
 export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
     const tokenHeader = options?.tokenHeader ?? 'x-markdown-tokens';
+    const timingHeader = options?.timingHeader ?? 'x-markdown-timing';
 
     return async (request: Request, next: Handler): Promise<Response> => {
         const response = await next(request);
@@ -82,7 +83,9 @@ export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
         headers.set(tokenHeader, String(tokenEstimate.tokens));
         headers.set('etag', `"${contentHash}"`);
         if (convertDuration !== undefined) {
-            headers.set('server-timing', `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`);
+            const timingValue = `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`;
+            headers.set('server-timing', timingValue);
+            headers.set(timingHeader, timingValue);
         }
         if (options?.contentSignal) {
             const signalValue = buildContentSignalHeader(options.contentSignal);

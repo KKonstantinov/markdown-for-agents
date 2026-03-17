@@ -207,15 +207,20 @@ convert(html, {
 
 ### Server Timing
 
-Enable `serverTiming` to measure conversion duration. The result includes `convertDuration` (in milliseconds), and middleware adapters use it to set a [`Server-Timing`](https://www.w3.org/TR/server-timing/) header:
+Enable `serverTiming` to measure conversion duration. The result includes `convertDuration` (in milliseconds), and middleware adapters set both a standard [`Server-Timing`](https://www.w3.org/TR/server-timing/) header and an `x-markdown-timing` header with the same value:
 
 ```ts
 const { markdown, convertDuration } = convert(html, { serverTiming: true });
 console.log(`Conversion took ${convertDuration}ms`);
-// Middleware sets: Server-Timing: mfa.convert;dur=4.7;desc="HTML to Markdown"
+// Middleware sets:
+//   Server-Timing: mfa.convert;dur=4.7;desc="HTML to Markdown"
+//   x-markdown-timing: mfa.convert;dur=4.7;desc="HTML to Markdown"
 ```
 
-The Next.js middleware additionally includes `mfa.fetch` duration for the proxy self-fetch. The header surfaces in browser devtools and is useful for production performance monitoring.
+The `x-markdown-timing` header carries the same timing data as `Server-Timing` but survives CDN caching. Some CDNs strip the standard `Server-Timing` header from cached responses because the values are tied to a specific execution. The custom header preserves the timing from the
+original render so it remains observable after caching.
+
+The Next.js middleware additionally includes `mfa.fetch` duration for the proxy self-fetch. Both headers surface in browser devtools and are useful for production performance monitoring.
 
 ### Custom Token Counter
 

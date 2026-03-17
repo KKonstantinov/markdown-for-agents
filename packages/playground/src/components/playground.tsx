@@ -19,7 +19,7 @@ export function Playground() {
     const [htmlValue, setHtmlValue] = useState('');
     const [options, setOptions] = useState<ConverterOptions>({ extract: true, deduplicate: false });
 
-    const { result } = useConverter(htmlValue, options);
+    const { result, durationMs } = useConverter(htmlValue, options);
 
     const originalHtmlSize = useMemo(() => new TextEncoder().encode(htmlValue).byteLength, [htmlValue]);
     const htmlTokenEstimate = useMemo(() => (htmlValue ? estimateTokens(htmlValue) : null), [htmlValue]);
@@ -63,7 +63,7 @@ export function Playground() {
             </div>
 
             {/* Stats */}
-            <StatsPanel result={result} originalHtmlSize={originalHtmlSize} htmlTokenEstimate={htmlTokenEstimate} />
+            <StatsPanel result={result} originalHtmlSize={originalHtmlSize} htmlTokenEstimate={htmlTokenEstimate} durationMs={durationMs} />
         </div>
     );
 }

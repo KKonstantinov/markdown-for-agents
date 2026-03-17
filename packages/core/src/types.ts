@@ -365,6 +365,18 @@ export interface MiddlewareOptions extends ConvertOptions {
     tokenHeader?: string;
 
     /**
+     * Response header name used to expose conversion timing as a plain
+     * custom header.
+     *
+     * Some CDNs strip the standard `Server-Timing` header from cached
+     * responses. Setting this option duplicates the timing value into a
+     * custom header that survives CDN caching.
+     *
+     * @defaultValue `"x-markdown-timing"` when {@link ConvertOptions.serverTiming} is `true`
+     */
+    timingHeader?: string;
+
+    /**
      * Set a `content-signal` HTTP header on converted responses to communicate
      * publisher consent for AI training, search indexing, and AI input usage.
      *

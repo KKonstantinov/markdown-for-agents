@@ -53,6 +53,35 @@ export function describeServerTimingHeader(harness: HeaderTestHarness): void {
             expect(getHeader('server-timing')).toBeFalsy();
         });
     });
+
+    describe('x-markdown-timing header', () => {
+        it('sets x-markdown-timing alongside Server-Timing when serverTiming is enabled', async () => {
+            const { getHeader } = await harness.send({ serverTiming: true }, 'text/markdown', 'text/html', '<h1>Title</h1>');
+            const timing = getHeader('x-markdown-timing');
+            expect(timing).toMatch(/mfa\.convert;dur=[\d.]+;desc="HTML to Markdown"/);
+        });
+
+        it('does not set x-markdown-timing when serverTiming is disabled', async () => {
+            const { getHeader } = await harness.send(undefined, 'text/markdown', 'text/html', '<h1>Title</h1>');
+            expect(getHeader('x-markdown-timing')).toBeFalsy();
+        });
+
+        it('does not set x-markdown-timing on pass-through responses', async () => {
+            const { getHeader } = await harness.send({ serverTiming: true }, 'text/html', 'text/html', '<h1>Title</h1>');
+            expect(getHeader('x-markdown-timing')).toBeFalsy();
+        });
+
+        it('uses custom timingHeader name when provided', async () => {
+            const { getHeader } = await harness.send(
+                { serverTiming: true, timingHeader: 'x-custom-timing' },
+                'text/markdown',
+                'text/html',
+                '<h1>Title</h1>'
+            );
+            expect(getHeader('x-custom-timing')).toMatch(/mfa\.convert;dur=[\d.]+;desc="HTML to Markdown"/);
+            expect(getHeader('x-markdown-timing')).toBeFalsy();
+        });
+    });
 }
 
 export function describeVaryHeader(harness: HeaderTestHarness): void {

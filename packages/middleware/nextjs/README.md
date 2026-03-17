@@ -21,6 +21,7 @@ The middleware uses content negotiation. When a client sends `Accept: text/markd
 - `ETag` header with a content hash for cache validation
 - `Vary: Accept` header so CDNs cache HTML and Markdown separately
 - `content-signal` header with publisher consent signals (when configured)
+- `Server-Timing` and `x-markdown-timing` headers with conversion timing (when `serverTiming: true`)
 
 ## Install
 

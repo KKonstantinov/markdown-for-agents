@@ -143,6 +143,18 @@ describe('Server-Timing header (nextjs-specific)', () => {
         expect(timing).toMatch(/mfa\.fetch;dur=[\d.]+;desc="Proxy fetch"/);
         expect(timing).toMatch(/mfa\.convert;dur=[\d.]+;desc="HTML to Markdown"/);
     });
+
+    it('includes mfa.fetch in x-markdown-timing header', async () => {
+        const handler = withMarkdown(htmlHandler, { serverTiming: true });
+        const request = new Request('https://example.com', {
+            headers: { accept: 'text/markdown' }
+        });
+
+        const response = await handler(request);
+        const timing = response!.headers.get('x-markdown-timing');
+        expect(timing).toMatch(/mfa\.fetch;dur=[\d.]+;desc="Proxy fetch"/);
+        expect(timing).toMatch(/mfa\.convert;dur=[\d.]+;desc="HTML to Markdown"/);
+    });
 });
 
 describe('Vary header (nextjs-specific)', () => {

@@ -28,6 +28,7 @@ export type FastifyPlugin = FastifyPluginCallback;
  */
 export function markdown(options?: MiddlewareOptions): FastifyPlugin {
     const tokenHeader = options?.tokenHeader ?? 'x-markdown-tokens';
+    const timingHeader = options?.timingHeader ?? 'x-markdown-timing';
 
     const plugin: FastifyPlugin = (fastify, _opts, done) => {
         fastify.addHook('onSend', (request, reply, payload) => {
@@ -57,7 +58,9 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
             reply.header(tokenHeader, String(tokenEstimate.tokens));
             reply.header('etag', `"${contentHash}"`);
             if (convertDuration !== undefined) {
-                reply.header('server-timing', `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`);
+                const timingValue = `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`;
+                reply.header('server-timing', timingValue);
+                reply.header(timingHeader, timingValue);
             }
             if (options?.contentSignal) {
                 const signalValue = buildContentSignalHeader(options.contentSignal);

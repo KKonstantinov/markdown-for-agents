@@ -6,6 +6,7 @@ interface StatsPanelProps {
     result: ConvertResult | null;
     originalHtmlSize: number;
     htmlTokenEstimate: TokenEstimate | null;
+    durationMs: number | null;
 }
 
 function formatBytes(bytes: number): string {
@@ -43,7 +44,13 @@ function StatCard({ label, value, accent }: Readonly<{ label: string; value: str
     );
 }
 
-export function StatsPanel({ result, originalHtmlSize, htmlTokenEstimate }: Readonly<StatsPanelProps>) {
+function formatDuration(ms: number): string {
+    if (ms < 1) return `${(ms * 1000).toFixed(0)} µs`;
+    if (ms < 1000) return `${ms.toFixed(1)} ms`;
+    return `${(ms / 1000).toFixed(2)} s`;
+}
+
+export function StatsPanel({ result, originalHtmlSize, htmlTokenEstimate, durationMs }: Readonly<StatsPanelProps>) {
     if (!result) {
         return (
             <div className="rounded-lg border border-dashed border-gray-300 px-4 py-6 text-center text-sm text-gray-400 dark:border-gray-700 dark:text-gray-500">
@@ -56,7 +63,7 @@ export function StatsPanel({ result, originalHtmlSize, htmlTokenEstimate }: Read
     const savings = originalHtmlSize > 0 ? ((1 - markdownSize / originalHtmlSize) * 100).toFixed(1) : '0.0';
 
     return (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             <ReductionCard
                 label="Tokens"
                 before={htmlTokenEstimate ? formatNumber(htmlTokenEstimate.tokens) : '—'}
@@ -74,6 +81,7 @@ export function StatsPanel({ result, originalHtmlSize, htmlTokenEstimate }: Read
             />
             <ReductionCard label="Size" before={formatBytes(originalHtmlSize)} after={formatBytes(markdownSize)} />
             <StatCard label="Savings" value={`${savings}%`} accent={Number(savings) > 0} />
+            <StatCard label="Conversion time" value={durationMs == null ? '—' : formatDuration(durationMs)} />
         </div>
     );
 }

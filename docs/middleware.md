@@ -216,17 +216,20 @@ In practice this is usually fine:
 
 #### Measuring the overhead
 
-Enable `serverTiming: true` to get a breakdown of where time is spent. The Next.js middleware sets two metrics in the `Server-Timing` header:
+Enable `serverTiming: true` to get a breakdown of where time is spent. The Next.js middleware sets two metrics in both the `Server-Timing` and `x-markdown-timing` headers:
 
 ```
 Server-Timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;desc="HTML to Markdown"
+x-markdown-timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;desc="HTML to Markdown"
 ```
 
 - **`mfa.fetch`** — time spent on the proxy self-fetch (the second HTTP request)
 - **`mfa.convert`** — time spent converting HTML to Markdown
 
-These surface in browser devtools (Network > Timing) and can be read programmatically via `PerformanceServerTiming`. Use this to monitor the real overhead in production, since local benchmarks underestimate `mfa.fetch` (localhost skips DNS, TLS, and CDN routing that happen on
-Vercel Edge).
+`Server-Timing` surfaces in browser devtools (Network > Timing) and can be read programmatically via `PerformanceServerTiming`. However, some CDNs strip `Server-Timing` from cached responses. The `x-markdown-timing` header carries the same data under a custom name that survives
+CDN caching, so the timing from the original render remains observable.
+
+Use this to monitor the real overhead in production, since local benchmarks underestimate `mfa.fetch` (localhost skips DNS, TLS, and CDN routing that happen on Vercel Edge).
 
 `withMarkdown` automatically includes `nextImageRule`, which unwraps `/_next/image` optimization URLs back to their original paths. For example, `/_next/image?url=%2Fphoto.png&w=640&q=75` becomes `/photo.png` in the markdown output.
 
@@ -347,15 +350,25 @@ When the middleware converts a response, it sets these headers:
 | `Vary`              | `Accept`                                      | Ensures caches store separate entries per content type (always set, even on non-converted responses) |
 | `content-signal`    | `ai-train=yes, search=yes, ai-input=yes`      | Publisher consent signals (only set when `contentSignal` option is configured)                       |
 | `Server-Timing`     | `mfa.convert;dur=4.7;desc="HTML to Markdown"` | Conversion duration in ms (only set when `serverTiming: true`)                                       |
+| `x-markdown-timing` | `mfa.convert;dur=4.7;desc="HTML to Markdown"` | Same as `Server-Timing`, but survives CDN caching (only set when `serverTiming: true`)               |
 
-The Next.js middleware includes an additional `mfa.fetch` metric in the `Server-Timing` header, measuring the proxy self-fetch duration:
+The Next.js middleware includes an additional `mfa.fetch` metric in both timing headers, measuring the proxy self-fetch duration:
 
 ```
 Server-Timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;desc="HTML to Markdown"
+x-markdown-timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;desc="HTML to Markdown"
 ```
 
-This is a [W3C standard header](https://www.w3.org/TR/server-timing/) that surfaces automatically in browser devtools (Network tab > Timing) and is accessible via the `PerformanceServerTiming` API. Note that local benchmarks will underestimate the `mfa.fetch` overhead since the
-self-fetch goes to localhost; in production (e.g. Vercel Edge), the request goes through DNS, TLS, and CDN routing.
+`Server-Timing` is a [W3C standard header](https://www.w3.org/TR/server-timing/) that surfaces automatically in browser devtools (Network tab > Timing) and is accessible via the `PerformanceServerTiming` API. However, some CDNs strip it from cached responses because the values
+are tied to a specific execution. The `x-markdown-timing` header carries the same data but uses a custom name that passes through CDN caching untouched, preserving the timing from the original render.
+
+You can customise the header name via the `timingHeader` option:
+
+```ts
+markdown({ serverTiming: true, timingHeader: 'x-my-timing' });
+```
+
+Note that local benchmarks will underestimate the `mfa.fetch` overhead since the self-fetch goes to localhost; in production (e.g. Vercel Edge), the request goes through DNS, TLS, and CDN routing.
 
 ## Caching
 

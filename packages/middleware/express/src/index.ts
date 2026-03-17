@@ -25,6 +25,7 @@ export type ExpressMiddleware = (req: Request, res: Response, next: NextFunction
  */
 export function markdown(options?: MiddlewareOptions): ExpressMiddleware {
     const tokenHeader = options?.tokenHeader ?? 'x-markdown-tokens';
+    const timingHeader = options?.timingHeader ?? 'x-markdown-timing';
 
     return (req, res, next) => {
         // Always signal that responses vary by Accept so caches store
@@ -54,7 +55,9 @@ export function markdown(options?: MiddlewareOptions): ExpressMiddleware {
             res.setHeader(tokenHeader, String(tokenEstimate.tokens));
             res.setHeader('etag', `"${contentHash}"`);
             if (convertDuration !== undefined) {
-                res.setHeader('server-timing', `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`);
+                const timingValue = `mfa.convert;dur=${convertDuration.toFixed(1)};desc="HTML to Markdown"`;
+                res.setHeader('server-timing', timingValue);
+                res.setHeader(timingHeader, timingValue);
             }
             if (options?.contentSignal) {
                 const signalValue = buildContentSignalHeader(options.contentSignal);
