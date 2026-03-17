@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 1.3.1
+
+### Patch Changes
+
+- 58f5fd0: add custom timing header
+
 ## 1.3.0
 
 ### Minor Changes
