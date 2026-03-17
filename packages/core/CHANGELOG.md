@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 1.3.0
+
+### Minor Changes
+
+- 6fcacb3: add serverTiming performance benchmark
+
 ## 1.2.0
 
 ### Minor Changes
