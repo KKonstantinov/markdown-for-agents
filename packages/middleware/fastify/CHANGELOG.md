@@ -1,5 +1,16 @@
 # @markdown-for-agents/fastify
 
+## 1.3.0
+
+### Minor Changes
+
+- 6fcacb3: add serverTiming performance benchmark
+
+### Patch Changes
+
+- Updated dependencies [6fcacb3]
+    - markdown-for-agents@1.3.0
+
 ## 1.2.0
 
 ### Minor Changes
