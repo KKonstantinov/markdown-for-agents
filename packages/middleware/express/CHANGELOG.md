@@ -1,5 +1,13 @@
 # @markdown-for-agents/express
 
+## 1.3.1
+
+### Patch Changes
+
+- 58f5fd0: add custom timing header
+- Updated dependencies [58f5fd0]
+    - markdown-for-agents@1.3.1
+
 ## 1.3.0
 
 ### Minor Changes
