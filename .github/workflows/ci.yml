@@ -5,8 +5,16 @@ run-name:
 on:
     push:
         branches: [main]
+        paths-ignore:
+            - 'python/**'
+            - '.github/workflows/python-ci.yml'
+            - '.github/workflows/python-release.yml'
     pull_request:
         branches: [main]
+        paths-ignore:
+            - 'python/**'
+            - '.github/workflows/python-ci.yml'
+            - '.github/workflows/python-release.yml'
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
