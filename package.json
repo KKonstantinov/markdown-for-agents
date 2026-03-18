@@ -17,7 +17,7 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "changeset": "changeset",
-        "version-packages": "changeset version && node scripts/sync-jsr-versions.js",
+        "version-packages": "changeset version && node scripts/sync-jsr-versions.js && node scripts/sync-python-version.js",
         "release": "pnpm build && changeset publish",
         "release:jsr": "pnpm -r --if-present run release:jsr",
         "prepare": "lefthook install",
