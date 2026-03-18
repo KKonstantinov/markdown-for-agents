@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Literal, Protocol
+from typing import TYPE_CHECKING, Literal, Protocol, TypedDict
 
 if TYPE_CHECKING:
     from .dom.nodes import Document, Element
@@ -128,6 +128,25 @@ class ResolvedOptions:
     deduplicate: bool | DeduplicateOptions = False
     frontmatter: bool | dict[str, str] = True
     token_counter: TokenCounter | None = None
+
+
+class ConvertOptions(TypedDict, total=False):
+    """Keyword arguments accepted by convert()."""
+
+    extract: bool | ExtractOptions
+    rules: list[Rule] | None
+    base_url: str
+    heading_style: Literal["atx", "setext"]
+    bullet_char: Literal["-", "*", "+"]
+    code_block_style: Literal["fenced", "indented"]
+    fence_char: Literal["`", "~"]
+    strong_delimiter: Literal["**", "__"]
+    em_delimiter: Literal["*", "_"]
+    link_style: Literal["inlined", "referenced"]
+    deduplicate: bool | DeduplicateOptions
+    frontmatter: bool | dict[str, str]
+    token_counter: TokenCounter | None
+    server_timing: bool
 
 
 @dataclass(frozen=True, slots=True)

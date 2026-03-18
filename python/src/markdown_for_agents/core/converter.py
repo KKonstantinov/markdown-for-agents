@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import time
+from typing import Unpack
 
 from .._types import (
+    ConvertOptions,
     ConvertResult,
     DeduplicateOptions,
     ExtractOptions,
     ResolvedOptions,
-    Rule,
 )
 from ..extract import extract_content
 from ..rules import get_default_rules
@@ -22,75 +23,20 @@ from .walker import WalkerState, walk
 _DEFAULTS = ResolvedOptions()
 
 
-def convert(
-    html: str,
-    *,
-    extract: bool | ExtractOptions = False,
-    rules: list[Rule] | None = None,
-    base_url: str = "",
-    heading_style: str = "atx",
-    bullet_char: str = "-",
-    code_block_style: str = "fenced",
-    fence_char: str = "`",
-    strong_delimiter: str = "**",
-    em_delimiter: str = "*",
-    link_style: str = "inlined",
-    deduplicate: bool | DeduplicateOptions = False,
-    frontmatter: bool | dict[str, str] = True,
-    token_counter: object | None = None,
-    server_timing: bool = False,
-) -> ConvertResult:
+def convert(html: str, **options: Unpack[ConvertOptions]) -> ConvertResult:
     """Convert an HTML string to markdown."""
-    opts = _build_options(
-        extract=extract,
-        rules=rules,
-        base_url=base_url,
-        heading_style=heading_style,
-        bullet_char=bullet_char,
-        code_block_style=code_block_style,
-        fence_char=fence_char,
-        strong_delimiter=strong_delimiter,
-        em_delimiter=em_delimiter,
-        link_style=link_style,
-        deduplicate=deduplicate,
-        frontmatter=frontmatter,
-        token_counter=token_counter,
-    )
+    raw: dict[str, object] = dict(options)
+    server_timing = bool(raw.pop("server_timing", False))
+
+    if not raw:
+        return _run_pipeline(html, _DEFAULTS, server_timing)
+
+    rules_list = raw.pop("rules", None)
+    if rules_list is not None:
+        raw["rules"] = tuple(rules_list)  # type: ignore[arg-type]
+
+    opts = ResolvedOptions(**raw)  # type: ignore[arg-type]
     return _run_pipeline(html, opts, server_timing)
-
-
-def _build_options(
-    *,
-    extract: bool | ExtractOptions,
-    rules: list[Rule] | None,
-    base_url: str,
-    heading_style: str,
-    bullet_char: str,
-    code_block_style: str,
-    fence_char: str,
-    strong_delimiter: str,
-    em_delimiter: str,
-    link_style: str,
-    deduplicate: bool | DeduplicateOptions,
-    frontmatter: bool | dict[str, str],
-    token_counter: object | None,
-) -> ResolvedOptions:
-    """Build a ResolvedOptions from keyword arguments."""
-    return ResolvedOptions(
-        extract=extract,
-        rules=tuple(rules) if rules else (),
-        base_url=base_url,
-        heading_style=heading_style,  # type: ignore[arg-type]
-        bullet_char=bullet_char,  # type: ignore[arg-type]
-        code_block_style=code_block_style,  # type: ignore[arg-type]
-        fence_char=fence_char,  # type: ignore[arg-type]
-        strong_delimiter=strong_delimiter,  # type: ignore[arg-type]
-        em_delimiter=em_delimiter,  # type: ignore[arg-type]
-        link_style=link_style,  # type: ignore[arg-type]
-        deduplicate=deduplicate,
-        frontmatter=frontmatter,
-        token_counter=token_counter,  # type: ignore[arg-type]
-    )
 
 
 def _run_pipeline(html: str, opts: ResolvedOptions, server_timing: bool) -> ConvertResult:

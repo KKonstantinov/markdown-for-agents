@@ -3,6 +3,7 @@
 from ._types import (
     SKIP,
     ContentSignalOptions,
+    ConvertOptions,
     ConvertResult,
     DeduplicateOptions,
     ExtractOptions,
@@ -26,6 +27,7 @@ __all__ = [
     "estimate_tokens",
     "get_default_rules",
     "ContentSignalOptions",
+    "ConvertOptions",
     "ConvertResult",
     "DeduplicateOptions",
     "ExtractOptions",

@@ -18,9 +18,9 @@ const pyproject = readFileSync(pyprojectPath, 'utf-8');
 
 const updated = pyproject.replace(/^version = ".*"$/m, `version = "${pkg.version}"`);
 
-if (updated !== pyproject) {
+if (updated === pyproject) {
+    console.log('python/pyproject.toml already in sync.');
+} else {
     writeFileSync(pyprojectPath, updated);
     console.log(`python/pyproject.toml: version -> ${pkg.version}`);
-} else {
-    console.log('python/pyproject.toml already in sync.');
 }
