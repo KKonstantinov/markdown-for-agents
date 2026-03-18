@@ -5,8 +5,16 @@ run-name:
 on:
     push:
         branches: [main]
+        paths-ignore:
+            - 'python/**'
+            - '.github/workflows/python-ci.yml'
+            - '.github/workflows/python-release.yml'
     pull_request:
         branches: [main]
+        paths-ignore:
+            - 'python/**'
+            - '.github/workflows/python-ci.yml'
+            - '.github/workflows/python-release.yml'
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
@@ -79,58 +87,3 @@ jobs:
             - name: Example integration tests
               if: matrix.runtime == 'node'
               run: pnpm --filter './examples/*' run test:integration
-
-    python-lint:
-        name: Python Lint
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v6
-            - uses: astral-sh/setup-uv@v6
-              with:
-                  enable-cache: true
-            - working-directory: python
-              run: uv sync --all-extras
-            - working-directory: python
-              run: uv run ruff check .
-            - working-directory: python
-              run: uv run ruff format --check .
-            - working-directory: python
-              run: uv run mypy src/
-
-    python-test:
-        name: Python Tests · ${{ matrix.python-version }}
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                python-version: ['3.12', '3.13', '3.14']
-        steps:
-            - uses: actions/checkout@v6
-            - uses: astral-sh/setup-uv@v6
-              with:
-                  enable-cache: true
-            - working-directory: python
-              run: uv sync --python ${{ matrix.python-version }}
-            - working-directory: python
-              run: uv run pytest
-
-    python-parity:
-        name: Python Parity
-        runs-on: ubuntu-latest
-        needs: [test-unit, python-test]
-        steps:
-            - uses: actions/checkout@v6
-            - uses: pnpm/action-setup@v4
-            - uses: actions/setup-node@v6
-              with:
-                  node-version: 24
-                  cache: pnpm
-            - uses: astral-sh/setup-uv@v6
-              with:
-                  enable-cache: true
-            - run: pnpm install --frozen-lockfile
-            - run: pnpm build
-            - working-directory: python
-              run: uv sync
-            - working-directory: python
-              run: uv run pytest tests/integration/test_parity.py -v
