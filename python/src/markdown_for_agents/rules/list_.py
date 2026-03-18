@@ -30,33 +30,36 @@ def _li_replacement(ctx: RuleContext) -> str | None:
         return None
 
     indent = "  " * max(0, ctx.list_depth - 1)
-    parent_el = ctx.parent if ctx.parent is not None and is_tag(ctx.parent) else None
+    bullet = _get_bullet(ctx)
 
-    if isinstance(parent_el, Element) and parent_el.name == "ol":
-        start = int(parent_el.attribs.get("start", "1"))
-        # Count only <li> siblings before this one
-        li_index = 0
-        for i in range(ctx.sibling_index):
-            sibling = parent_el.children[i]
-            if is_tag(sibling) and isinstance(sibling, Element) and sibling.name == "li":
-                li_index += 1
-        bullet = f"{start + li_index}."
-    else:
-        bullet = ctx.options.bullet_char
-
-    # Handle multi-line content by indenting continuation lines
     lines = content.split("\n")
     first = f"{indent}{bullet} {lines[0]}"
     if len(lines) == 1:
         return f"{first}\n"
 
     continuation_indent = indent + " " * (len(bullet) + 1)
-    rest_lines: list[str] = []
-    for line in lines[1:]:
-        if line.strip():
-            rest_lines.append(f"{continuation_indent}{line}")
-        else:
-            rest_lines.append("")
-    rest = "\n".join(rest_lines)
+    rest_lines = [f"{continuation_indent}{line}" if line.strip() else "" for line in lines[1:]]
 
-    return f"{first}\n{rest}\n"
+    return f"{first}\n{chr(10).join(rest_lines)}\n"
+
+
+def _get_bullet(ctx: RuleContext) -> str:
+    """Determine the bullet marker for a list item."""
+    parent_el = ctx.parent if ctx.parent is not None and is_tag(ctx.parent) else None
+
+    if not isinstance(parent_el, Element) or parent_el.name != "ol":
+        return ctx.options.bullet_char
+
+    start = int(parent_el.attribs.get("start", "1"))
+    li_index = _count_preceding_li(parent_el, ctx.sibling_index)
+    return f"{start + li_index}."
+
+
+def _count_preceding_li(parent: Element, sibling_index: int) -> int:
+    """Count <li> elements before the given sibling index."""
+    count = 0
+    for i in range(sibling_index):
+        sibling = parent.children[i]
+        if is_tag(sibling) and isinstance(sibling, Element) and sibling.name == "li":
+            count += 1
+    return count

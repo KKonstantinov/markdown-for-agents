@@ -83,10 +83,16 @@ def _find_head(document: Document) -> Element | None:
             return child
 
         if child.name == "html":
-            for grandchild in child.children:
-                if is_tag(grandchild):
-                    assert isinstance(grandchild, Element)
-                    if grandchild.name == "head":
-                        return grandchild
+            return _find_child_by_name(child, "head")
 
+    return None
+
+
+def _find_child_by_name(parent: Element, name: str) -> Element | None:
+    """Find the first child element with the given tag name."""
+    for child in parent.children:
+        if is_tag(child):
+            assert isinstance(child, Element)
+            if child.name == name:
+                return child
     return None

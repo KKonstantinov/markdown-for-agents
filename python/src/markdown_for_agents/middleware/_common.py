@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 
 def wants_markdown(accept: str) -> bool:
     """Check if the Accept header includes text/markdown."""
@@ -7,7 +12,7 @@ def wants_markdown(accept: str) -> bool:
 
 
 def set_markdown_headers(
-    set_header: object,
+    set_header: Callable[[str, str], None],
     token_count: int,
     content_hash: str,
     token_header: str = "x-markdown-tokens",
@@ -16,7 +21,6 @@ def set_markdown_headers(
     content_signal: str | None = None,
 ) -> None:
     """Set standard markdown response headers using a set_header callback."""
-    assert callable(set_header)
     set_header("content-type", "text/markdown; charset=utf-8")
     set_header(token_header, str(token_count))
     set_header("etag", f'"{content_hash}"')
