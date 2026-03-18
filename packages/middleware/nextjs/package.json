@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/nextjs",
-    "version": "1.3.1",
+    "version": "1.3.2",
     "description": "Next.js middleware — serve Markdown to AI agents via content negotiation",
     "type": "module",
     "sideEffects": false,
