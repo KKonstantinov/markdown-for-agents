@@ -169,13 +169,20 @@ app.use(
 
 ## Packages
 
+### TypeScript
+
 | Package                                             | Description                                                                                                    |
 | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | [`markdown-for-agents`](/packages/core)             | Core HTML-to-Markdown converter                                                                                |
-| [`markdown-for-agents` (Python)](/packages/python)  | Python port - zero dependencies, FastAPI/Flask/Django middleware                                               |
 | [`@markdown-for-agents/audit`](/packages/audit)     | CLI & library to audit token/byte savings                                                                      |
 | [`@markdown-for-agents/express`](/packages/express) | Express middleware                                                                                             |
 | [`@markdown-for-agents/fastify`](/packages/fastify) | Fastify plugin                                                                                                 |
 | [`@markdown-for-agents/hono`](/packages/hono)       | Hono middleware                                                                                                |
 | [`@markdown-for-agents/nextjs`](/packages/nextjs)   | Next.js middleware ([example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs)) |
 | [`@markdown-for-agents/web`](/packages/web)         | Web Standard middleware (Cloudflare Workers, Deno, Bun)                                                        |
+
+### Python
+
+| Package                                   | Description                                                         |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| [`markdown-for-agents`](/packages/python) | Core converter - zero dependencies, FastAPI/Flask/Django middleware |

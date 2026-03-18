@@ -297,18 +297,25 @@ The `minLength` option (default: `10`) controls the minimum block length eligibl
 
 ## Packages
 
-This is a monorepo managed with [pnpm workspaces](https://pnpm.io/workspaces):
+### TypeScript
 
-| Package                                                       | Description                                                      |
-| ------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [`markdown-for-agents`](packages/core)                        | Core HTML-to-Markdown converter                                  |
-| [`markdown-for-agents` (Python)](python/)                     | Python port - zero dependencies, FastAPI/Flask/Django middleware |
-| [`@markdown-for-agents/audit`](packages/audit)                | CLI & library to audit token/byte savings                        |
-| [`@markdown-for-agents/express`](packages/middleware/express) | Express middleware                                               |
-| [`@markdown-for-agents/fastify`](packages/middleware/fastify) | Fastify plugin                                                   |
-| [`@markdown-for-agents/hono`](packages/middleware/hono)       | Hono middleware                                                  |
-| [`@markdown-for-agents/nextjs`](packages/middleware/nextjs)   | Next.js middleware (with `/_next/image` URL unwrapping)          |
-| [`@markdown-for-agents/web`](packages/middleware/web)         | Web Standard middleware                                          |
+Monorepo managed with [pnpm workspaces](https://pnpm.io/workspaces):
+
+| Package                                                       | Description                                             |
+| ------------------------------------------------------------- | ------------------------------------------------------- |
+| [`markdown-for-agents`](packages/core)                        | Core HTML-to-Markdown converter                         |
+| [`@markdown-for-agents/audit`](packages/audit)                | CLI & library to audit token/byte savings               |
+| [`@markdown-for-agents/express`](packages/middleware/express) | Express middleware                                      |
+| [`@markdown-for-agents/fastify`](packages/middleware/fastify) | Fastify plugin                                          |
+| [`@markdown-for-agents/hono`](packages/middleware/hono)       | Hono middleware                                         |
+| [`@markdown-for-agents/nextjs`](packages/middleware/nextjs)   | Next.js middleware (with `/_next/image` URL unwrapping) |
+| [`@markdown-for-agents/web`](packages/middleware/web)         | Web Standard middleware                                 |
+
+### Python
+
+| Package                                                                | Description                                                         |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [`markdown-for-agents`](https://pypi.org/project/markdown-for-agents/) | Core converter - zero dependencies, FastAPI/Flask/Django middleware |
 
 ## Subpath Exports
 
