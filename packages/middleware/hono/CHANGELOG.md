@@ -1,5 +1,13 @@
 # @markdown-for-agents/hono
 
+## 1.3.3
+
+### Patch Changes
+
+- 5f608cd: docs update
+- Updated dependencies [5f608cd]
+    - markdown-for-agents@1.3.3
+
 ## 1.3.2
 
 ### Patch Changes
