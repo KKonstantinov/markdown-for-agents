@@ -1,5 +1,13 @@
 # @markdown-for-agents/audit
 
+## 1.2.3
+
+### Patch Changes
+
+- 9705464: docs update
+- Updated dependencies [9705464]
+    - markdown-for-agents@1.3.2
+
 ## 1.2.2
 
 ### Patch Changes
