@@ -15,6 +15,8 @@ npm install @markdown-for-agents/web
 
 All middleware packages depend on `markdown-for-agents` (the core library), which is installed automatically as a dependency.
 
+::: tip Python The Python package includes middleware for FastAPI, Flask, and Django. See the [Python package docs](/packages/python#middleware) for details. :::
+
 ## How It Works
 
 1. Client sends a request with `Accept: text/markdown` header

@@ -1,7 +1,7 @@
 # markdown-for-agents
 
 [![npm version](https://img.shields.io/npm/v/markdown-for-agents)](https://www.npmjs.com/package/markdown-for-agents) [![npm downloads](https://img.shields.io/npm/dm/markdown-for-agents)](https://www.npmjs.com/package/markdown-for-agents)
-[![types](https://img.shields.io/npm/types/markdown-for-agents)](https://www.npmjs.com/package/markdown-for-agents) [![license](https://img.shields.io/npm/l/markdown-for-agents)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
+[![PyPI version](https://img.shields.io/pypi/v/markdown-for-agents)](https://pypi.org/project/markdown-for-agents/) [![license](https://img.shields.io/npm/l/markdown-for-agents)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
 
 Runtime-agnostic HTML to Markdown converter built for AI agents. One dependency, works everywhere.
 
@@ -51,6 +51,16 @@ npm install @markdown-for-agents/hono
 npm install @markdown-for-agents/nextjs
 npm install @markdown-for-agents/web
 ```
+
+### Python
+
+Also available as a pure Python package with zero dependencies:
+
+```bash
+pip install markdown-for-agents
+```
+
+See the [Python package docs](python/) for the full API, middleware (FastAPI, Flask, Django), and usage examples.
 
 ## Quick Start
 
@@ -289,15 +299,16 @@ The `minLength` option (default: `10`) controls the minimum block length eligibl
 
 This is a monorepo managed with [pnpm workspaces](https://pnpm.io/workspaces):
 
-| Package                                                       | Description                                             |
-| ------------------------------------------------------------- | ------------------------------------------------------- |
-| [`markdown-for-agents`](packages/core)                        | Core HTML-to-Markdown converter                         |
-| [`@markdown-for-agents/audit`](packages/audit)                | CLI & library to audit token/byte savings               |
-| [`@markdown-for-agents/express`](packages/middleware/express) | Express middleware                                      |
-| [`@markdown-for-agents/fastify`](packages/middleware/fastify) | Fastify plugin                                          |
-| [`@markdown-for-agents/hono`](packages/middleware/hono)       | Hono middleware                                         |
-| [`@markdown-for-agents/nextjs`](packages/middleware/nextjs)   | Next.js middleware (with `/_next/image` URL unwrapping) |
-| [`@markdown-for-agents/web`](packages/middleware/web)         | Web Standard middleware                                 |
+| Package                                                       | Description                                                      |
+| ------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [`markdown-for-agents`](packages/core)                        | Core HTML-to-Markdown converter                                  |
+| [`markdown-for-agents` (Python)](python/)                     | Python port - zero dependencies, FastAPI/Flask/Django middleware |
+| [`@markdown-for-agents/audit`](packages/audit)                | CLI & library to audit token/byte savings                        |
+| [`@markdown-for-agents/express`](packages/middleware/express) | Express middleware                                               |
+| [`@markdown-for-agents/fastify`](packages/middleware/fastify) | Fastify plugin                                                   |
+| [`@markdown-for-agents/hono`](packages/middleware/hono)       | Hono middleware                                                  |
+| [`@markdown-for-agents/nextjs`](packages/middleware/nextjs)   | Next.js middleware (with `/_next/image` URL unwrapping)          |
+| [`@markdown-for-agents/web`](packages/middleware/web)         | Web Standard middleware                                          |
 
 ## Subpath Exports
 

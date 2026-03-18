@@ -40,9 +40,12 @@ features:
     - title: Content-Signal Header
       icon: 📡
       details: Opt-in HTTP header for publisher consent — signal AI training, search, and AI input permissions.
+    - title: Python & TypeScript
+      icon: 🐍
+      details: Available for both ecosystems. TypeScript (one dependency), Python (zero dependencies). Same API, same output.
     - title: Single Dependency
       icon: 📦
-      details: Only htmlparser2 — no DOM required. ESM only, fully typed, tree-shakeable.
+      details: TypeScript uses only htmlparser2. Python uses pure stdlib. ESM only, fully typed, tree-shakeable.
 ---
 
 ## See Your Savings
@@ -71,9 +74,17 @@ and browsers — with a single dependency.
 
 ## Quick Start
 
-```bash
+::: code-group
+
+```bash [npm]
 npm install markdown-for-agents
 ```
+
+```bash [pip]
+pip install markdown-for-agents
+```
+
+:::
 
 ```ts
 import { convert } from 'markdown-for-agents';
@@ -161,6 +172,7 @@ app.use(
 | Package                                             | Description                                                                                                    |
 | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | [`markdown-for-agents`](/packages/core)             | Core HTML-to-Markdown converter                                                                                |
+| [`markdown-for-agents` (Python)](/packages/python)  | Python port - zero dependencies, FastAPI/Flask/Django middleware                                               |
 | [`@markdown-for-agents/audit`](/packages/audit)     | CLI & library to audit token/byte savings                                                                      |
 | [`@markdown-for-agents/express`](/packages/express) | Express middleware                                                                                             |
 | [`@markdown-for-agents/fastify`](/packages/fastify) | Fastify plugin                                                                                                 |

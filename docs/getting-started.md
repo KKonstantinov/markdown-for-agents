@@ -10,6 +10,8 @@ npm install markdown-for-agents
 
 The library has a single runtime dependency ([htmlparser2](https://github.com/fb55/htmlparser2)) and works in any JavaScript environment that supports ES2022.
 
+::: tip Python Also available as a pure Python package with zero dependencies. See the [Python package docs](/packages/python) for installation and usage. :::
+
 ## Your First Conversion
 
 ```ts

@@ -36,6 +36,7 @@ export default defineConfig({
         nav: [
             { text: 'Guide', link: '/getting-started' },
             { text: 'API', link: '/api' },
+            { text: 'Python', link: '/packages/python' },
             { text: 'Playground', link: 'https://markdown-for-agents-playground.vercel.app', target: '_blank' },
             {
                 text: 'Packages',
@@ -60,6 +61,10 @@ export default defineConfig({
                     { text: 'Middleware', link: '/middleware' },
                     { text: 'Custom Rules', link: '/rules' }
                 ]
+            },
+            {
+                text: 'Python',
+                items: [{ text: 'Python Package', link: '/packages/python' }]
             },
             {
                 text: 'Packages',
