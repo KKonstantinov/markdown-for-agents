@@ -5,6 +5,8 @@ on:
         branches: [main]
         paths:
             - 'docs/**'
+            - 'packages/*/README.md'
+            - 'packages/middleware/*/README.md'
             - 'package.json'
             - '.github/workflows/docs.yml'
     workflow_dispatch:
