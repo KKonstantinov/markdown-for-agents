@@ -16,7 +16,7 @@ def render(raw: str) -> str:
     processed: list[str] = []
     for line in lines:
         if re.search(r"\S {2}$", line):
-            processed.append(re.sub(r"\s+$", "", line) + "  ")
+            processed.append(line.rstrip() + "  ")
         else:
             processed.append(line.rstrip())
     result = "\n".join(processed)
