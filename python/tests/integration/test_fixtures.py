@@ -1,4 +1,46 @@
-from markdown_for_agents import convert
+from markdown_for_agents import convert, create_rule, estimate_tokens
+
+
+class TestBasicConversion:
+    def test_converts_basic_html(self):
+        result = convert("<h1>Hello</h1><p>World</p>")
+        assert "# Hello" in result.markdown
+        assert "World" in result.markdown
+
+    def test_returns_token_estimates(self):
+        result = convert("<p>Test content here</p>")
+        assert result.token_estimate.tokens > 0
+        assert result.token_estimate.characters > 0
+        assert result.token_estimate.words > 0
+
+    def test_supports_content_extraction(self):
+        html = """
+        <nav><a href="/">Home</a></nav>
+        <main><p>Content</p></main>
+        <footer>Footer</footer>
+        """
+        result = convert(html, extract=True)
+        assert "Content" in result.markdown
+        assert "Home" not in result.markdown
+        assert "Footer" not in result.markdown
+
+
+class TestCustomRules:
+    def test_custom_rule_via_create_rule(self):
+        rule = create_rule(
+            filter=lambda node: node.name == "div" and "alert" in (node.attribs.get("class", "")),
+            replacement=lambda ctx: f"\n\n> {ctx.convert_children(ctx.node).strip()}\n\n",
+            priority=100,
+        )
+        result = convert('<div class="alert">Warning!</div>', rules=[rule])
+        assert "> Warning!" in result.markdown
+
+
+class TestStandaloneEstimateTokens:
+    def test_estimate_tokens_standalone(self):
+        result = estimate_tokens("Hello world")
+        assert result.characters == 11
+        assert result.tokens > 0
 
 
 class TestNestedLists:
