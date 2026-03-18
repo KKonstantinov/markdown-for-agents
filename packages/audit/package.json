@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/audit",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "Audit token savings when converting HTML to Markdown for AI agents",
     "type": "module",
     "sideEffects": false,
