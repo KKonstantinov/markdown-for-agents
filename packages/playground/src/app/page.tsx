@@ -31,6 +31,15 @@ export default function Page() {
                                 <path d="M0 0v16h16V0H0zm13 13h-2V5H8v8H3V3h10v10z" />
                             </svg>
                         </a>
+                        <a
+                            href="https://pypi.org/project/markdown-for-agents/"
+                            aria-label="PyPI package"
+                            className="text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                        >
+                            <svg viewBox="0 0 16 16" fill="currentColor" className="h-5 w-5">
+                                <path d="M6.2 0C5.5.2 5.5.9 5.5.9l.1 3.1-2-.1s-.8 0-.9.7v3.7s0 .6.8.6l2.3.1v6.8s-.1.8.8.7l3-.5s.5-.1.5-.7V8.5l2.1.1s.7 0 .9-.7V4.2s0-.6-.8-.6l-2.4-.1.1-2.6s.1-.7-.7-.6L6.2 0zM7 1.4l1.5-.3v1.8H7V1.4zm-1.3 3l4.5.2v2.5l-4.5-.2V4.4zM8.5 5v1.5H7V5h1.5zm-2.9 4l4.5.2v2.5l-4.5-.2V9zm2 .6v1.5H6.1v-1.5h1.5z" />
+                            </svg>
+                        </a>
                     </div>
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                         Interactive playground for the markdown-for-agents library — an HTML to Markdown converter for AI agents.
