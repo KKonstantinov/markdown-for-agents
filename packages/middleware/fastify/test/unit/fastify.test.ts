@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { markdown } from '../../src/index.js';
 import type { MiddlewareOptions } from '../../src/index.js';
-import { describeContentSignalHeader, describeServerTimingHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import {
+    describeContentSignalHeader,
+    describeServerTimingHeader,
+    describeVaryHeader,
+    describeDetectAgentsHeader
+} from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 type OnSendHook = (
@@ -51,8 +56,19 @@ function invokeHook(options?: MiddlewareOptions) {
     plugin(instance as never, {}, () => {});
     const hook = hooks[0];
 
-    return async (accept: string | undefined, contentType: string, payload: unknown, extraHeaders?: Record<string, string>) => {
+    return async (
+        accept: string | undefined,
+        contentType: string,
+        payload: unknown,
+        extraHeaders?: Record<string, string>,
+        requestHeaders?: Record<string, string>
+    ) => {
         const headers: Record<string, string | undefined> = accept === undefined ? {} : { accept };
+        if (requestHeaders) {
+            for (const [k, v] of Object.entries(requestHeaders)) {
+                headers[k] = v;
+            }
+        }
         const request = { headers };
         const { reply, getHeader } = createMockReply(contentType, extraHeaders);
         const result = await hook(request, reply, payload);
@@ -148,9 +164,9 @@ describe('fastify middleware', () => {
     });
 
     const fastifyHarness: HeaderTestHarness = {
-        async send(options, accept, contentType, body, extraHeaders) {
+        async send(options, accept, contentType, body, extraHeaders, requestHeaders) {
             const send = invokeHook(options);
-            const { getHeader } = await send(accept, contentType, body, extraHeaders);
+            const { getHeader } = await send(accept, contentType, body, extraHeaders, requestHeaders);
             return { getHeader };
         }
     };
@@ -158,4 +174,5 @@ describe('fastify middleware', () => {
     describeContentSignalHeader(fastifyHarness);
     describeServerTimingHeader(fastifyHarness);
     describeVaryHeader(fastifyHarness);
+    describeDetectAgentsHeader(fastifyHarness);
 });

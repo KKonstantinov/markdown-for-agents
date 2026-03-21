@@ -1,5 +1,5 @@
 import type { NextProxy } from 'next/server';
-import { convert, buildContentSignalHeader } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled } from 'markdown-for-agents';
 import type { MiddlewareOptions, Rule } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -117,13 +117,16 @@ export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): N
 
     return async (request, event) => {
         const accept = request.headers.get('accept') ?? '';
+        const userAgent = request.headers.get('user-agent') ?? undefined;
+        const agentDetection = isAgentDetectionEnabled(options?.detectAgents);
 
-        if (!accept.includes('text/markdown')) {
+        if (!shouldServeMarkdown(accept, userAgent, options?.detectAgents)) {
             const response = await handler(request, event);
             if (response) {
                 // Always signal that responses vary by Accept so caches store
                 // separate entries for HTML and Markdown representations.
                 response.headers.append('vary', 'Accept');
+                if (agentDetection) response.headers.append('vary', 'User-Agent');
             }
             return response;
         }
@@ -138,6 +141,7 @@ export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): N
         const contentType = response.headers.get('content-type') ?? '';
         if (!contentType.includes('text/html')) {
             response.headers.append('vary', 'Accept');
+            if (agentDetection) response.headers.append('vary', 'User-Agent');
             return response;
         }
 
@@ -162,6 +166,7 @@ export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): N
 
         const headers = new Headers(response.headers);
         headers.append('vary', 'Accept');
+        if (agentDetection) headers.append('vary', 'User-Agent');
         headers.set('content-type', 'text/markdown; charset=utf-8');
         headers.set(tokenHeader, String(tokenEstimate.tokens));
         headers.set('etag', `"${contentHash}"`);

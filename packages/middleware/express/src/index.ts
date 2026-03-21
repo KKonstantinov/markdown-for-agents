@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { convert, buildContentSignalHeader } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -31,11 +31,13 @@ export function markdown(options?: MiddlewareOptions): ExpressMiddleware {
         // Always signal that responses vary by Accept so caches store
         // separate entries for HTML and Markdown representations.
         const existing = res.getHeader('vary');
-        const vary = existing ? `${String(existing)}, Accept` : 'Accept';
-        res.setHeader('vary', vary);
+        const varyParts = [existing ? String(existing) : undefined, 'Accept'];
+        if (isAgentDetectionEnabled(options?.detectAgents)) varyParts.push('User-Agent');
+        res.setHeader('vary', varyParts.filter(Boolean).join(', '));
 
         const accept = typeof req.headers.accept === 'string' ? req.headers.accept : '';
-        if (!accept.includes('text/markdown')) {
+        const userAgent = typeof req.headers['user-agent'] === 'string' ? req.headers['user-agent'] : undefined;
+        if (!shouldServeMarkdown(accept, userAgent, options?.detectAgents)) {
             next();
             return;
         }

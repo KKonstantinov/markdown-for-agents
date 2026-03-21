@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { convert } from 'markdown-for-agents';
 import { withMarkdown, nextImageRule } from '../../src/index.js';
-import { describeContentSignalHeader, describeServerTimingHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import {
+    describeContentSignalHeader,
+    describeServerTimingHeader,
+    describeVaryHeader,
+    describeDetectAgentsHeader
+} from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 const htmlHandler = async () =>
@@ -90,14 +95,14 @@ describe('nextjs middleware', () => {
 });
 
 const nextjsHarness: HeaderTestHarness = {
-    async send(options, accept, contentType, body, extraHeaders) {
+    async send(options, accept, contentType, body, extraHeaders, requestHeaders) {
         const innerHandler = async () =>
             new Response(body, {
                 headers: { 'content-type': contentType, ...extraHeaders }
             });
         const handler = withMarkdown(innerHandler, options);
         const request = new Request('https://example.com', {
-            headers: { accept }
+            headers: { accept, ...requestHeaders }
         });
         const response = await handler(request);
         return { getHeader: (name: string) => response!.headers.get(name) };
@@ -130,6 +135,7 @@ describe('ETag header', () => {
 
 describeServerTimingHeader(nextjsHarness);
 describeVaryHeader(nextjsHarness);
+describeDetectAgentsHeader(nextjsHarness);
 
 describe('Server-Timing header (nextjs-specific)', () => {
     it('includes mfa.fetch timing alongside mfa.convert', async () => {

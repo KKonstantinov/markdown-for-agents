@@ -14,7 +14,7 @@
  * @module
  */
 
-import { convert, buildContentSignalHeader } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -23,17 +23,6 @@ export type { MiddlewareOptions } from 'markdown-for-agents';
 type Handler = (request: Request) => Response | Promise<Response>;
 /** A middleware function that wraps a {@link Handler} with pre/post-processing. */
 type Middleware = (request: Request, next: Handler) => Response | Promise<Response>;
-
-/**
- * Checks whether the client is requesting markdown content.
- *
- * @param request - The incoming `Request` object.
- * @returns `true` if the `Accept` header includes `text/markdown`.
- */
-function wantsMarkdown(request: Request): boolean {
-    const accept = request.headers.get('accept') ?? '';
-    return accept.includes('text/markdown');
-}
 
 /**
  * Web-standard middleware that converts HTML responses to markdown
@@ -63,8 +52,11 @@ export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
         // Always signal that responses vary by Accept so caches store
         // separate entries for HTML and Markdown representations.
         response.headers.append('vary', 'Accept');
+        if (isAgentDetectionEnabled(options?.detectAgents)) response.headers.append('vary', 'User-Agent');
 
-        if (!wantsMarkdown(request)) {
+        const accept = request.headers.get('accept') ?? '';
+        const userAgent = request.headers.get('user-agent') ?? undefined;
+        if (!shouldServeMarkdown(accept, userAgent, options?.detectAgents)) {
             return response;
         }
 

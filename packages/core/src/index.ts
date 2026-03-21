@@ -15,6 +15,7 @@ export { getDefaultRules, createRule } from './rules/index.js';
 export { extractContent } from './extract/index.js';
 export { estimateTokens } from './tokens/index.js';
 export { buildContentSignalHeader } from './core/content-signal.js';
+export { shouldServeMarkdown, isAgentDetectionEnabled, KNOWN_AGENTS } from './core/detect-agents.js';
 
 export type {
     ConvertOptions,

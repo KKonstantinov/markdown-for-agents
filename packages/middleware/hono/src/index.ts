@@ -13,7 +13,7 @@
  */
 
 import type { MiddlewareHandler } from 'hono';
-import { convert, buildContentSignalHeader } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -44,9 +44,11 @@ export function markdown(options?: MiddlewareOptions): MiddlewareHandler {
         // Always signal that responses vary by Accept so caches store
         // separate entries for HTML and Markdown representations.
         c.res.headers.append('vary', 'Accept');
+        if (isAgentDetectionEnabled(options?.detectAgents)) c.res.headers.append('vary', 'User-Agent');
 
         const accept = c.req.header('accept') ?? '';
-        if (!accept.includes('text/markdown')) return;
+        const userAgent = c.req.header('user-agent') ?? undefined;
+        if (!shouldServeMarkdown(accept, userAgent, options?.detectAgents)) return;
 
         const contentType = c.res.headers.get('content-type') ?? '';
         if (!contentType.includes('text/html')) return;

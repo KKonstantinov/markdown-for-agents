@@ -383,4 +383,20 @@ export interface MiddlewareOptions extends ConvertOptions {
      * Only set when explicitly configured (opt-in).
      */
     contentSignal?: ContentSignalOptions;
+
+    /**
+     * Automatically serve markdown to known AI agent crawlers based on
+     * their `User-Agent` string, even without `Accept: text/markdown`.
+     *
+     * - `false` (default) — only serve markdown when `Accept: text/markdown` is present
+     * - `true` — match against a built-in list of known AI agent user-agents
+     * - `string[]` — match against a custom list of user-agent substring patterns
+     *   (replaces the built-in list; import {@link KNOWN_AGENTS} and spread to extend)
+     *
+     * **Cache warning:** enabling this adds `User-Agent` to the `Vary` header,
+     * which can reduce CDN cache hit rates due to user-agent string cardinality.
+     *
+     * @defaultValue `false`
+     */
+    detectAgents?: boolean | string[];
 }

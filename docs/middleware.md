@@ -19,15 +19,15 @@ All middleware packages depend on `markdown-for-agents` (the core library), whic
 
 ## How It Works
 
-1. Client sends a request with `Accept: text/markdown` header
+1. Client sends a request with `Accept: text/markdown` header (or is a known AI agent when `detectAgents` is enabled)
 2. Your server generates an HTML response as usual
 3. The middleware intercepts the response, converts the HTML to Markdown
 4. The client receives `Content-Type: text/markdown; charset=utf-8`
 5. The response includes an `x-markdown-tokens` header with the estimated token count, an `ETag` for cache validation, and a `content-signal` header with publisher consent signals (when configured)
 
-All responses (converted or not) include `Vary: Accept` so that CDNs and proxies cache HTML and Markdown representations separately.
+All responses (converted or not) include `Vary: Accept` so that CDNs and proxies cache HTML and Markdown representations separately. When `detectAgents` is enabled, `Vary: User-Agent` is also added.
 
-If the `Accept` header doesn't include `text/markdown`, or the upstream response isn't HTML, the middleware passes through without modification.
+If the `Accept` header doesn't include `text/markdown` (and the request doesn't match a known AI agent when `detectAgents` is enabled), or the upstream response isn't HTML, the middleware passes through without modification.
 
 ## Express
 
@@ -308,12 +308,13 @@ Bun.serve({
 
 ## Options
 
-All middleware functions accept `MiddlewareOptions`, which extends `ConvertOptions` with one additional property:
+All middleware functions accept `MiddlewareOptions`, which extends `ConvertOptions` with middleware-specific properties:
 
 ```ts
 interface MiddlewareOptions extends ConvertOptions {
     tokenHeader?: string; // Default: "x-markdown-tokens"
     contentSignal?: ContentSignalOptions;
+    detectAgents?: boolean | string[]; // Default: false
 }
 ```
 
@@ -336,7 +337,10 @@ const mw = markdownMiddleware({
     serverTiming: true, // Adds Server-Timing header with mfa.convert duration
 
     // Middleware-specific
-    tokenHeader: 'x-token-count' // Custom header name
+    tokenHeader: 'x-token-count', // Custom header name
+
+    // Auto-detect AI agents by User-Agent
+    detectAgents: true // Serve markdown to ClaudeBot, GPTBot, etc.
 });
 ```
 
@@ -372,11 +376,41 @@ markdown({ serverTiming: true, timingHeader: 'x-my-timing' });
 
 Note that local benchmarks will underestimate the `mfa.fetch` overhead since the self-fetch goes to localhost; in production (e.g. Vercel Edge), the request goes through DNS, TLS, and CDN routing.
 
+## AI Agent Detection
+
+By default, the middleware only converts responses when the client explicitly sends `Accept: text/markdown`. With `detectAgents`, the middleware can also detect known AI agent crawlers by their `User-Agent` string and serve them Markdown automatically:
+
+```ts
+// Use the built-in list of known AI agents
+app.use(markdown({ detectAgents: true }));
+
+// Or provide your own list (replaces the built-in list)
+app.use(markdown({ detectAgents: ['mycustombot', 'internalcrawler'] }));
+
+// Extend the built-in list
+import { KNOWN_AGENTS } from 'markdown-for-agents';
+app.use(markdown({ detectAgents: [...KNOWN_AGENTS, 'mycustombot'] }));
+```
+
+The built-in list includes user-agent tokens for major AI providers:
+
+| Provider   | User-Agent Tokens                              | Documentation                                                                              |
+| ---------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Anthropic  | `ClaudeBot`, `Claude-User`, `Claude-SearchBot` | [Anthropic crawler docs](https://support.claude.com/en/articles/8896518)                   |
+| OpenAI     | `ChatGPT-User`, `GPTBot`, `OAI-SearchBot`      | [OpenAI bot docs](https://platform.openai.com/docs/bots)                                   |
+| Perplexity | `PerplexityBot`, `Perplexity-User`             | [Perplexity crawler docs](https://docs.perplexity.ai/docs/resources/perplexity-crawlers)   |
+| Meta       | `Meta-ExternalAgent`                           | [Meta web crawlers](https://developers.facebook.com/docs/sharing/webmasters/web-crawlers/) |
+| Amazon     | `Amazonbot`                                    | [Amazonbot docs](https://developer.amazon.com/amazonbot)                                   |
+| Cohere     | `cohere-ai`                                    | [Cohere](https://cohere.com)                                                               |
+
+::: warning Cache impact Enabling `detectAgents` adds `User-Agent` to the `Vary` header. Because user-agent strings have high cardinality, this can reduce CDN cache hit rates. Consider this trade-off when deploying behind a CDN. :::
+
 ## Caching
 
 The middleware sets two headers that enable efficient caching out of the box:
 
 - **`Vary: Accept`** — tells CDNs and proxies that the response varies by `Accept` header. Without this, a CDN could cache the HTML variant and serve it to an AI agent requesting Markdown (or vice versa). This header is set on **all** responses, not just converted ones.
+- **`Vary: User-Agent`** — added only when `detectAgents` is enabled. Necessary because the response now also varies by user-agent.
 - **`ETag`** — a deterministic content hash of the Markdown output. Enables conditional requests (`If-None-Match`) so CDNs and clients can validate cached responses without re-downloading the full body.
 
 To control cache lifetime, add `Cache-Control` at your infrastructure layer:

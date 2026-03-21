@@ -365,16 +365,18 @@ interface MiddlewareOptions extends ConvertOptions {
     tokenHeader?: string;
     timingHeader?: string;
     contentSignal?: ContentSignalOptions;
+    detectAgents?: boolean | string[];
 }
 ```
 
 Extends `ConvertOptions` with:
 
-| Property        | Type                   | Default               | Description                                               |
-| --------------- | ---------------------- | --------------------- | --------------------------------------------------------- |
-| `tokenHeader`   | `string`               | `"x-markdown-tokens"` | Response header name for token count                      |
-| `timingHeader`  | `string`               | `"x-markdown-timing"` | Response header name for the CDN-safe timing duplicate    |
-| `contentSignal` | `ContentSignalOptions` | -                     | Publisher consent signals for the `content-signal` header |
+| Property        | Type                   | Default               | Description                                                                                                            |
+| --------------- | ---------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `tokenHeader`   | `string`               | `"x-markdown-tokens"` | Response header name for token count                                                                                   |
+| `timingHeader`  | `string`               | `"x-markdown-timing"` | Response header name for the CDN-safe timing duplicate                                                                 |
+| `contentSignal` | `ContentSignalOptions` | -                     | Publisher consent signals for the `content-signal` header                                                              |
+| `detectAgents`  | `boolean \| string[]`  | `false`               | Auto-serve markdown to AI agents by user-agent. `true` uses built-in list, `string[]` replaces it with custom patterns |
 
 When `serverTiming` is `true` (inherited from `ConvertOptions`), middleware sets both a [`Server-Timing`](https://www.w3.org/TR/server-timing/) header and an `x-markdown-timing` header with `mfa.convert` duration. The `x-markdown-timing` header carries the same value but survives
 CDN caching (some CDNs strip `Server-Timing` from cached responses). The Next.js middleware additionally includes `mfa.fetch` duration for the proxy self-fetch.
