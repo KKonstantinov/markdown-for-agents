@@ -1,5 +1,5 @@
 import type { FastifyPluginCallback } from 'fastify';
-import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled, markdownContentType } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -41,8 +41,9 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
 
             const accept = typeof request.headers.accept === 'string' ? request.headers.accept : '';
             const userAgent = typeof request.headers['user-agent'] === 'string' ? request.headers['user-agent'] : undefined;
+            const reason = shouldServeMarkdown(accept, userAgent, options?.detectAgents);
 
-            if (!shouldServeMarkdown(accept, userAgent, options?.detectAgents)) {
+            if (!reason) {
                 return Promise.resolve(payload);
             }
 
@@ -55,9 +56,11 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
                 return Promise.resolve(payload);
             }
 
+            options?.logger?.info({ reason, path: request.url, userAgent });
+
             const { markdown: md, tokenEstimate, contentHash, convertDuration } = convert(payload, options);
 
-            reply.header('content-type', 'text/markdown; charset=utf-8');
+            reply.header('content-type', markdownContentType(reason));
             reply.header(tokenHeader, String(tokenEstimate.tokens));
             reply.header('etag', `"${contentHash}"`);
             if (convertDuration !== undefined) {

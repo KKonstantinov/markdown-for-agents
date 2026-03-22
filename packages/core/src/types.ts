@@ -399,4 +399,37 @@ export interface MiddlewareOptions extends ConvertOptions {
      * @defaultValue `false`
      */
     detectAgents?: boolean | string[];
+
+    /**
+     * Optional logger for observing middleware conversion events.
+     *
+     * Called once per converted response with the reason and request details.
+     * Compatible with pino, winston, bunyan, and `console` out of the box.
+     *
+     * @example
+     * ```ts
+     * import pino from 'pino';
+     * markdown({ logger: pino() })
+     * ```
+     */
+    logger?: MiddlewareLogger;
+}
+
+/** Context passed to {@link MiddlewareLogger.info} when a conversion is triggered. */
+export interface MiddlewareLogContext {
+    /** Why the conversion was triggered. */
+    reason: 'accept-header' | 'agent-detected';
+    /** Request path (no query string). */
+    path: string;
+    /** The User-Agent header value, if present. */
+    userAgent?: string;
+}
+
+/**
+ * Logger interface for middleware conversion events.
+ *
+ * Any object with an `info` method works — pino, winston, bunyan, or `console`.
+ */
+export interface MiddlewareLogger {
+    info(context: MiddlewareLogContext): void;
 }

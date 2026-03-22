@@ -4,13 +4,15 @@ import {
     describeContentSignalHeader,
     describeServerTimingHeader,
     describeVaryHeader,
-    describeDetectAgentsHeader
+    describeDetectAgentsHeader,
+    describeLogger
 } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 function createMockReqRes(acceptHeader: string, contentType: string) {
     const req = {
-        headers: { accept: acceptHeader } as Record<string, string | string[] | undefined>
+        headers: { accept: acceptHeader } as Record<string, string | string[] | undefined>,
+        path: '/'
     };
 
     const sentHeaders = new Map<string, string | number>([['content-type', contentType]]);
@@ -211,4 +213,5 @@ describe('express middleware', () => {
     describeServerTimingHeader(expressHarness);
     describeVaryHeader(expressHarness);
     describeDetectAgentsHeader(expressHarness);
+    describeLogger(expressHarness);
 });

@@ -79,7 +79,10 @@ app.use(
         contentSignal: { aiTrain: true, search: true, aiInput: true },
 
         // Auto-detect AI agents by User-Agent (ClaudeBot, GPTBot, etc.)
-        detectAgents: true
+        detectAgents: true,
+
+        // Log conversion events (compatible with pino, winston, console)
+        logger: console
     })
 );
 ```

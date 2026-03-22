@@ -14,10 +14,10 @@ describe('KNOWN_AGENTS', () => {
 });
 
 describe('shouldServeMarkdown', () => {
-    it('returns true when Accept includes text/markdown regardless of detectAgents', () => {
-        expect(shouldServeMarkdown('text/markdown', undefined, undefined)).toBe(true);
-        expect(shouldServeMarkdown('text/markdown', undefined, false)).toBe(true);
-        expect(shouldServeMarkdown('text/markdown', 'Mozilla/5.0', true)).toBe(true);
+    it('returns accept-header when Accept includes text/markdown', () => {
+        expect(shouldServeMarkdown('text/markdown', undefined, undefined)).toBe('accept-header');
+        expect(shouldServeMarkdown('text/markdown', undefined, false)).toBe('accept-header');
+        expect(shouldServeMarkdown('text/markdown', 'Mozilla/5.0', true)).toBe('accept-header');
     });
 
     it('returns false for non-markdown Accept when detectAgents is false', () => {
@@ -28,12 +28,12 @@ describe('shouldServeMarkdown', () => {
         expect(shouldServeMarkdown('text/html', 'ClaudeBot/1.0', undefined)).toBe(false);
     });
 
-    it('returns true for known bot user-agent when detectAgents is true', () => {
-        expect(shouldServeMarkdown('text/html', 'Mozilla/5.0 (compatible; ClaudeBot/1.0)', true)).toBe(true);
-        expect(shouldServeMarkdown('text/html', 'ChatGPT-User/1.0', true)).toBe(true);
-        expect(shouldServeMarkdown('text/html', 'Mozilla/5.0 (compatible; GPTBot/1.1)', true)).toBe(true);
-        expect(shouldServeMarkdown('text/html', 'PerplexityBot/1.0', true)).toBe(true);
-        expect(shouldServeMarkdown('text/html', 'Amazonbot/0.1', true)).toBe(true);
+    it('returns agent-detected for known bot user-agent when detectAgents is true', () => {
+        expect(shouldServeMarkdown('text/html', 'Mozilla/5.0 (compatible; ClaudeBot/1.0)', true)).toBe('agent-detected');
+        expect(shouldServeMarkdown('text/html', 'ChatGPT-User/1.0', true)).toBe('agent-detected');
+        expect(shouldServeMarkdown('text/html', 'Mozilla/5.0 (compatible; GPTBot/1.1)', true)).toBe('agent-detected');
+        expect(shouldServeMarkdown('text/html', 'PerplexityBot/1.0', true)).toBe('agent-detected');
+        expect(shouldServeMarkdown('text/html', 'Amazonbot/0.1', true)).toBe('agent-detected');
     });
 
     it('returns false for unknown user-agent when detectAgents is true', () => {
@@ -41,8 +41,8 @@ describe('shouldServeMarkdown', () => {
     });
 
     it('matches user-agent case-insensitively', () => {
-        expect(shouldServeMarkdown('text/html', 'CLAUDEBOT/1.0', true)).toBe(true);
-        expect(shouldServeMarkdown('text/html', 'claudeBot/1.0', true)).toBe(true);
+        expect(shouldServeMarkdown('text/html', 'CLAUDEBOT/1.0', true)).toBe('agent-detected');
+        expect(shouldServeMarkdown('text/html', 'claudeBot/1.0', true)).toBe('agent-detected');
     });
 
     it('returns false when user-agent is undefined even with detectAgents true', () => {
@@ -54,16 +54,20 @@ describe('shouldServeMarkdown', () => {
     });
 
     it('uses custom string[] patterns instead of built-in list', () => {
-        expect(shouldServeMarkdown('text/html', 'MyCustomBot/1.0', ['mycustombot'])).toBe(true);
+        expect(shouldServeMarkdown('text/html', 'MyCustomBot/1.0', ['mycustombot'])).toBe('agent-detected');
         expect(shouldServeMarkdown('text/html', 'ClaudeBot/1.0', ['mycustombot'])).toBe(false);
     });
 
     it('matches custom patterns case-insensitively', () => {
-        expect(shouldServeMarkdown('text/html', 'MYCUSTOMBOT/1.0', ['MyCustomBot'])).toBe(true);
+        expect(shouldServeMarkdown('text/html', 'MYCUSTOMBOT/1.0', ['MyCustomBot'])).toBe('agent-detected');
     });
 
     it('returns false for empty custom patterns array', () => {
         expect(shouldServeMarkdown('text/html', 'ClaudeBot/1.0', [])).toBe(false);
+    });
+
+    it('prefers accept-header over agent-detected when both match', () => {
+        expect(shouldServeMarkdown('text/markdown', 'ClaudeBot/1.0', true)).toBe('accept-header');
     });
 });
 

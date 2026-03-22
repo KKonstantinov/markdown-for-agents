@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { MiddlewareOptions } from '../core/src/index.js';
+import { describe, it, expect, vi } from 'vitest';
+import type { MiddlewareOptions, MiddlewareLogContext } from '../core/src/index.js';
 
 export interface HeaderTestHarness {
     send: (
@@ -114,7 +114,7 @@ export function describeDetectAgentsHeader(harness: HeaderTestHarness): void {
             const { getHeader } = await harness.send({ detectAgents: true }, 'text/html', 'text/html', '<h1>Title</h1>', undefined, {
                 'user-agent': 'Mozilla/5.0 (compatible; ClaudeBot/1.0)'
             });
-            expect(getHeader('content-type')).toBe('text/markdown; charset=utf-8');
+            expect(getHeader('content-type')).toBe('text/plain; charset=utf-8');
         });
 
         it('does not convert for unknown user-agent when detectAgents is true', async () => {
@@ -140,7 +140,7 @@ export function describeDetectAgentsHeader(harness: HeaderTestHarness): void {
                 undefined,
                 { 'user-agent': 'MyCustomBot/1.0' }
             );
-            expect(getHeader('content-type')).toBe('text/markdown; charset=utf-8');
+            expect(getHeader('content-type')).toBe('text/plain; charset=utf-8');
         });
 
         it('includes User-Agent in Vary when detectAgents is enabled (converted)', async () => {
@@ -157,6 +157,44 @@ export function describeDetectAgentsHeader(harness: HeaderTestHarness): void {
             const { getHeader } = await harness.send(undefined, 'text/markdown', 'text/html', '<h1>Title</h1>');
             const vary = getHeader('vary') ?? '';
             expect(vary).not.toContain('User-Agent');
+        });
+    });
+}
+
+export function describeLogger(harness: HeaderTestHarness): void {
+    describe('logger', () => {
+        it('calls logger.info with reason accept-header for Accept: text/markdown', async () => {
+            const info = vi.fn<(ctx: MiddlewareLogContext) => void>();
+            await harness.send({ logger: { info } }, 'text/markdown', 'text/html', '<h1>Title</h1>');
+            expect(info).toHaveBeenCalledOnce();
+            const ctx = info.mock.calls[0][0];
+            expect(ctx.reason).toBe('accept-header');
+            expect(ctx.path).toBeTruthy();
+        });
+
+        it('calls logger.info with reason agent-detected for bot user-agent', async () => {
+            const info = vi.fn<(ctx: MiddlewareLogContext) => void>();
+            await harness.send({ detectAgents: true, logger: { info } }, 'text/html', 'text/html', '<h1>Title</h1>', undefined, {
+                'user-agent': 'Mozilla/5.0 (compatible; ClaudeBot/1.0)'
+            });
+            expect(info).toHaveBeenCalledOnce();
+            const ctx = info.mock.calls[0][0];
+            expect(ctx.reason).toBe('agent-detected');
+            expect(ctx.userAgent).toContain('ClaudeBot');
+        });
+
+        it('does not call logger on pass-through requests', async () => {
+            const info = vi.fn<(ctx: MiddlewareLogContext) => void>();
+            await harness.send({ logger: { info } }, 'text/html', 'text/html', '<h1>Title</h1>');
+            expect(info).not.toHaveBeenCalled();
+        });
+
+        it('includes path in log context', async () => {
+            const info = vi.fn<(ctx: MiddlewareLogContext) => void>();
+            await harness.send({ logger: { info } }, 'text/markdown', 'text/html', '<h1>Title</h1>');
+            const ctx = info.mock.calls[0][0];
+            expect(typeof ctx.path).toBe('string');
+            expect(ctx.path.length).toBeGreaterThan(0);
         });
     });
 }

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled, markdownContentType } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -37,7 +37,8 @@ export function markdown(options?: MiddlewareOptions): ExpressMiddleware {
 
         const accept = typeof req.headers.accept === 'string' ? req.headers.accept : '';
         const userAgent = typeof req.headers['user-agent'] === 'string' ? req.headers['user-agent'] : undefined;
-        if (!shouldServeMarkdown(accept, userAgent, options?.detectAgents)) {
+        const reason = shouldServeMarkdown(accept, userAgent, options?.detectAgents);
+        if (!reason) {
             next();
             return;
         }
@@ -51,9 +52,11 @@ export function markdown(options?: MiddlewareOptions): ExpressMiddleware {
                 return originalSend.call(this, body);
             }
 
+            options?.logger?.info({ reason, path: req.path, userAgent });
+
             const { markdown: md, tokenEstimate, contentHash, convertDuration } = convert(body, options);
 
-            res.setHeader('content-type', 'text/markdown; charset=utf-8');
+            res.setHeader('content-type', markdownContentType(reason));
             res.setHeader(tokenHeader, String(tokenEstimate.tokens));
             res.setHeader('etag', `"${contentHash}"`);
             if (convertDuration !== undefined) {

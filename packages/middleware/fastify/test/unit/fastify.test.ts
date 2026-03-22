@@ -5,7 +5,8 @@ import {
     describeContentSignalHeader,
     describeServerTimingHeader,
     describeVaryHeader,
-    describeDetectAgentsHeader
+    describeDetectAgentsHeader,
+    describeLogger
 } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
@@ -69,7 +70,7 @@ function invokeHook(options?: MiddlewareOptions) {
                 headers[k] = v;
             }
         }
-        const request = { headers };
+        const request = { headers, url: '/' };
         const { reply, getHeader } = createMockReply(contentType, extraHeaders);
         const result = await hook(request, reply, payload);
         return { result, getHeader };
@@ -175,4 +176,5 @@ describe('fastify middleware', () => {
     describeServerTimingHeader(fastifyHarness);
     describeVaryHeader(fastifyHarness);
     describeDetectAgentsHeader(fastifyHarness);
+    describeLogger(fastifyHarness);
 });

@@ -5,7 +5,8 @@ import {
     describeContentSignalHeader,
     describeServerTimingHeader,
     describeVaryHeader,
-    describeDetectAgentsHeader
+    describeDetectAgentsHeader,
+    describeLogger
 } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
@@ -136,6 +137,7 @@ describe('ETag header', () => {
 describeServerTimingHeader(nextjsHarness);
 describeVaryHeader(nextjsHarness);
 describeDetectAgentsHeader(nextjsHarness);
+describeLogger(nextjsHarness);
 
 describe('Server-Timing header (nextjs-specific)', () => {
     it('includes mfa.fetch timing alongside mfa.convert', async () => {

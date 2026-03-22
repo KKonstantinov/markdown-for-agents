@@ -146,7 +146,10 @@ const handler = withMarkdown(async req => fetch(req.url, { headers: { accept: 't
     contentSignal: { aiTrain: true, search: true, aiInput: true },
 
     // Auto-detect AI agents by User-Agent (ClaudeBot, GPTBot, etc.)
-    detectAgents: true
+    detectAgents: true,
+
+    // Log conversion events (compatible with pino, winston, console)
+    logger: console
 });
 ```
 

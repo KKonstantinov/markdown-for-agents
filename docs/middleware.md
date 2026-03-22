@@ -315,6 +315,7 @@ interface MiddlewareOptions extends ConvertOptions {
     tokenHeader?: string; // Default: "x-markdown-tokens"
     contentSignal?: ContentSignalOptions;
     detectAgents?: boolean | string[]; // Default: false
+    logger?: MiddlewareLogger; // Optional, compatible with pino/winston/console
 }
 ```
 
@@ -340,7 +341,10 @@ const mw = markdownMiddleware({
     tokenHeader: 'x-token-count', // Custom header name
 
     // Auto-detect AI agents by User-Agent
-    detectAgents: true // Serve markdown to ClaudeBot, GPTBot, etc.
+    detectAgents: true, // Serve markdown to ClaudeBot, GPTBot, etc.
+
+    // Log conversion events
+    logger: console // or pino(), winston.createLogger(), etc.
 });
 ```
 
@@ -404,6 +408,37 @@ The built-in list includes user-agent tokens for major AI providers:
 | Cohere     | `cohere-ai`                                    | [Cohere](https://cohere.com)                                                               |
 
 ::: warning Cache impact Enabling `detectAgents` adds `User-Agent` to the `Vary` header. Because user-agent strings have high cardinality, this can reduce CDN cache hit rates. Consider this trade-off when deploying behind a CDN. :::
+
+## Logging
+
+Pass a `logger` to observe when and why the middleware converts a response. Any object with an `info` method works - pino, winston, bunyan, or `console`:
+
+```ts
+import pino from 'pino';
+
+app.use(
+    markdown({
+        detectAgents: true,
+        logger: pino()
+    })
+);
+```
+
+The logger receives a structured context object on each conversion:
+
+```ts
+interface MiddlewareLogContext {
+    reason: 'accept-header' | 'agent-detected';
+    path: string;
+    userAgent?: string;
+}
+```
+
+- `reason` — why the conversion was triggered (`'accept-header'` when the client sent `Accept: text/markdown`, `'agent-detected'` when `detectAgents` matched the user-agent)
+- `path` — the request path
+- `userAgent` — the `User-Agent` header value
+
+Only conversion events are logged. Pass-through requests (no conversion) are silent.
 
 ## Caching
 

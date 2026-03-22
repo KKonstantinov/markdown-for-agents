@@ -14,7 +14,7 @@
  * @module
  */
 
-import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled, markdownContentType } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -56,7 +56,8 @@ export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
 
         const accept = request.headers.get('accept') ?? '';
         const userAgent = request.headers.get('user-agent') ?? undefined;
-        if (!shouldServeMarkdown(accept, userAgent, options?.detectAgents)) {
+        const reason = shouldServeMarkdown(accept, userAgent, options?.detectAgents);
+        if (!reason) {
             return response;
         }
 
@@ -66,12 +67,14 @@ export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
             return response;
         }
 
+        options?.logger?.info({ reason, path: new URL(request.url).pathname, userAgent });
+
         const html = await response.text();
 
         const { markdown, tokenEstimate, contentHash, convertDuration } = convert(html, options);
 
         const headers = new Headers(response.headers);
-        headers.set('content-type', 'text/markdown; charset=utf-8');
+        headers.set('content-type', markdownContentType(reason));
         headers.set(tokenHeader, String(tokenEstimate.tokens));
         headers.set('etag', `"${contentHash}"`);
         if (convertDuration !== undefined) {

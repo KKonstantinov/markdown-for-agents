@@ -1,5 +1,5 @@
 import type { NextProxy } from 'next/server';
-import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled, markdownContentType } from 'markdown-for-agents';
 import type { MiddlewareOptions, Rule } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -120,7 +120,8 @@ export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): N
         const userAgent = request.headers.get('user-agent') ?? undefined;
         const agentDetection = isAgentDetectionEnabled(options?.detectAgents);
 
-        if (!shouldServeMarkdown(accept, userAgent, options?.detectAgents)) {
+        const reason = shouldServeMarkdown(accept, userAgent, options?.detectAgents);
+        if (!reason) {
             const response = await handler(request, event);
             if (response) {
                 // Always signal that responses vary by Accept so caches store
@@ -145,6 +146,8 @@ export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): N
             return response;
         }
 
+        options?.logger?.info({ reason, path: new URL(request.url).pathname, userAgent });
+
         const html = await response.text();
 
         const streamedMeta = extractStreamedMetadata(html);
@@ -167,7 +170,7 @@ export function withMarkdown(handler: NextProxy, options?: MiddlewareOptions): N
         const headers = new Headers(response.headers);
         headers.append('vary', 'Accept');
         if (agentDetection) headers.append('vary', 'User-Agent');
-        headers.set('content-type', 'text/markdown; charset=utf-8');
+        headers.set('content-type', markdownContentType(reason));
         headers.set(tokenHeader, String(tokenEstimate.tokens));
         headers.set('etag', `"${contentHash}"`);
         if (convertDuration !== undefined) {

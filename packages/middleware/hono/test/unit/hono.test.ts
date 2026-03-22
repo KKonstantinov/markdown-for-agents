@@ -4,7 +4,8 @@ import {
     describeContentSignalHeader,
     describeServerTimingHeader,
     describeVaryHeader,
-    describeDetectAgentsHeader
+    describeDetectAgentsHeader,
+    describeLogger
 } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
@@ -18,7 +19,8 @@ function createMockContext(acceptHeader: string, responseBody: string, responseC
         req: {
             header: (name: string): string | undefined => {
                 if (name === 'accept') return acceptHeader;
-            }
+            },
+            path: '/'
         },
         res: new Response(responseBody, { headers: resHeaders })
     };
@@ -107,7 +109,8 @@ describe('hono middleware', () => {
             const reqHeaderMap: Record<string, string> = { accept, ...requestHeaders };
             const c = {
                 req: {
-                    header: (name: string): string | undefined => reqHeaderMap[name]
+                    header: (name: string): string | undefined => reqHeaderMap[name],
+                    path: '/'
                 },
                 res: new Response(body, { headers: resHeaders })
             };
@@ -121,4 +124,5 @@ describe('hono middleware', () => {
     describeServerTimingHeader(honoHarness);
     describeVaryHeader(honoHarness);
     describeDetectAgentsHeader(honoHarness);
+    describeLogger(honoHarness);
 });

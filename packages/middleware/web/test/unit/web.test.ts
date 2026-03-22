@@ -4,7 +4,8 @@ import {
     describeContentSignalHeader,
     describeServerTimingHeader,
     describeVaryHeader,
-    describeDetectAgentsHeader
+    describeDetectAgentsHeader,
+    describeLogger
 } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
@@ -114,4 +115,5 @@ describe('web middleware', () => {
     describeServerTimingHeader(webHarness);
     describeVaryHeader(webHarness);
     describeDetectAgentsHeader(webHarness);
+    describeLogger(webHarness);
 });

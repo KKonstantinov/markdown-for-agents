@@ -13,7 +13,7 @@
  */
 
 import type { MiddlewareHandler } from 'hono';
-import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled, markdownContentType } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -48,10 +48,13 @@ export function markdown(options?: MiddlewareOptions): MiddlewareHandler {
 
         const accept = c.req.header('accept') ?? '';
         const userAgent = c.req.header('user-agent') ?? undefined;
-        if (!shouldServeMarkdown(accept, userAgent, options?.detectAgents)) return;
+        const reason = shouldServeMarkdown(accept, userAgent, options?.detectAgents);
+        if (!reason) return;
 
         const contentType = c.res.headers.get('content-type') ?? '';
         if (!contentType.includes('text/html')) return;
+
+        options?.logger?.info({ reason, path: c.req.path, userAgent });
 
         const html = await c.res.text();
 
@@ -61,7 +64,7 @@ export function markdown(options?: MiddlewareOptions): MiddlewareHandler {
             status: c.res.status,
             headers: c.res.headers
         });
-        c.res.headers.set('content-type', 'text/markdown; charset=utf-8');
+        c.res.headers.set('content-type', markdownContentType(reason));
         c.res.headers.set(tokenHeader, String(tokenEstimate.tokens));
         c.res.headers.set('etag', `"${contentHash}"`);
         if (convertDuration !== undefined) {
