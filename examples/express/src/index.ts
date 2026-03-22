@@ -8,12 +8,18 @@ app.use(
         extract: true,
         deduplicate: true,
         contentSignal: { aiTrain: true, search: true, aiInput: true },
-        serverTiming: true
+        serverTiming: true,
+        detectAgents: true,
+        logger: console
     })
 );
 
 const nav = '<nav><a href="/">Home</a> <a href="/about">About</a> <a href="/article">Article</a></nav>';
 const footer = '<footer><p>&copy; 2025 markdown-for-agents</p></footer>';
+
+app.get('/robots.txt', (_req, res) => {
+    res.type('text/plain').send('User-agent: *\nAllow: /\n');
+});
 
 app.get('/', (_req, res) => {
     res.type('html').send(

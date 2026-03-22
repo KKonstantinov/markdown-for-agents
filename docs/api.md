@@ -365,19 +365,53 @@ interface MiddlewareOptions extends ConvertOptions {
     tokenHeader?: string;
     timingHeader?: string;
     contentSignal?: ContentSignalOptions;
+    detectAgents?: boolean | string[];
+    logger?: MiddlewareLogger;
 }
 ```
 
 Extends `ConvertOptions` with:
 
-| Property        | Type                   | Default               | Description                                               |
-| --------------- | ---------------------- | --------------------- | --------------------------------------------------------- |
-| `tokenHeader`   | `string`               | `"x-markdown-tokens"` | Response header name for token count                      |
-| `timingHeader`  | `string`               | `"x-markdown-timing"` | Response header name for the CDN-safe timing duplicate    |
-| `contentSignal` | `ContentSignalOptions` | -                     | Publisher consent signals for the `content-signal` header |
+| Property        | Type                   | Default               | Description                                                                                                            |
+| --------------- | ---------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `tokenHeader`   | `string`               | `"x-markdown-tokens"` | Response header name for token count                                                                                   |
+| `timingHeader`  | `string`               | `"x-markdown-timing"` | Response header name for the CDN-safe timing duplicate                                                                 |
+| `contentSignal` | `ContentSignalOptions` | -                     | Publisher consent signals for the `content-signal` header                                                              |
+| `detectAgents`  | `boolean \| string[]`  | `false`               | Auto-serve markdown to AI agents by user-agent. `true` uses built-in list, `string[]` replaces it with custom patterns |
+| `logger`        | `MiddlewareLogger`     | -                     | Optional logger for conversion events. Compatible with pino, winston, and `console`                                    |
 
 When `serverTiming` is `true` (inherited from `ConvertOptions`), middleware sets both a [`Server-Timing`](https://www.w3.org/TR/server-timing/) header and an `x-markdown-timing` header with `mfa.convert` duration. The `x-markdown-timing` header carries the same value but survives
 CDN caching (some CDNs strip `Server-Timing` from cached responses). The Next.js middleware additionally includes `mfa.fetch` duration for the proxy self-fetch.
+
+---
+
+### `MiddlewareLogger`
+
+```ts
+interface MiddlewareLogger {
+    info(context: MiddlewareLogContext): void;
+}
+```
+
+Any object with an `info` method. Compatible with pino, winston, bunyan, and `console`.
+
+---
+
+### `MiddlewareLogContext`
+
+```ts
+interface MiddlewareLogContext {
+    reason: 'accept-header' | 'agent-detected';
+    path: string;
+    userAgent?: string;
+}
+```
+
+| Property    | Type                                  | Description                      |
+| ----------- | ------------------------------------- | -------------------------------- |
+| `reason`    | `'accept-header' \| 'agent-detected'` | Why the conversion was triggered |
+| `path`      | `string`                              | Request path                     |
+| `userAgent` | `string \| undefined`                 | The `User-Agent` header value    |
 
 ---
 

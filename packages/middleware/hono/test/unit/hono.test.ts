@@ -1,6 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import { markdown } from '../../src/index.js';
-import { describeContentSignalHeader, describeServerTimingHeader, describeVaryHeader } from '../../../header-test-helpers.js';
+import {
+    describeContentSignalHeader,
+    describeServerTimingHeader,
+    describeVaryHeader,
+    describeDetectAgentsHeader,
+    describeLogger
+} from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 // Minimal mock of Hono's Context for testing
@@ -13,7 +19,8 @@ function createMockContext(acceptHeader: string, responseBody: string, responseC
         req: {
             header: (name: string): string | undefined => {
                 if (name === 'accept') return acceptHeader;
-            }
+            },
+            path: '/'
         },
         res: new Response(responseBody, { headers: resHeaders })
     };
@@ -91,7 +98,7 @@ describe('hono middleware', () => {
     });
 
     const honoHarness: HeaderTestHarness = {
-        async send(options, accept, contentType, body, extraHeaders) {
+        async send(options, accept, contentType, body, extraHeaders, requestHeaders) {
             const mw = markdown(options);
             const resHeaders = new Headers({ 'content-type': contentType });
             if (extraHeaders) {
@@ -99,11 +106,11 @@ describe('hono middleware', () => {
                     resHeaders.set(k, v);
                 }
             }
+            const reqHeaderMap: Record<string, string> = { accept, ...requestHeaders };
             const c = {
                 req: {
-                    header: (name: string): string | undefined => {
-                        if (name === 'accept') return accept;
-                    }
+                    header: (name: string): string | undefined => reqHeaderMap[name],
+                    path: '/'
                 },
                 res: new Response(body, { headers: resHeaders })
             };
@@ -116,4 +123,6 @@ describe('hono middleware', () => {
     describeContentSignalHeader(honoHarness);
     describeServerTimingHeader(honoHarness);
     describeVaryHeader(honoHarness);
+    describeDetectAgentsHeader(honoHarness);
+    describeLogger(honoHarness);
 });
