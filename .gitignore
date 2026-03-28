@@ -4,15 +4,15 @@ dist/
 .DS_Store
 # Fumadocs
 .source/
-packages/docs/.next/
-packages/docs/content/docs/packages/core.mdx
-packages/docs/content/docs/packages/audit.mdx
-packages/docs/content/docs/packages/express.mdx
-packages/docs/content/docs/packages/fastify.mdx
-packages/docs/content/docs/packages/hono.mdx
-packages/docs/content/docs/packages/nextjs.mdx
-packages/docs/content/docs/packages/web.mdx
-packages/docs/content/docs/packages/python.mdx
+packages/site/.next/
+packages/site/content/docs/packages/core.mdx
+packages/site/content/docs/packages/audit.mdx
+packages/site/content/docs/packages/express.mdx
+packages/site/content/docs/packages/fastify.mdx
+packages/site/content/docs/packages/hono.mdx
+packages/site/content/docs/packages/nextjs.mdx
+packages/site/content/docs/packages/web.mdx
+packages/site/content/docs/packages/python.mdx
 .playwright-mcp
 .next/
 

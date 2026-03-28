@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 url: '/docs'
             }}
             links={[
-                { text: 'Playground', url: 'https://markdown-for-agents-playground.vercel.app', external: true },
+                { text: 'Playground', url: '/playground' },
                 { text: 'GitHub', url: 'https://github.com/KKonstantinov/markdown-for-agents', external: true }
             ]}
         >

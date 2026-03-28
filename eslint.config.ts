@@ -14,14 +14,11 @@ export default tseslint.config(
             'packages/core/test/integration/bun.test.ts',
             'packages/core/test/integration/deno.test.ts',
             'packages/core/test/integration/node.test.mts',
-            'packages/docs/.next/',
-            'packages/docs/.source/',
-            'packages/docs/next-env.d.ts',
-            'packages/docs/*.config.*',
-            'packages/docs/scripts/',
-            'packages/playground/.next/',
-            'packages/playground/next-env.d.ts',
-            'packages/playground/*.config.*',
+            'packages/site/.next/',
+            'packages/site/.source/',
+            'packages/site/next-env.d.ts',
+            'packages/site/*.config.*',
+            'packages/site/scripts/',
             'examples/nextjs/.next/',
             'examples/nextjs/next-env.d.ts',
             'examples/nextjs/*.config.*',
@@ -92,22 +89,12 @@ export default tseslint.config(
             'unicorn/no-useless-undefined': 'off'
         }
     },
-    // Playground uses its own tsconfig (JSX + DOM types)
+    // Site app uses its own tsconfig (JSX + DOM types)
     {
-        files: ['packages/playground/src/**/*.ts', 'packages/playground/src/**/*.tsx'],
+        files: ['packages/site/src/**/*.ts', 'packages/site/src/**/*.tsx'],
         languageOptions: {
             parserOptions: {
-                project: 'packages/playground/tsconfig.typecheck.json',
-                tsconfigRootDir: import.meta.dirname
-            }
-        }
-    },
-    // Docs app uses its own tsconfig (JSX + DOM types)
-    {
-        files: ['packages/docs/src/**/*.ts', 'packages/docs/src/**/*.tsx'],
-        languageOptions: {
-            parserOptions: {
-                project: 'packages/docs/tsconfig.typecheck.json',
+                project: 'packages/site/tsconfig.typecheck.json',
                 tsconfigRootDir: import.meta.dirname
             }
         }

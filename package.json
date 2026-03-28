@@ -21,9 +21,8 @@
         "release": "pnpm build && changeset publish",
         "release:jsr": "pnpm -r --if-present run release:jsr",
         "prepare": "lefthook install",
-        "playground:dev": "pnpm --filter @markdown-for-agents/playground dev",
-        "docs:dev": "pnpm --filter @markdown-for-agents/docs dev",
-        "docs:build": "pnpm --filter @markdown-for-agents/docs build"
+        "dev": "pnpm --filter @markdown-for-agents/site dev",
+        "site:build": "pnpm --filter @markdown-for-agents/site build"
     },
     "devDependencies": {
         "@changesets/changelog-github": "^0.6.0",

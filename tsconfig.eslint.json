@@ -29,8 +29,8 @@
         "examples/*/test",
         "examples/*/*.config.ts",
         "*.config.ts",
-        "packages/docs/src/**/*.ts",
-        "packages/docs/src/**/*.tsx"
+        "packages/site/src/**/*.ts",
+        "packages/site/src/**/*.tsx"
     ],
     "exclude": ["node_modules", "**/dist", "**/node_modules"]
 }

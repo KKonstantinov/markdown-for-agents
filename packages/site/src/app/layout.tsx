@@ -1,5 +1,6 @@
 import './globals.css';
 import { RootProvider } from 'fumadocs-ui/provider/next';
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <html lang="en" suppressHydrationWarning>
             <body className="flex min-h-screen flex-col">
                 <RootProvider>{children}</RootProvider>
+                <Analytics />
             </body>
         </html>
     );

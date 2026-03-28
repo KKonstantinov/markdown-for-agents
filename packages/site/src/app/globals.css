@@ -1,6 +1,6 @@
-@import 'tailwindcss' source('../../');
-
-@custom-variant dark (&:where(.dark, .dark *));
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
 
 @theme {
     --font-mono: 'SF Mono', ui-monospace, SFMono-Regular, 'Menlo', 'Consolas', 'Liberation Mono', monospace;

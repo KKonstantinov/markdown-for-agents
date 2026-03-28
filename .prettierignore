@@ -2,25 +2,23 @@
 packages/core/test/fixtures/
 
 # Generated README copies (Prettier should not reformat)
-packages/docs/content/docs/packages/core.mdx
-packages/docs/content/docs/packages/audit.mdx
-packages/docs/content/docs/packages/express.mdx
-packages/docs/content/docs/packages/fastify.mdx
-packages/docs/content/docs/packages/hono.mdx
-packages/docs/content/docs/packages/nextjs.mdx
-packages/docs/content/docs/packages/web.mdx
-packages/docs/content/docs/packages/python.mdx
+packages/site/content/docs/packages/core.mdx
+packages/site/content/docs/packages/audit.mdx
+packages/site/content/docs/packages/express.mdx
+packages/site/content/docs/packages/fastify.mdx
+packages/site/content/docs/packages/hono.mdx
+packages/site/content/docs/packages/nextjs.mdx
+packages/site/content/docs/packages/web.mdx
+packages/site/content/docs/packages/python.mdx
 
 # Docs build output
-packages/docs/.next/
-packages/docs/next-env.d.ts
+packages/site/.next/
+packages/site/next-env.d.ts
 
 # Build output
 **/dist/
 
 # Next.js
-packages/playground/.next/
-packages/playground/next-env.d.ts
 examples/nextjs/.next/
 examples/nextjs/next-env.d.ts
 

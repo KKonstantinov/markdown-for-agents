@@ -2,8 +2,7 @@ packages:
     - 'packages/core'
     - 'packages/audit'
     - 'packages/middleware/*'
-    - 'packages/playground'
-    - 'packages/docs'
+    - 'packages/site'
     - 'examples/*'
 
 overrides:

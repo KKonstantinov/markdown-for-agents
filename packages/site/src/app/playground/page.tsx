@@ -1,3 +1,5 @@
+'use client';
+
 import { Playground } from '@/components/playground';
 import { ThemeToggle } from '@/components/theme-toggle';
 
@@ -7,10 +9,7 @@ export default function Page() {
             <header className="mb-8 flex items-start justify-between">
                 <div>
                     <div className="flex items-center gap-3">
-                        <a
-                            href="https://kkonstantinov.github.io/markdown-for-agents/"
-                            className="text-2xl font-bold tracking-tight hover:underline sm:text-3xl"
-                        >
+                        <a href="/docs" className="text-2xl font-bold tracking-tight hover:underline sm:text-3xl">
                             markdown-for-agents
                         </a>
                         <a
@@ -42,7 +41,7 @@ export default function Page() {
                         </a>
                     </div>
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Interactive playground for the markdown-for-agents library — an HTML to Markdown converter for AI agents.
+                        Interactive playground for the markdown-for-agents library - an HTML to Markdown converter for AI agents.
                     </p>
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                         Paste a URL or HTML to see how it strips away navigation, ads, and boilerplate to produce clean Markdown with 90+%
@@ -50,13 +49,13 @@ export default function Page() {
                     </p>
                     <div className="mt-3 flex items-center gap-3">
                         <a
-                            href="https://kkonstantinov.github.io/markdown-for-agents/"
+                            href="/docs"
                             className="rounded-lg bg-blue-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
                         >
                             Documentation
                         </a>
                         <a
-                            href="https://kkonstantinov.github.io/markdown-for-agents/getting-started"
+                            href="/docs/getting-started"
                             className="rounded-lg border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
                         >
                             Get started
