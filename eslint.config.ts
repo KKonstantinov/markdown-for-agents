@@ -14,8 +14,11 @@ export default tseslint.config(
             'packages/core/test/integration/bun.test.ts',
             'packages/core/test/integration/deno.test.ts',
             'packages/core/test/integration/node.test.mts',
-            'docs/.vitepress/cache/',
-            'docs/.vitepress/dist/',
+            'packages/docs/.next/',
+            'packages/docs/.source/',
+            'packages/docs/next-env.d.ts',
+            'packages/docs/*.config.*',
+            'packages/docs/scripts/',
             'packages/playground/.next/',
             'packages/playground/next-env.d.ts',
             'packages/playground/*.config.*',
@@ -95,6 +98,16 @@ export default tseslint.config(
         languageOptions: {
             parserOptions: {
                 project: 'packages/playground/tsconfig.typecheck.json',
+                tsconfigRootDir: import.meta.dirname
+            }
+        }
+    },
+    // Docs app uses its own tsconfig (JSX + DOM types)
+    {
+        files: ['packages/docs/src/**/*.ts', 'packages/docs/src/**/*.tsx'],
+        languageOptions: {
+            parserOptions: {
+                project: 'packages/docs/tsconfig.typecheck.json',
                 tsconfigRootDir: import.meta.dirname
             }
         }

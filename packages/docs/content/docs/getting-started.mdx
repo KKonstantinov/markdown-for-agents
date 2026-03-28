@@ -1,3 +1,8 @@
+---
+title: Getting Started
+description: Install markdown-for-agents and learn common usage patterns.
+---
+
 # Getting Started
 
 This guide walks you through installing `markdown-for-agents` and using it in common scenarios. Want to try it first? **[Open the playground](https://markdown-for-agents-playground.vercel.app)** to convert HTML to Markdown right in your browser.
@@ -10,7 +15,9 @@ npm install markdown-for-agents
 
 The library has a single runtime dependency ([htmlparser2](https://github.com/fb55/htmlparser2)) and works in any JavaScript environment that supports ES2022.
 
-::: tip Python Also available as a pure Python package with zero dependencies. See the [Python package docs](/packages/python) for installation and usage. :::
+<Callout title="Python">
+Also available as a pure Python package with zero dependencies. See the [Python package docs](/docs/packages/python) for installation and usage.
+</Callout>
 
 ## Your First Conversion
 
@@ -26,8 +33,8 @@ console.log(markdown);
 
 The `convert` function takes an HTML string and returns an object with:
 
-- `markdown` — the converted Markdown string
-- `tokenEstimate` — a rough token/character/word count
+- `markdown` - the converted Markdown string
+- `tokenEstimate` - a rough token/character/word count
 
 ## Converting a Web Page
 
@@ -118,11 +125,11 @@ const { markdown } = convert(html, {
 });
 ```
 
-See the [Custom Rules guide](rules.md) for the full rule API.
+See the [Custom Rules guide](/docs/rules) for the full rule API.
 
 ### Serving Markdown via Middleware
 
-If you're building a web server, you can automatically respond with Markdown when AI agents request it. Each middleware is a separate package — install only what you need:
+If you're building a web server, you can automatically respond with Markdown when AI agents request it. Each middleware is a separate package - install only what you need:
 
 ```ts
 // Express
@@ -167,13 +174,13 @@ function handler() {
 export const GET = withMarkdown(handler, { extract: true });
 ```
 
-When a client sends `Accept: text/markdown`, the response is automatically converted. Normal requests pass through untouched. See the [Middleware guide](middleware.md) for all framework integrations, or the
+When a client sends `Accept: text/markdown`, the response is automatically converted. Normal requests pass through untouched. See the [Middleware guide](/docs/middleware) for all framework integrations, or the
 [Next.js example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete working app with the proxy pattern.
 
 ## What's Next
 
-- [Playground](https://markdown-for-agents-playground.vercel.app) — try the converter interactively with any URL or HTML
-- [Content Extraction](extraction.md) — fine-tune what gets stripped from web pages
-- [Middleware](middleware.md) — integrate with Express, Fastify, Hono, Next.js, or any Web Standard server
-- [Custom Rules](rules.md) — extend the converter with your own element handlers
-- [API Reference](api.md) — complete API documentation
+- [Playground](https://markdown-for-agents-playground.vercel.app) - try the converter interactively with any URL or HTML
+- [Content Extraction](/docs/extraction) - fine-tune what gets stripped from web pages
+- [Middleware](/docs/middleware) - integrate with Express, Fastify, Hono, Next.js, or any Web Standard server
+- [Custom Rules](/docs/rules) - extend the converter with your own element handlers
+- [API Reference](/docs/api) - complete API documentation

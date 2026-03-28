@@ -1,3 +1,8 @@
+---
+title: API Reference
+description: Complete API documentation for markdown-for-agents.
+---
+
 # API Reference
 
 ## Functions
@@ -14,8 +19,8 @@ function convert(html: string, options?: ConvertOptions): ConvertResult;
 
 **Parameters:**
 
-- `html` — the HTML string to convert
-- `options` — optional [ConvertOptions](#convertoptions)
+- `html` - the HTML string to convert
+- `options` - optional [ConvertOptions](#convertoptions)
 
 **Returns:** [ConvertResult](#convertresult)
 
@@ -42,9 +47,9 @@ function createRule(filter: string | string[] | ((node: Element) => boolean), re
 
 **Parameters:**
 
-- `filter` — tag name, array of tag names, or predicate function
-- `replacement` — function that returns the Markdown string, `null` to remove, or `undefined` to fall through
-- `priority` — rule priority (default: `100`). Higher runs first.
+- `filter` - tag name, array of tag names, or predicate function
+- `replacement` - function that returns the Markdown string, `null` to remove, or `undefined` to fall through
+- `priority` - rule priority (default: `100`). Higher runs first.
 
 **Returns:** [Rule](#rule)
 
@@ -60,7 +65,7 @@ import { getDefaultRules } from 'markdown-for-agents';
 function getDefaultRules(): Rule[];
 ```
 
-The result is cached — subsequent calls return the same array.
+The result is cached - subsequent calls return the same array.
 
 ---
 
@@ -76,8 +81,8 @@ function extractContent(document: Document, options?: ExtractOptions): void;
 
 **Parameters:**
 
-- `document` — a [domhandler](https://github.com/fb55/domhandler) `Document` (from `htmlparser2`)
-- `options` — optional [ExtractOptions](#extractoptions)
+- `document` - a [domhandler](https://github.com/fb55/domhandler) `Document` (from `htmlparser2`)
+- `options` - optional [ExtractOptions](#extractoptions)
 
 This mutates the document. Stripped elements are removed from the tree.
 
@@ -208,7 +213,7 @@ interface ConvertOptions {
 | `headingStyle`    | `"atx" \| "setext"`               | `"atx"`            | Heading format                                                           |
 | `bulletChar`      | `"-" \| "*" \| "+"`               | `"-"`              | Unordered list bullet                                                    |
 | `codeBlockStyle`  | `"fenced" \| "indented"`          | `"fenced"`         | Code block format                                                        |
-| `fenceChar`       | ``"`" \| "~"``                    | ``"`"``            | Fence character                                                          |
+| `fenceChar`       | `` "`" \| "~" ``                  | `` "`" ``          | Fence character                                                          |
 | `strongDelimiter` | `"**" \| "__"`                    | `"**"`             | Bold delimiter                                                           |
 | `emDelimiter`     | `"*" \| "_"`                      | `"*"`              | Italic delimiter                                                         |
 | `linkStyle`       | `"inlined" \| "referenced"`       | `"inlined"`        | Link format                                                              |
@@ -256,7 +261,7 @@ interface ConvertResult {
 | `contentHash`     | `string`        | Deterministic content hash of the markdown output (FNV-1a, base36)           |
 | `convertDuration` | `number`        | Conversion time in milliseconds (only present when `serverTiming` is `true`) |
 
-The `contentHash` is useful as an `ETag` value or cache key — the same markdown always produces the same hash.
+The `contentHash` is useful as an `ETag` value or cache key - the same markdown always produces the same hash.
 
 ---
 
@@ -270,9 +275,9 @@ interface Rule {
 }
 ```
 
-- `filter` — determines which elements the rule applies to
-- `replacement` — produces the Markdown output. Return `null` to remove, `undefined` to fall through.
-- `priority` — higher priority rules are checked first. Default: `0` for built-in rules, `100` for `createRule`.
+- `filter` - determines which elements the rule applies to
+- `replacement` - produces the Markdown output. Return `null` to remove, `undefined` to fall through.
+- `priority` - higher priority rules are checked first. Default: `0` for built-in rules, `100` for `createRule`.
 
 ---
 

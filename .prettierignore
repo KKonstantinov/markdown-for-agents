@@ -1,8 +1,19 @@
 # Test fixtures contain expected converter output and must not be reformatted
 packages/core/test/fixtures/
 
-# Symlinked package READMEs (Prettier cannot follow symlinks)
-docs/packages/
+# Generated README copies (Prettier should not reformat)
+packages/docs/content/docs/packages/core.mdx
+packages/docs/content/docs/packages/audit.mdx
+packages/docs/content/docs/packages/express.mdx
+packages/docs/content/docs/packages/fastify.mdx
+packages/docs/content/docs/packages/hono.mdx
+packages/docs/content/docs/packages/nextjs.mdx
+packages/docs/content/docs/packages/web.mdx
+packages/docs/content/docs/packages/python.mdx
+
+# Docs build output
+packages/docs/.next/
+packages/docs/next-env.d.ts
 
 # Build output
 **/dist/

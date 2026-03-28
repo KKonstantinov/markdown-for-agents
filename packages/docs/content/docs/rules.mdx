@@ -1,3 +1,8 @@
+---
+title: Custom Rules
+description: Override how any HTML element is converted to Markdown, or add support for custom elements.
+---
+
 # Custom Rules
 
 The rule system lets you override how any HTML element is converted to Markdown, or add support for elements the library doesn't handle by default.
@@ -6,9 +11,9 @@ The rule system lets you override how any HTML element is converted to Markdown,
 
 The converter walks the DOM tree and, for each element, checks rules in priority order (highest first). The first rule whose filter matches and whose replacement returns a non-`undefined` value wins.
 
-- **Return a string** — use it as the Markdown output for this element
-- **Return `null`** — remove the element from the output entirely
-- **Return `undefined`** — skip this rule and try the next one (fall-through)
+- **Return a string** - use it as the Markdown output for this element
+- **Return `null`** - remove the element from the output entirely
+- **Return `undefined`** - skip this rule and try the next one (fall-through)
 
 ## Creating Rules
 
@@ -138,8 +143,8 @@ Rules are sorted by priority (descending). Higher priority rules are checked fir
 
 | Priority                       | Meaning                      |
 | ------------------------------ | ---------------------------- |
-| 100 (default for `createRule`) | Custom rules — checked first |
-| 0 (built-in rules)             | Default rules — checked last |
+| 100 (default for `createRule`) | Custom rules - checked first |
+| 0 (built-in rules)             | Default rules - checked last |
 
 If two rules have the same priority, the order in the array is preserved.
 

@@ -1,3 +1,8 @@
+---
+title: Middleware
+description: Serve Markdown responses via content negotiation with Express, Fastify, Hono, Next.js, or any Web Standard server.
+---
+
 # Middleware
 
 `markdown-for-agents` includes middleware for serving Markdown responses via content negotiation. When an AI agent (or any client) sends `Accept: text/markdown`, the middleware intercepts the HTML response and converts it to Markdown automatically. Normal browser requests pass
@@ -15,7 +20,9 @@ npm install @markdown-for-agents/web
 
 All middleware packages depend on `markdown-for-agents` (the core library), which is installed automatically as a dependency.
 
-::: tip Python The Python package includes middleware for FastAPI, Flask, and Django. See the [Python package docs](/packages/python#middleware) for details. :::
+<Callout title="Python">
+The Python package includes middleware for FastAPI, Flask, and Django. See the [Python package docs](/docs/packages/python#middleware) for details.
+</Callout>
 
 ## How It Works
 
@@ -204,7 +211,7 @@ export const config = {
 
 #### How it works
 
-The inner `fetch` sends `accept: 'text/html'`, so when the request re-enters the proxy it hits the early `return NextResponse.next()` and renders the page normally — no infinite loop. Only `Accept: text/markdown` requests take this path; all other traffic passes straight through.
+The inner `fetch` sends `accept: 'text/html'`, so when the request re-enters the proxy it hits the early `return NextResponse.next()` and renders the page normally - no infinite loop. Only `Accept: text/markdown` requests take this path; all other traffic passes straight through.
 
 #### Tradeoffs
 
@@ -212,9 +219,9 @@ This pattern makes a **second HTTP request** to your own server for every Markdo
 
 In practice this is usually fine:
 
-- **Latency** — the second request is localhost-to-localhost (or edge-to-edge on Vercel), so it adds minimal overhead.
-- **Compute** — your page renders twice for AI agent requests. For static or ISR pages this is a cache hit. For dynamic pages the extra render is the main cost.
-- **Scope control** — use `config.matcher` to limit which routes are eligible, so non-content pages (API routes, auth, assets) are never double-fetched.
+- **Latency** - the second request is localhost-to-localhost (or edge-to-edge on Vercel), so it adds minimal overhead.
+- **Compute** - your page renders twice for AI agent requests. For static or ISR pages this is a cache hit. For dynamic pages the extra render is the main cost.
+- **Scope control** - use `config.matcher` to limit which routes are eligible, so non-content pages (API routes, auth, assets) are never double-fetched.
 
 #### Measuring the overhead
 
@@ -225,8 +232,8 @@ Server-Timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;desc="
 x-markdown-timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;desc="HTML to Markdown"
 ```
 
-- **`mfa.fetch`** — time spent on the proxy self-fetch (the second HTTP request)
-- **`mfa.convert`** — time spent converting HTML to Markdown
+- **`mfa.fetch`** - time spent on the proxy self-fetch (the second HTTP request)
+- **`mfa.convert`** - time spent converting HTML to Markdown
 
 `Server-Timing` surfaces in browser devtools (Network > Timing) and can be read programmatically via `PerformanceServerTiming`. However, some CDNs strip `Server-Timing` from cached responses. The `x-markdown-timing` header carries the same data under a custom name that survives
 CDN caching, so the timing from the original render remains observable.
@@ -407,7 +414,9 @@ The built-in list includes user-agent tokens for major AI providers:
 | Amazon     | `Amazonbot`                                    | [Amazonbot docs](https://developer.amazon.com/amazonbot)                                   |
 | Cohere     | `cohere-ai`                                    | [Cohere](https://cohere.com)                                                               |
 
-::: warning Cache impact Enabling `detectAgents` adds `User-Agent` to the `Vary` header. Because user-agent strings have high cardinality, this can reduce CDN cache hit rates. Consider this trade-off when deploying behind a CDN. :::
+<Callout type="warn" title="Cache impact">
+Enabling `detectAgents` adds `User-Agent` to the `Vary` header. Because user-agent strings have high cardinality, this can reduce CDN cache hit rates. Consider this trade-off when deploying behind a CDN.
+</Callout>
 
 ## Logging
 
@@ -434,9 +443,9 @@ interface MiddlewareLogContext {
 }
 ```
 
-- `reason` — why the conversion was triggered (`'accept-header'` when the client sent `Accept: text/markdown`, `'agent-detected'` when `detectAgents` matched the user-agent)
-- `path` — the request path
-- `userAgent` — the `User-Agent` header value
+- `reason` - why the conversion was triggered (`'accept-header'` when the client sent `Accept: text/markdown`, `'agent-detected'` when `detectAgents` matched the user-agent)
+- `path` - the request path
+- `userAgent` - the `User-Agent` header value
 
 Only conversion events are logged. Pass-through requests (no conversion) are silent.
 
@@ -444,9 +453,9 @@ Only conversion events are logged. Pass-through requests (no conversion) are sil
 
 The middleware sets two headers that enable efficient caching out of the box:
 
-- **`Vary: Accept`** — tells CDNs and proxies that the response varies by `Accept` header. Without this, a CDN could cache the HTML variant and serve it to an AI agent requesting Markdown (or vice versa). This header is set on **all** responses, not just converted ones.
-- **`Vary: User-Agent`** — added only when `detectAgents` is enabled. Necessary because the response now also varies by user-agent.
-- **`ETag`** — a deterministic content hash of the Markdown output. Enables conditional requests (`If-None-Match`) so CDNs and clients can validate cached responses without re-downloading the full body.
+- **`Vary: Accept`** - tells CDNs and proxies that the response varies by `Accept` header. Without this, a CDN could cache the HTML variant and serve it to an AI agent requesting Markdown (or vice versa). This header is set on **all** responses, not just converted ones.
+- **`Vary: User-Agent`** - added only when `detectAgents` is enabled. Necessary because the response now also varies by user-agent.
+- **`ETag`** - a deterministic content hash of the Markdown output. Enables conditional requests (`If-None-Match`) so CDNs and clients can validate cached responses without re-downloading the full body.
 
 To control cache lifetime, add `Cache-Control` at your infrastructure layer:
 
@@ -472,13 +481,13 @@ import { markdown } from '@markdown-for-agents/express';
 // Fastify
 import { markdown } from '@markdown-for-agents/fastify';
 
-// Hono — requires hono as peer dependency
+// Hono - requires hono as peer dependency
 import { markdown } from '@markdown-for-agents/hono';
 
-// Next.js — requires next as peer dependency
+// Next.js - requires next as peer dependency
 import { withMarkdown, nextImageRule } from '@markdown-for-agents/nextjs';
 
-// Generic Web Standard — no framework dependency
+// Generic Web Standard - no framework dependency
 import { markdownMiddleware } from '@markdown-for-agents/web';
 ```
 

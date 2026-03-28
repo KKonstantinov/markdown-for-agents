@@ -1,3 +1,8 @@
+---
+title: Architecture
+description: How markdown-for-agents works internally - the six-stage conversion pipeline.
+---
+
 # Architecture
 
 This document describes how `markdown-for-agents` works internally.
@@ -28,11 +33,11 @@ flowchart TD
 
 A thin wrapper around `htmlparser2`'s `parseDocument`. Parses the HTML string into a `domhandler` DOM tree with lowercase tags and attribute names.
 
-The parser is tolerant of malformed HTML — it doesn't throw on unclosed tags, missing attributes, or other common issues in real-world HTML.
+The parser is tolerant of malformed HTML - it doesn't throw on unclosed tags, missing attributes, or other common issues in real-world HTML.
 
 ### 2. Extractor (`packages/core/src/extract/extractor.ts`)
 
-When `extract` is enabled, the extractor walks the DOM tree and removes elements that match strip criteria (tags, ARIA roles, class patterns, ID patterns). This operates in-place on the DOM tree — removed elements are spliced out before the walker ever sees them.
+When `extract` is enabled, the extractor walks the DOM tree and removes elements that match strip criteria (tags, ARIA roles, class patterns, ID patterns). This operates in-place on the DOM tree - removed elements are spliced out before the walker ever sees them.
 
 The default strip selectors are defined in `packages/core/src/extract/selectors.ts`.
 
@@ -40,16 +45,16 @@ The default strip selectors are defined in `packages/core/src/extract/selectors.
 
 The walker performs a depth-first traversal of the DOM tree. For each node:
 
-- **Text nodes** — whitespace is collapsed (`/\s+/g` to single space). Inside `<pre>` elements, text is preserved verbatim. Inside `<table>` elements, whitespace-only text nodes are skipped (HTML formatting noise between `<td>` elements).
+- **Text nodes** - whitespace is collapsed (`/\s+/g` to single space). Inside `<pre>` elements, text is preserved verbatim. Inside `<table>` elements, whitespace-only text nodes are skipped (HTML formatting noise between `<td>` elements).
 
-- **Element nodes** — the walker iterates through all rules (sorted by priority, descending) and checks each rule's filter. The first rule that matches and returns a non-`undefined` value wins. If no rule matches, the walker recurses into the element's children (pass-through
+- **Element nodes** - the walker iterates through all rules (sorted by priority, descending) and checks each rule's filter. The first rule that matches and returns a non-`undefined` value wins. If no rule matches, the walker recurses into the element's children (pass-through
   behavior for `<div>`, `<span>`, `<section>`, etc.).
 
 The walker carries state as it descends:
 
-- `insidePre` — set to `true` inside `<pre>` elements, disabling whitespace collapsing
-- `insideTable` — set to `true` inside `<table>` elements, enabling whitespace-only text node skipping
-- `listDepth` — incremented inside `<ul>` and `<ol>`, used for indentation
+- `insidePre` - set to `true` inside `<pre>` elements, disabling whitespace collapsing
+- `insideTable` - set to `true` inside `<table>` elements, enabling whitespace-only text node skipping
+- `listDepth` - incremented inside `<ul>` and `<ol>`, used for indentation
 
 ### 4. Renderer (`packages/core/src/core/renderer.ts`)
 
@@ -74,15 +79,15 @@ The deduplicator is section-aware: headings are grouped with their immediately f
 
 ### 6. Token Estimator (`packages/core/src/tokens/index.ts`)
 
-Computes a simple token estimate using the ~4 characters per token heuristic. This is intentionally basic — it's meant for cost estimation, not exact tokenizer parity.
+Computes a simple token estimate using the ~4 characters per token heuristic. This is intentionally basic - it's meant for cost estimation, not exact tokenizer parity.
 
 ## Rule System
 
 Rules are the core extensibility point. Each rule has:
 
-- **`filter`** — a tag name string, array of tag names, or predicate function
-- **`replacement`** — a function that receives a `RuleContext` and returns the Markdown string
-- **`priority`** — numeric priority (higher = checked first)
+- **`filter`** - a tag name string, array of tag names, or predicate function
+- **`replacement`** - a function that receives a `RuleContext` and returns the Markdown string
+- **`priority`** - numeric priority (higher = checked first)
 
 ### Rule Resolution
 
@@ -90,12 +95,12 @@ Rules are the core extensibility point. Each rule has:
 For each element:
   1. Sort all rules by priority (descending)
   2. For each rule:
-     a. Does the filter match? No → skip
+     a. Does the filter match? No -> skip
      b. Call replacement(context)
-     c. Result is undefined? → try next rule (fall-through)
-     d. Result is null? → remove element from output
-     e. Result is string? → use as output
-  3. No rule matched? → recurse into children (transparent pass-through)
+     c. Result is undefined? -> try next rule (fall-through)
+     d. Result is null? -> remove element from output
+     e. Result is string? -> use as output
+  3. No rule matched? -> recurse into children (transparent pass-through)
 ```
 
 ### Built-in Rule Categories
@@ -119,9 +124,9 @@ packages/
       types.ts                  # All TypeScript interfaces
       core/
         converter.ts            # Main orchestrator (pipeline)
-        parser.ts               # HTML → DOM tree
-        walker.ts               # DOM tree → raw Markdown
-        renderer.ts             # Raw Markdown → clean Markdown
+        parser.ts               # HTML -> DOM tree
+        walker.ts               # DOM tree -> raw Markdown
+        renderer.ts             # Raw Markdown -> clean Markdown
         dedup.ts                # Duplicate content block removal
       rules/
         index.ts                # Rule registry (getDefaultRules, createRule)

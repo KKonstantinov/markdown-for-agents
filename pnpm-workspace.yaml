@@ -3,6 +3,7 @@ packages:
     - 'packages/audit'
     - 'packages/middleware/*'
     - 'packages/playground'
+    - 'packages/docs'
     - 'examples/*'
 
 overrides:

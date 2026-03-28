@@ -29,7 +29,8 @@
         "examples/*/test",
         "examples/*/*.config.ts",
         "*.config.ts",
-        "docs/.vitepress/**/*.ts"
+        "packages/docs/src/**/*.ts",
+        "packages/docs/src/**/*.tsx"
     ],
     "exclude": ["node_modules", "**/dist", "**/node_modules"]
 }

@@ -1,0 +1,144 @@
+---
+title: markdown-for-agents
+description: Runtime-agnostic HTML to Markdown converter built for AI agents. One dependency, works everywhere.
+---
+
+## See Your Savings
+
+**[Try the playground](https://markdown-for-agents-playground.vercel.app)** to see the conversion live in your browser, or audit any URL from the command line - no installation required:
+
+```bash
+npx @markdown-for-agents/audit https://docs.github.com/en/copilot/get-started/quickstart
+```
+
+```
+           HTML            Markdown        Savings
+─────────────���─────────────────────────────────────
+Tokens     138,550         9,364           -93.2%
+Chars      554,200         37,456          -93.2%
+Words      27,123          4,044
+Size       541.3 KB        36.6 KB         -93.2%
+```
+
+## Why?
+
+AI agents consume web pages as context, but raw HTML is full of markup noise - navigation, ads, sidebars, cookie banners, and deeply nested `<div>` soup. This wastes tokens and degrades LLM output quality.
+
+**markdown-for-agents** converts HTML into clean, token-efficient Markdown with built-in content extraction. Inspired by [Cloudflare's Markdown for Agents](https://blog.cloudflare.com/markdown-for-agents/), it runs anywhere - Node.js, Bun, Deno, Cloudflare Workers, Vercel Edge,
+and browsers - with a single dependency.
+
+## Quick Start
+
+<Tabs items={['npm', 'pip']}>
+<Tab value="npm">
+```bash
+npm install markdown-for-agents
+```
+</Tab>
+<Tab value="pip">
+```bash
+pip install markdown-for-agents
+```
+</Tab>
+</Tabs>
+
+```ts
+import { convert } from 'markdown-for-agents';
+
+const html = `
+  <h1>Hello World</h1>
+  <p>This is a <strong>simple</strong> example.</p>
+`;
+
+const { markdown, tokenEstimate } = convert(html);
+
+console.log(markdown);
+// # Hello World
+//
+// This is a **simple** example.
+
+console.log(tokenEstimate);
+// { tokens: 12, characters: 46, words: 8 }
+```
+
+## Content Extraction
+
+Real-world pages are full of boilerplate. Enable extraction to get just the main content:
+
+```ts
+const { markdown } = convert(html, { extract: true });
+```
+
+This strips `<nav>`, `<header>`, `<footer>`, `<aside>`, ads, cookie banners, social widgets, and more - typically saving **80%+ tokens**.
+
+## Middleware
+
+Serve Markdown automatically when AI agents request it via `Accept: text/markdown`. Normal browser requests pass through untouched:
+
+```ts
+import { markdown } from '@markdown-for-agents/express';
+
+app.use(markdown({ extract: true }));
+```
+
+## Frontmatter
+
+Metadata is automatically extracted from `<head>` and prepended as YAML frontmatter:
+
+```ts
+const { markdown } = convert('<html><head><title>My Page</title></head>...</html>');
+// ---
+// title: My Page
+// description: A great page about things
+// ---
+```
+
+## Custom Rules
+
+Override how any element is converted:
+
+```ts
+import { convert, createRule } from 'markdown-for-agents';
+
+const { markdown } = convert(html, {
+    rules: [
+        createRule(
+            node => node.attribs.class?.includes('callout'),
+            ({ convertChildren, node }) => `\n\n> **Note:** ${convertChildren(node).trim()}\n\n`
+        )
+    ]
+});
+```
+
+## Content-Signal Header
+
+Middleware can set a `content-signal` HTTP header to communicate publisher consent for AI usage:
+
+```ts
+app.use(
+    markdown({
+        contentSignal: { aiTrain: true, search: true, aiInput: true }
+    })
+);
+// Sets header: content-signal: ai-train=yes, search=yes, ai-input=yes
+```
+
+## Packages
+
+### TypeScript
+
+| Package                                                    | Description                                                                                                    |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| [`markdown-for-agents`](/docs/packages/core)               | Core HTML-to-Markdown converter                                                                                |
+| [`@markdown-for-agents/audit`](/docs/packages/audit)       | CLI & library to audit token/byte savings                                                                      |
+| [`@markdown-for-agents/express`](/docs/packages/express)   | Express middleware                                                                                             |
+| [`@markdown-for-agents/fastify`](/docs/packages/fastify)   | Fastify plugin                                                                                                 |
+| [`@markdown-for-agents/hono`](/docs/packages/hono)         | Hono middleware                                                                                                |
+| [`@markdown-for-agents/nextjs`](/docs/packages/nextjs)     | Next.js middleware ([example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs)) |
+| [`@markdown-for-agents/web`](/docs/packages/web)           | Web Standard middleware (Cloudflare Workers, Deno, Bun)                                                        |
+
+### Python
+
+| Package                                          | Description                                                         |
+| ------------------------------------------------ | ------------------------------------------------------------------- |
+| [`markdown-for-agents`](/docs/packages/python)   | Core converter - zero dependencies, FastAPI/Flask/Django middleware |
