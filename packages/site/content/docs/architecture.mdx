@@ -31,13 +31,15 @@ flowchart TD
 
 ### 1. Parser (`packages/core/src/core/parser.ts`)
 
-A thin wrapper around `htmlparser2`'s `parseDocument`. Parses the HTML string into a `domhandler` DOM tree with lowercase tags and attribute names.
+A thin wrapper around `htmlparser2`'s `parseDocument`. Parses the HTML string into a `domhandler` DOM tree with lowercase tags and attribute
+names.
 
 The parser is tolerant of malformed HTML - it doesn't throw on unclosed tags, missing attributes, or other common issues in real-world HTML.
 
 ### 2. Extractor (`packages/core/src/extract/extractor.ts`)
 
-When `extract` is enabled, the extractor walks the DOM tree and removes elements that match strip criteria (tags, ARIA roles, class patterns, ID patterns). This operates in-place on the DOM tree - removed elements are spliced out before the walker ever sees them.
+When `extract` is enabled, the extractor walks the DOM tree and removes elements that match strip criteria (tags, ARIA roles, class
+patterns, ID patterns). This operates in-place on the DOM tree - removed elements are spliced out before the walker ever sees them.
 
 The default strip selectors are defined in `packages/core/src/extract/selectors.ts`.
 
@@ -45,9 +47,11 @@ The default strip selectors are defined in `packages/core/src/extract/selectors.
 
 The walker performs a depth-first traversal of the DOM tree. For each node:
 
-- **Text nodes** - whitespace is collapsed (`/\s+/g` to single space). Inside `<pre>` elements, text is preserved verbatim. Inside `<table>` elements, whitespace-only text nodes are skipped (HTML formatting noise between `<td>` elements).
+- **Text nodes** - whitespace is collapsed (`/\s+/g` to single space). Inside `<pre>` elements, text is preserved verbatim. Inside `<table>`
+  elements, whitespace-only text nodes are skipped (HTML formatting noise between `<td>` elements).
 
-- **Element nodes** - the walker iterates through all rules (sorted by priority, descending) and checks each rule's filter. The first rule that matches and returns a non-`undefined` value wins. If no rule matches, the walker recurses into the element's children (pass-through
+- **Element nodes** - the walker iterates through all rules (sorted by priority, descending) and checks each rule's filter. The first rule
+  that matches and returns a non-`undefined` value wins. If no rule matches, the walker recurses into the element's children (pass-through
   behavior for `<div>`, `<span>`, `<section>`, etc.).
 
 The walker carries state as it descends:
@@ -68,9 +72,11 @@ Post-processes the raw Markdown string from the walker:
 
 ### 5. Deduplicator (`packages/core/src/core/dedup.ts`)
 
-When `deduplicate` is enabled, the deduplicator removes repeated content blocks from the rendered Markdown. This is useful for pages that serve the same content in multiple sections (e.g. mobile and desktop variants).
+When `deduplicate` is enabled, the deduplicator removes repeated content blocks from the rendered Markdown. This is useful for pages that
+serve the same content in multiple sections (e.g. mobile and desktop variants).
 
-The deduplicator is section-aware: headings are grouped with their immediately following content block to form compound fingerprints. This prevents stripping repeated structural headings (e.g. "### The situation") that appear under different content sections.
+The deduplicator is section-aware: headings are grouped with their immediately following content block to form compound fingerprints. This
+prevents stripping repeated structural headings (e.g. "### The situation") that appear under different content sections.
 
 - **Heading + content** = section fingerprint (both combined)
 - **Standalone headings** (followed by another heading or nothing) are always preserved
@@ -79,7 +85,8 @@ The deduplicator is section-aware: headings are grouped with their immediately f
 
 ### 6. Token Estimator (`packages/core/src/tokens/index.ts`)
 
-Computes a simple token estimate using the ~4 characters per token heuristic. This is intentionally basic - it's meant for cost estimation, not exact tokenizer parity.
+Computes a simple token estimate using the ~4 characters per token heuristic. This is intentionally basic - it's meant for cost estimation,
+not exact tokenizer parity.
 
 ## Rule System
 
@@ -169,20 +176,25 @@ packages/
 
 ### Why in-place DOM mutation for extraction?
 
-Extracting content by pruning the tree in-place (rather than cloning) avoids allocating a second copy of the DOM tree. Since extraction always runs before the walker, the original tree is never needed after pruning.
+Extracting content by pruning the tree in-place (rather than cloning) avoids allocating a second copy of the DOM tree. Since extraction
+always runs before the walker, the original tree is never needed after pruning.
 
 ### Why priority-based rules instead of first-match?
 
-Priority-based ordering lets users override built-in rules without needing to know the internal rule order. A custom rule with priority 100 always beats a built-in rule with priority 0, regardless of array position.
+Priority-based ordering lets users override built-in rules without needing to know the internal rule order. A custom rule with priority 100
+always beats a built-in rule with priority 0, regardless of array position.
 
 ### Why ESM only?
 
-The library targets ES2022+ environments. ESM-only simplifies the build, eliminates dual-package hazards, and enables proper tree-shaking with subpath exports.
+The library targets ES2022+ environments. ESM-only simplifies the build, eliminates dual-package hazards, and enables proper tree-shaking
+with subpath exports.
 
 ### Why separate middleware packages?
 
-Each middleware has its own framework dependency (Express, Fastify, Hono, Next.js). Separate packages avoid pulling in unused framework types and keep install sizes minimal. All middleware packages depend on `markdown-for-agents` (the core library) as a regular dependency.
+Each middleware has its own framework dependency (Express, Fastify, Hono, Next.js). Separate packages avoid pulling in unused framework
+types and keep install sizes minimal. All middleware packages depend on `markdown-for-agents` (the core library) as a regular dependency.
 
 ### Why pnpm workspaces?
 
-pnpm's strict node_modules hoisting ensures each package only has access to its declared dependencies, catching missing dependency declarations early. Workspaces enable `workspace:*` protocol for local development while publishing independent packages.
+pnpm's strict node_modules hoisting ensures each package only has access to its declared dependencies, catching missing dependency
+declarations early. Workspaces enable `workspace:*` protocol for local development while publishing independent packages.

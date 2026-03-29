@@ -42,7 +42,11 @@ Creates a conversion rule.
 ```ts
 import { createRule } from 'markdown-for-agents';
 
-function createRule(filter: string | string[] | ((node: Element) => boolean), replacement: (context: RuleContext) => string | null | undefined, priority?: number): Rule;
+function createRule(
+    filter: string | string[] | ((node: Element) => boolean),
+    replacement: (context: RuleContext) => string | null | undefined,
+    priority?: number
+): Rule;
 ```
 
 **Parameters:**
@@ -124,7 +128,8 @@ import { markdown } from '@markdown-for-agents/express';
 function markdown(options?: MiddlewareOptions): ExpressMiddleware;
 ```
 
-The middleware intercepts `res.send()`. When the client sends `Accept: text/markdown` and the response is HTML, the body is converted to Markdown.
+The middleware intercepts `res.send()`. When the client sends `Accept: text/markdown` and the response is HTML, the body is converted to
+Markdown.
 
 ---
 
@@ -156,8 +161,9 @@ function markdown(options?: MiddlewareOptions): MiddlewareHandler;
 
 ### `withMarkdown(handler, options?)` (Next.js)
 
-Wraps a Next.js route handler with Markdown content negotiation. Automatically includes `nextImageRule` to unwrap `/_next/image` optimization URLs. See the [Next.js example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete working app
-with the proxy pattern.
+Wraps a Next.js route handler with Markdown content negotiation. Automatically includes `nextImageRule` to unwrap `/_next/image`
+optimization URLs. See the [Next.js example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete
+working app with the proxy pattern.
 
 ```ts
 import { withMarkdown } from '@markdown-for-agents/nextjs';
@@ -169,7 +175,8 @@ function withMarkdown(handler: NextMiddleware, options?: MiddlewareOptions): Nex
 
 ### `nextImageRule` (Next.js)
 
-A conversion rule that extracts original image URLs from Next.js `/_next/image` optimization paths. Automatically included by `withMarkdown`, but can also be used standalone with the core `convert` function.
+A conversion rule that extracts original image URLs from Next.js `/_next/image` optimization paths. Automatically included by
+`withMarkdown`, but can also be used standalone with the core `convert` function.
 
 ```ts
 import { nextImageRule } from '@markdown-for-agents/nextjs';
@@ -179,7 +186,8 @@ import { convert } from 'markdown-for-agents';
 const { markdown } = convert(html, { rules: [nextImageRule] });
 ```
 
-Extracts the `url` query parameter from paths like `/_next/image?url=%2Fphoto.png&w=640&q=75` and produces `![alt](/photo.png)` instead of the optimized URL. Has priority `1` (higher than built-in rules).
+Extracts the `url` query parameter from paths like `/_next/image?url=%2Fphoto.png&w=640&q=75` and produces `![alt](/photo.png)` instead of
+the optimized URL. Has priority `1` (higher than built-in rules).
 
 ---
 
@@ -213,7 +221,7 @@ interface ConvertOptions {
 | `headingStyle`    | `"atx" \| "setext"`               | `"atx"`            | Heading format                                                           |
 | `bulletChar`      | `"-" \| "*" \| "+"`               | `"-"`              | Unordered list bullet                                                    |
 | `codeBlockStyle`  | `"fenced" \| "indented"`          | `"fenced"`         | Code block format                                                        |
-| `fenceChar`       | `` "`" \| "~" ``                  | `` "`" ``          | Fence character                                                          |
+| `fenceChar`       | ``"`" \| "~"``                    | ``"`"``            | Fence character                                                          |
 | `strongDelimiter` | `"**" \| "__"`                    | `"**"`             | Bold delimiter                                                           |
 | `emDelimiter`     | `"*" \| "_"`                      | `"*"`              | Italic delimiter                                                         |
 | `linkStyle`       | `"inlined" \| "referenced"`       | `"inlined"`        | Link format                                                              |
@@ -223,7 +231,8 @@ interface ConvertOptions {
 
 #### `tokenCounter`
 
-Replace the built-in heuristic (~4 characters per token) with an exact tokenizer. The function receives the final markdown string and must return a [TokenEstimate](#tokenestimate).
+Replace the built-in heuristic (~4 characters per token) with an exact tokenizer. The function receives the final markdown string and must
+return a [TokenEstimate](#tokenestimate).
 
 ```ts
 import { encoding_for_model } from 'tiktoken';
@@ -347,7 +356,8 @@ interface DeduplicateOptions {
 | ----------- | -------- | ------- | --------------------------------------------------------------- |
 | `minLength` | `number` | `10`    | Minimum block length (in characters) eligible for deduplication |
 
-Blocks shorter than `minLength` are always kept, which protects separators (`---`), short headings, and formatting elements. Lower it to catch short repeated phrases like "Read more"; raise it for more conservative deduplication.
+Blocks shorter than `minLength` are always kept, which protects separators (`---`), short headings, and formatting elements. Lower it to
+catch short repeated phrases like "Read more"; raise it for more conservative deduplication.
 
 ---
 
@@ -385,8 +395,10 @@ Extends `ConvertOptions` with:
 | `detectAgents`  | `boolean \| string[]`  | `false`               | Auto-serve markdown to AI agents by user-agent. `true` uses built-in list, `string[]` replaces it with custom patterns |
 | `logger`        | `MiddlewareLogger`     | -                     | Optional logger for conversion events. Compatible with pino, winston, and `console`                                    |
 
-When `serverTiming` is `true` (inherited from `ConvertOptions`), middleware sets both a [`Server-Timing`](https://www.w3.org/TR/server-timing/) header and an `x-markdown-timing` header with `mfa.convert` duration. The `x-markdown-timing` header carries the same value but survives
-CDN caching (some CDNs strip `Server-Timing` from cached responses). The Next.js middleware additionally includes `mfa.fetch` duration for the proxy self-fetch.
+When `serverTiming` is `true` (inherited from `ConvertOptions`), middleware sets both a
+[`Server-Timing`](https://www.w3.org/TR/server-timing/) header and an `x-markdown-timing` header with `mfa.convert` duration. The
+`x-markdown-timing` header carries the same value but survives CDN caching (some CDNs strip `Server-Timing` from cached responses). The
+Next.js middleware additionally includes `mfa.fetch` duration for the proxy self-fetch.
 
 ---
 

@@ -5,16 +5,25 @@ description: Runtime-agnostic HTML to Markdown converter built for AI agents. On
 
 ![markdown-for-agents](/markdown_for_agents_header.png)
 
-<div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap'}}>
-  <a href="https://www.npmjs.com/package/markdown-for-agents"><img src="https://img.shields.io/npm/v/markdown-for-agents" alt="npm version" /></a>
-  <a href="https://www.npmjs.com/package/markdown-for-agents"><img src="https://img.shields.io/npm/dm/markdown-for-agents" alt="npm downloads" /></a>
-  <a href="https://pypi.org/project/markdown-for-agents/"><img src="https://img.shields.io/pypi/v/markdown-for-agents" alt="PyPI version" /></a>
-  <a href="https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/markdown-for-agents" alt="license" /></a>
+<div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+    <a href="https://www.npmjs.com/package/markdown-for-agents">
+        <img src="https://img.shields.io/npm/v/markdown-for-agents" alt="npm version" />
+    </a>
+    <a href="https://www.npmjs.com/package/markdown-for-agents">
+        <img src="https://img.shields.io/npm/dm/markdown-for-agents" alt="npm downloads" />
+    </a>
+    <a href="https://pypi.org/project/markdown-for-agents/">
+        <img src="https://img.shields.io/pypi/v/markdown-for-agents" alt="PyPI version" />
+    </a>
+    <a href="https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE">
+        <img src="https://img.shields.io/npm/l/markdown-for-agents" alt="license" />
+    </a>
 </div>
 
 ## See Your Savings
 
-**[Try the playground](/playground)** to see the conversion live in your browser, or audit any URL from the command line - no installation required:
+**[Try the playground](/playground)** to see the conversion live in your browser, or audit any URL from the command line - no installation
+required:
 
 ```bash
 npx @markdown-for-agents/audit https://docs.github.com/en/copilot/get-started/quickstart
@@ -31,24 +40,18 @@ Size       541.3 KB        36.6 KB         -93.2%
 
 ## Why?
 
-AI agents consume web pages as context, but raw HTML is full of markup noise - navigation, ads, sidebars, cookie banners, and deeply nested `<div>` soup. This wastes tokens and degrades LLM output quality.
+AI agents consume web pages as context, but raw HTML is full of markup noise - navigation, ads, sidebars, cookie banners, and deeply nested
+`<div>` soup. This wastes tokens and degrades LLM output quality.
 
-**markdown-for-agents** converts HTML into clean, token-efficient Markdown with built-in content extraction. Inspired by [Cloudflare's Markdown for Agents](https://blog.cloudflare.com/markdown-for-agents/), it runs anywhere - Node.js, Bun, Deno, Cloudflare Workers, Vercel Edge,
-and browsers - with a single dependency.
+**markdown-for-agents** converts HTML into clean, token-efficient Markdown with built-in content extraction. Inspired by
+[Cloudflare's Markdown for Agents](https://blog.cloudflare.com/markdown-for-agents/), it runs anywhere - Node.js, Bun, Deno, Cloudflare
+Workers, Vercel Edge, and browsers - with a single dependency.
 
 ## Quick Start
 
 <Tabs items={['npm', 'pip']}>
-<Tab value="npm">
-```bash
-npm install markdown-for-agents
-```
-</Tab>
-<Tab value="pip">
-```bash
-pip install markdown-for-agents
-```
-</Tab>
+    <Tab value="npm">```bash npm install markdown-for-agents ```</Tab>
+    <Tab value="pip">```bash pip install markdown-for-agents ```</Tab>
 </Tabs>
 
 ```ts
@@ -136,18 +139,18 @@ app.use(
 
 ### TypeScript
 
-| Package                                                    | Description                                                                                                    |
-| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| [`markdown-for-agents`](/docs/packages/core)               | Core HTML-to-Markdown converter                                                                                |
-| [`@markdown-for-agents/audit`](/docs/packages/audit)       | CLI & library to audit token/byte savings                                                                      |
-| [`@markdown-for-agents/express`](/docs/packages/express)   | Express middleware                                                                                             |
-| [`@markdown-for-agents/fastify`](/docs/packages/fastify)   | Fastify plugin                                                                                                 |
-| [`@markdown-for-agents/hono`](/docs/packages/hono)         | Hono middleware                                                                                                |
-| [`@markdown-for-agents/nextjs`](/docs/packages/nextjs)     | Next.js middleware ([example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs)) |
-| [`@markdown-for-agents/web`](/docs/packages/web)           | Web Standard middleware (Cloudflare Workers, Deno, Bun)                                                        |
+| Package                                                  | Description                                                                                                    |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| [`markdown-for-agents`](/docs/packages/core)             | Core HTML-to-Markdown converter                                                                                |
+| [`@markdown-for-agents/audit`](/docs/packages/audit)     | CLI & library to audit token/byte savings                                                                      |
+| [`@markdown-for-agents/express`](/docs/packages/express) | Express middleware                                                                                             |
+| [`@markdown-for-agents/fastify`](/docs/packages/fastify) | Fastify plugin                                                                                                 |
+| [`@markdown-for-agents/hono`](/docs/packages/hono)       | Hono middleware                                                                                                |
+| [`@markdown-for-agents/nextjs`](/docs/packages/nextjs)   | Next.js middleware ([example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs)) |
+| [`@markdown-for-agents/web`](/docs/packages/web)         | Web Standard middleware (Cloudflare Workers, Deno, Bun)                                                        |
 
 ### Python
 
-| Package                                          | Description                                                         |
-| ------------------------------------------------ | ------------------------------------------------------------------- |
-| [`markdown-for-agents`](/docs/packages/python)   | Core converter - zero dependencies, FastAPI/Flask/Django middleware |
+| Package                                        | Description                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------------- |
+| [`markdown-for-agents`](/docs/packages/python) | Core converter - zero dependencies, FastAPI/Flask/Django middleware |

@@ -5,11 +5,13 @@ description: Override how any HTML element is converted to Markdown, or add supp
 
 # Custom Rules
 
-The rule system lets you override how any HTML element is converted to Markdown, or add support for elements the library doesn't handle by default.
+The rule system lets you override how any HTML element is converted to Markdown, or add support for elements the library doesn't handle by
+default.
 
 ## How Rules Work
 
-The converter walks the DOM tree and, for each element, checks rules in priority order (highest first). The first rule whose filter matches and whose replacement returns a non-`undefined` value wins.
+The converter walks the DOM tree and, for each element, checks rules in priority order (highest first). The first rule whose filter matches
+and whose replacement returns a non-`undefined` value wins.
 
 - **Return a string** - use it as the Markdown output for this element
 - **Return `null`** - remove the element from the output entirely
@@ -35,7 +37,8 @@ const calloutRule = createRule(
 const { markdown } = convert(html, { rules: [calloutRule] });
 ```
 
-`createRule(filter, replacement, priority?)` is a convenience helper. The default priority of 100 ensures custom rules run before the built-in rules (which have priority 0).
+`createRule(filter, replacement, priority?)` is a convenience helper. The default priority of 100 ensures custom rules run before the
+built-in rules (which have priority 0).
 
 ### With Object Literal
 
@@ -83,7 +86,8 @@ A filter determines which elements a rule applies to. Three forms are supported:
 }
 ```
 
-The predicate receives a [domhandler `Element`](https://github.com/fb55/domhandler) node. You can inspect `name`, `attribs`, `children`, etc.
+The predicate receives a [domhandler `Element`](https://github.com/fb55/domhandler) node. You can inspect `name`, `attribs`, `children`,
+etc.
 
 ## Replacement Context
 
@@ -104,7 +108,8 @@ interface RuleContext {
 
 ### `convertChildren`
 
-Call `convertChildren(node)` to recursively convert an element's children using the full rule system. This is how you preserve nested content:
+Call `convertChildren(node)` to recursively convert an element's children using the full rule system. This is how you preserve nested
+content:
 
 ```ts
 replacement: ({ convertChildren, node }) => {

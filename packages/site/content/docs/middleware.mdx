@@ -5,7 +5,8 @@ description: Serve Markdown responses via content negotiation with Express, Fast
 
 # Middleware
 
-`markdown-for-agents` includes middleware for serving Markdown responses via content negotiation. When an AI agent (or any client) sends `Accept: text/markdown`, the middleware intercepts the HTML response and converts it to Markdown automatically. Normal browser requests pass
+`markdown-for-agents` includes middleware for serving Markdown responses via content negotiation. When an AI agent (or any client) sends
+`Accept: text/markdown`, the middleware intercepts the HTML response and converts it to Markdown automatically. Normal browser requests pass
 through untouched.
 
 Each middleware is a separate package. Install only the ones you need:
@@ -21,7 +22,8 @@ npm install @markdown-for-agents/web
 All middleware packages depend on `markdown-for-agents` (the core library), which is installed automatically as a dependency.
 
 <Callout title="Python">
-The Python package includes middleware for FastAPI, Flask, and Django. See the [Python package docs](/docs/packages/python#middleware) for details.
+    The Python package includes middleware for FastAPI, Flask, and Django. See the [Python package docs](/docs/packages/python#middleware)
+    for details.
 </Callout>
 
 ## How It Works
@@ -30,11 +32,14 @@ The Python package includes middleware for FastAPI, Flask, and Django. See the [
 2. Your server generates an HTML response as usual
 3. The middleware intercepts the response, converts the HTML to Markdown
 4. The client receives `Content-Type: text/markdown; charset=utf-8`
-5. The response includes an `x-markdown-tokens` header with the estimated token count, an `ETag` for cache validation, and a `content-signal` header with publisher consent signals (when configured)
+5. The response includes an `x-markdown-tokens` header with the estimated token count, an `ETag` for cache validation, and a
+   `content-signal` header with publisher consent signals (when configured)
 
-All responses (converted or not) include `Vary: Accept` so that CDNs and proxies cache HTML and Markdown representations separately. When `detectAgents` is enabled, `Vary: User-Agent` is also added.
+All responses (converted or not) include `Vary: Accept` so that CDNs and proxies cache HTML and Markdown representations separately. When
+`detectAgents` is enabled, `Vary: User-Agent` is also added.
 
-If the `Accept` header doesn't include `text/markdown` (and the request doesn't match a known AI agent when `detectAgents` is enabled), or the upstream response isn't HTML, the middleware passes through without modification.
+If the `Accept` header doesn't include `text/markdown` (and the request doesn't match a known AI agent when `detectAgents` is enabled), or
+the upstream response isn't HTML, the middleware passes through without modification.
 
 ## Express
 
@@ -73,7 +78,8 @@ app.get('/', (req, res) => {
 app.listen(3000);
 ```
 
-The Express middleware intercepts `res.send()` calls. When the client sends `Accept: text/markdown` and the response content type is `text/html`, it converts the HTML body to Markdown before sending. Non-HTML responses and non-string bodies pass through untouched.
+The Express middleware intercepts `res.send()` calls. When the client sends `Accept: text/markdown` and the response content type is
+`text/html`, it converts the HTML body to Markdown before sending. Non-HTML responses and non-string bodies pass through untouched.
 
 Test it:
 
@@ -123,7 +129,8 @@ fastify.get('/', async (request, reply) => {
 fastify.listen({ port: 3000 });
 ```
 
-The Fastify middleware uses the `onSend` hook to intercept the response payload before it's sent to the client. This is the idiomatic Fastify approach for response transformation.
+The Fastify middleware uses the `onSend` hook to intercept the response payload before it's sent to the client. This is the idiomatic
+Fastify approach for response transformation.
 
 ## Hono
 
@@ -180,7 +187,8 @@ The Hono middleware uses `MiddlewareHandler` from Hono, so it integrates nativel
 npm install @markdown-for-agents/nextjs
 ```
 
-Use a [Next.js proxy](https://nextjs.org/docs/app/building-your-application/routing/middleware) for site-wide conversion. The proxy checks the `Accept` header and fetches the page as HTML before converting:
+Use a [Next.js proxy](https://nextjs.org/docs/app/building-your-application/routing/middleware) for site-wide conversion. The proxy checks
+the `Accept` header and fetches the page as HTML before converting:
 
 ```ts
 // proxy.ts
@@ -199,7 +207,10 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
         return NextResponse.next();
     }
 
-    const handler = withMarkdown(async (req: NextRequest) => fetch(req.url, { headers: { accept: 'text/html' } }), { ...options, baseUrl: request.nextUrl.origin });
+    const handler = withMarkdown(async (req: NextRequest) => fetch(req.url, { headers: { accept: 'text/html' } }), {
+        ...options,
+        baseUrl: request.nextUrl.origin
+    });
 
     return (await handler(request, event)) ?? NextResponse.next();
 }
@@ -211,21 +222,27 @@ export const config = {
 
 #### How it works
 
-The inner `fetch` sends `accept: 'text/html'`, so when the request re-enters the proxy it hits the early `return NextResponse.next()` and renders the page normally - no infinite loop. Only `Accept: text/markdown` requests take this path; all other traffic passes straight through.
+The inner `fetch` sends `accept: 'text/html'`, so when the request re-enters the proxy it hits the early `return NextResponse.next()` and
+renders the page normally - no infinite loop. Only `Accept: text/markdown` requests take this path; all other traffic passes straight
+through.
 
 #### Tradeoffs
 
-This pattern makes a **second HTTP request** to your own server for every Markdown conversion. Next.js proxy runs _before_ page rendering and has no access to the response body, so there is no way to avoid this round trip within Next.js itself.
+This pattern makes a **second HTTP request** to your own server for every Markdown conversion. Next.js proxy runs _before_ page rendering
+and has no access to the response body, so there is no way to avoid this round trip within Next.js itself.
 
 In practice this is usually fine:
 
 - **Latency** - the second request is localhost-to-localhost (or edge-to-edge on Vercel), so it adds minimal overhead.
-- **Compute** - your page renders twice for AI agent requests. For static or ISR pages this is a cache hit. For dynamic pages the extra render is the main cost.
-- **Scope control** - use `config.matcher` to limit which routes are eligible, so non-content pages (API routes, auth, assets) are never double-fetched.
+- **Compute** - your page renders twice for AI agent requests. For static or ISR pages this is a cache hit. For dynamic pages the extra
+  render is the main cost.
+- **Scope control** - use `config.matcher` to limit which routes are eligible, so non-content pages (API routes, auth, assets) are never
+  double-fetched.
 
 #### Measuring the overhead
 
-Enable `serverTiming: true` to get a breakdown of where time is spent. The Next.js middleware sets two metrics in both the `Server-Timing` and `x-markdown-timing` headers:
+Enable `serverTiming: true` to get a breakdown of where time is spent. The Next.js middleware sets two metrics in both the `Server-Timing`
+and `x-markdown-timing` headers:
 
 ```
 Server-Timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;desc="HTML to Markdown"
@@ -235,12 +252,15 @@ x-markdown-timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;de
 - **`mfa.fetch`** - time spent on the proxy self-fetch (the second HTTP request)
 - **`mfa.convert`** - time spent converting HTML to Markdown
 
-`Server-Timing` surfaces in browser devtools (Network > Timing) and can be read programmatically via `PerformanceServerTiming`. However, some CDNs strip `Server-Timing` from cached responses. The `x-markdown-timing` header carries the same data under a custom name that survives
-CDN caching, so the timing from the original render remains observable.
+`Server-Timing` surfaces in browser devtools (Network > Timing) and can be read programmatically via `PerformanceServerTiming`. However,
+some CDNs strip `Server-Timing` from cached responses. The `x-markdown-timing` header carries the same data under a custom name that
+survives CDN caching, so the timing from the original render remains observable.
 
-Use this to monitor the real overhead in production, since local benchmarks underestimate `mfa.fetch` (localhost skips DNS, TLS, and CDN routing that happen on Vercel Edge).
+Use this to monitor the real overhead in production, since local benchmarks underestimate `mfa.fetch` (localhost skips DNS, TLS, and CDN
+routing that happen on Vercel Edge).
 
-`withMarkdown` automatically includes `nextImageRule`, which unwraps `/_next/image` optimization URLs back to their original paths. For example, `/_next/image?url=%2Fphoto.png&w=640&q=75` becomes `/photo.png` in the markdown output.
+`withMarkdown` automatically includes `nextImageRule`, which unwraps `/_next/image` optimization URLs back to their original paths. For
+example, `/_next/image?url=%2Fphoto.png&w=640&q=75` becomes `/photo.png` in the markdown output.
 
 You can also use `nextImageRule` standalone with the core `convert` function:
 
@@ -251,7 +271,8 @@ import { convert } from 'markdown-for-agents';
 const { markdown } = convert(html, { rules: [nextImageRule] });
 ```
 
-> **Full working example:** See [`examples/nextjs/`](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete Next.js app demonstrating the proxy pattern with integration tests.
+> **Full working example:** See [`examples/nextjs/`](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a
+> complete Next.js app demonstrating the proxy pattern with integration tests.
 
 ## Web Standard (Generic)
 
@@ -376,8 +397,10 @@ Server-Timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;desc="
 x-markdown-timing: mfa.fetch;dur=32.1;desc="Proxy fetch", mfa.convert;dur=4.7;desc="HTML to Markdown"
 ```
 
-`Server-Timing` is a [W3C standard header](https://www.w3.org/TR/server-timing/) that surfaces automatically in browser devtools (Network tab > Timing) and is accessible via the `PerformanceServerTiming` API. However, some CDNs strip it from cached responses because the values
-are tied to a specific execution. The `x-markdown-timing` header carries the same data but uses a custom name that passes through CDN caching untouched, preserving the timing from the original render.
+`Server-Timing` is a [W3C standard header](https://www.w3.org/TR/server-timing/) that surfaces automatically in browser devtools (Network
+tab > Timing) and is accessible via the `PerformanceServerTiming` API. However, some CDNs strip it from cached responses because the values
+are tied to a specific execution. The `x-markdown-timing` header carries the same data but uses a custom name that passes through CDN
+caching untouched, preserving the timing from the original render.
 
 You can customise the header name via the `timingHeader` option:
 
@@ -385,11 +408,13 @@ You can customise the header name via the `timingHeader` option:
 markdown({ serverTiming: true, timingHeader: 'x-my-timing' });
 ```
 
-Note that local benchmarks will underestimate the `mfa.fetch` overhead since the self-fetch goes to localhost; in production (e.g. Vercel Edge), the request goes through DNS, TLS, and CDN routing.
+Note that local benchmarks will underestimate the `mfa.fetch` overhead since the self-fetch goes to localhost; in production (e.g. Vercel
+Edge), the request goes through DNS, TLS, and CDN routing.
 
 ## AI Agent Detection
 
-By default, the middleware only converts responses when the client explicitly sends `Accept: text/markdown`. With `detectAgents`, the middleware can also detect known AI agent crawlers by their `User-Agent` string and serve them Markdown automatically:
+By default, the middleware only converts responses when the client explicitly sends `Accept: text/markdown`. With `detectAgents`, the
+middleware can also detect known AI agent crawlers by their `User-Agent` string and serve them Markdown automatically:
 
 ```ts
 // Use the built-in list of known AI agents
@@ -415,12 +440,14 @@ The built-in list includes user-agent tokens for major AI providers:
 | Cohere     | `cohere-ai`                                    | [Cohere](https://cohere.com)                                                               |
 
 <Callout type="warn" title="Cache impact">
-Enabling `detectAgents` adds `User-Agent` to the `Vary` header. Because user-agent strings have high cardinality, this can reduce CDN cache hit rates. Consider this trade-off when deploying behind a CDN.
+    Enabling `detectAgents` adds `User-Agent` to the `Vary` header. Because user-agent strings have high cardinality, this can reduce CDN
+    cache hit rates. Consider this trade-off when deploying behind a CDN.
 </Callout>
 
 ## Logging
 
-Pass a `logger` to observe when and why the middleware converts a response. Any object with an `info` method works - pino, winston, bunyan, or `console`:
+Pass a `logger` to observe when and why the middleware converts a response. Any object with an `info` method works - pino, winston, bunyan,
+or `console`:
 
 ```ts
 import pino from 'pino';
@@ -443,7 +470,8 @@ interface MiddlewareLogContext {
 }
 ```
 
-- `reason` - why the conversion was triggered (`'accept-header'` when the client sent `Accept: text/markdown`, `'agent-detected'` when `detectAgents` matched the user-agent)
+- `reason` - why the conversion was triggered (`'accept-header'` when the client sent `Accept: text/markdown`, `'agent-detected'` when
+  `detectAgents` matched the user-agent)
 - `path` - the request path
 - `userAgent` - the `User-Agent` header value
 
@@ -453,9 +481,11 @@ Only conversion events are logged. Pass-through requests (no conversion) are sil
 
 The middleware sets two headers that enable efficient caching out of the box:
 
-- **`Vary: Accept`** - tells CDNs and proxies that the response varies by `Accept` header. Without this, a CDN could cache the HTML variant and serve it to an AI agent requesting Markdown (or vice versa). This header is set on **all** responses, not just converted ones.
+- **`Vary: Accept`** - tells CDNs and proxies that the response varies by `Accept` header. Without this, a CDN could cache the HTML variant
+  and serve it to an AI agent requesting Markdown (or vice versa). This header is set on **all** responses, not just converted ones.
 - **`Vary: User-Agent`** - added only when `detectAgents` is enabled. Necessary because the response now also varies by user-agent.
-- **`ETag`** - a deterministic content hash of the Markdown output. Enables conditional requests (`If-None-Match`) so CDNs and clients can validate cached responses without re-downloading the full body.
+- **`ETag`** - a deterministic content hash of the Markdown output. Enables conditional requests (`If-None-Match`) so CDNs and clients can
+  validate cached responses without re-downloading the full body.
 
 To control cache lifetime, add `Cache-Control` at your infrastructure layer:
 
