@@ -6,8 +6,6 @@
         "extraction",
         "middleware",
         "rules",
-        "---Python---",
-        "packages/python",
         "---Packages---",
         "packages/core",
         "packages/audit",
@@ -16,6 +14,8 @@
         "packages/hono",
         "packages/nextjs",
         "packages/web",
+        "---Python---",
+        "packages/python",
         "---Reference---",
         "api",
         "architecture"

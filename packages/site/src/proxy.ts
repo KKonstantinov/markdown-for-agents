@@ -8,7 +8,7 @@ const options = {
     contentSignal: { aiTrain: true, search: true, aiInput: true }
 };
 
-export async function middleware(request: NextRequest, event: NextFetchEvent) {
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
     const accept = request.headers.get('accept') ?? '';
     if (!accept.includes('text/markdown')) {
         return NextResponse.next();
