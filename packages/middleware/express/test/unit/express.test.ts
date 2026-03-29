@@ -1,18 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import { markdown } from '../../src/index.js';
-import {
-    describeContentSignalHeader,
-    describeServerTimingHeader,
-    describeVaryHeader,
-    describeDetectAgentsHeader,
-    describeLogger
-} from '../../../header-test-helpers.js';
+import { describeContentSignalHeader, describeServerTimingHeader, describeVaryHeader } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 function createMockReqRes(acceptHeader: string, contentType: string) {
     const req = {
-        headers: { accept: acceptHeader } as Record<string, string | string[] | undefined>,
-        path: '/'
+        headers: { accept: acceptHeader } as Record<string, string | string[] | undefined>
     };
 
     const sentHeaders = new Map<string, string | number>([['content-type', contentType]]);
@@ -189,14 +182,9 @@ describe('express middleware', () => {
     });
 
     const expressHarness: HeaderTestHarness = {
-        async send(options, accept, contentType, body, extraHeaders, requestHeaders) {
+        async send(options, accept, contentType, body, extraHeaders) {
             const mw = markdown(options);
             const { req, res, getSentHeader } = createMockReqRes(accept, contentType);
-            if (requestHeaders) {
-                for (const [k, v] of Object.entries(requestHeaders)) {
-                    req.headers[k] = v;
-                }
-            }
             if (extraHeaders) {
                 for (const [k, v] of Object.entries(extraHeaders)) {
                     res.setHeader(k, v);
@@ -212,6 +200,4 @@ describe('express middleware', () => {
     describeContentSignalHeader(expressHarness);
     describeServerTimingHeader(expressHarness);
     describeVaryHeader(expressHarness);
-    describeDetectAgentsHeader(expressHarness);
-    describeLogger(expressHarness);
 });

@@ -14,7 +14,7 @@ Works anywhere the Web Standard Request/Response API is available: Cloudflare Wo
 
 ## How it works
 
-The middleware uses content negotiation. When a client sends `Accept: text/markdown` (or is a known AI agent when `detectAgents` is enabled), HTML responses are automatically converted to Markdown. The response includes:
+The middleware uses content negotiation. When a client sends `Accept: text/markdown`, HTML responses are automatically converted to Markdown. The response includes:
 
 - `Content-Type: text/markdown; charset=utf-8`
 - `x-markdown-tokens` header with the token count
@@ -114,13 +114,7 @@ const mw = markdownMiddleware({
     tokenCounter: text => ({ tokens: enc.encode(text).length, characters: text.length, words: text.split(/\s+/).filter(Boolean).length }),
 
     // Publisher consent signal header
-    contentSignal: { aiTrain: true, search: true, aiInput: true },
-
-    // Auto-detect AI agents by User-Agent (ClaudeBot, GPTBot, etc.)
-    detectAgents: true,
-
-    // Log conversion events (compatible with pino, winston, console)
-    logger: console
+    contentSignal: { aiTrain: true, search: true, aiInput: true }
 });
 ```
 

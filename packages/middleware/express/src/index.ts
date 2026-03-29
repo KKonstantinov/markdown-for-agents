@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled, markdownContentType } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -31,14 +31,11 @@ export function markdown(options?: MiddlewareOptions): ExpressMiddleware {
         // Always signal that responses vary by Accept so caches store
         // separate entries for HTML and Markdown representations.
         const existing = res.getHeader('vary');
-        const varyParts = [existing ? String(existing) : undefined, 'Accept'];
-        if (isAgentDetectionEnabled(options?.detectAgents)) varyParts.push('User-Agent');
-        res.setHeader('vary', varyParts.filter(Boolean).join(', '));
+        const vary = existing ? `${String(existing)}, Accept` : 'Accept';
+        res.setHeader('vary', vary);
 
         const accept = typeof req.headers.accept === 'string' ? req.headers.accept : '';
-        const userAgent = typeof req.headers['user-agent'] === 'string' ? req.headers['user-agent'] : undefined;
-        const reason = shouldServeMarkdown(accept, userAgent, options?.detectAgents);
-        if (!reason) {
+        if (!accept.includes('text/markdown')) {
             next();
             return;
         }
@@ -52,11 +49,9 @@ export function markdown(options?: MiddlewareOptions): ExpressMiddleware {
                 return originalSend.call(this, body);
             }
 
-            options?.logger?.info({ reason, path: req.path, userAgent });
-
             const { markdown: md, tokenEstimate, contentHash, convertDuration } = convert(body, options);
 
-            res.setHeader('content-type', markdownContentType(reason));
+            res.setHeader('content-type', 'text/markdown; charset=utf-8');
             res.setHeader(tokenHeader, String(tokenEstimate.tokens));
             res.setHeader('etag', `"${contentHash}"`);
             if (convertDuration !== undefined) {

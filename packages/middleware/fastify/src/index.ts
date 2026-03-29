@@ -1,5 +1,5 @@
 import type { FastifyPluginCallback } from 'fastify';
-import { convert, buildContentSignalHeader, shouldServeMarkdown, isAgentDetectionEnabled, markdownContentType } from 'markdown-for-agents';
+import { convert, buildContentSignalHeader } from 'markdown-for-agents';
 import type { MiddlewareOptions } from 'markdown-for-agents';
 
 export type { MiddlewareOptions } from 'markdown-for-agents';
@@ -35,15 +35,12 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
             // Always signal that responses vary by Accept so caches store
             // separate entries for HTML and Markdown representations.
             const existing = reply.getHeader('vary');
-            const varyParts = [existing ? String(existing) : undefined, 'Accept'];
-            if (isAgentDetectionEnabled(options?.detectAgents)) varyParts.push('User-Agent');
-            reply.header('vary', varyParts.filter(Boolean).join(', '));
+            const vary = existing ? `${String(existing)}, Accept` : 'Accept';
+            reply.header('vary', vary);
 
             const accept = typeof request.headers.accept === 'string' ? request.headers.accept : '';
-            const userAgent = typeof request.headers['user-agent'] === 'string' ? request.headers['user-agent'] : undefined;
-            const reason = shouldServeMarkdown(accept, userAgent, options?.detectAgents);
 
-            if (!reason) {
+            if (!accept.includes('text/markdown')) {
                 return Promise.resolve(payload);
             }
 
@@ -56,11 +53,9 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
                 return Promise.resolve(payload);
             }
 
-            options?.logger?.info({ reason, path: request.url, userAgent });
-
             const { markdown: md, tokenEstimate, contentHash, convertDuration } = convert(payload, options);
 
-            reply.header('content-type', markdownContentType(reason));
+            reply.header('content-type', 'text/markdown; charset=utf-8');
             reply.header(tokenHeader, String(tokenEstimate.tokens));
             reply.header('etag', `"${contentHash}"`);
             if (convertDuration !== undefined) {

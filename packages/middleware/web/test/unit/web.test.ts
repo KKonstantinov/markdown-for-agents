@@ -1,12 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { markdownMiddleware } from '../../src/index.js';
-import {
-    describeContentSignalHeader,
-    describeServerTimingHeader,
-    describeVaryHeader,
-    describeDetectAgentsHeader,
-    describeLogger
-} from '../../../header-test-helpers.js';
+import { describeContentSignalHeader, describeServerTimingHeader, describeVaryHeader } from '../../../header-test-helpers.js';
 import type { HeaderTestHarness } from '../../../header-test-helpers.js';
 
 describe('web middleware', () => {
@@ -97,10 +91,10 @@ describe('web middleware', () => {
     });
 
     const webHarness: HeaderTestHarness = {
-        async send(options, accept, contentType, body, extraHeaders, requestHeaders) {
+        async send(options, accept, contentType, body, extraHeaders) {
             const mw = markdownMiddleware(options);
             const req = new Request('https://example.com', {
-                headers: { accept, ...requestHeaders }
+                headers: { accept }
             });
             const handler = () =>
                 new Response(body, {
@@ -114,6 +108,4 @@ describe('web middleware', () => {
     describeContentSignalHeader(webHarness);
     describeServerTimingHeader(webHarness);
     describeVaryHeader(webHarness);
-    describeDetectAgentsHeader(webHarness);
-    describeLogger(webHarness);
 });
