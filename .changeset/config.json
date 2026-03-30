@@ -8,7 +8,7 @@
     "baseBranch": "main",
     "updateInternalDependencies": "patch",
     "ignore": [
-        "@markdown-for-agents/playground",
+        "@markdown-for-agents/site",
         "@markdown-for-agents/example-nextjs",
         "@markdown-for-agents/example-express",
         "@markdown-for-agents/example-fastify",
