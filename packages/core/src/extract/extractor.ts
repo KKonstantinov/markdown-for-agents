@@ -109,7 +109,14 @@ function shouldStrip(
  * trigger semantic class-name patterns like `/sidebar/`.
  */
 function stripBrackets(value: string): string {
-    return value.replaceAll(/\[[^\]]*\]/g, '');
+    let result = '';
+    let depth = 0;
+    for (const element of value) {
+        if (element === '[') depth++;
+        else if (element === ']') depth--;
+        else if (depth === 0) result += element;
+    }
+    return result;
 }
 
 /**
