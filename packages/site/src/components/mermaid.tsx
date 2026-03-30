@@ -14,7 +14,7 @@ function cachePromise<T>(key: string, setPromise: () => Promise<T>): Promise<T> 
     return promise;
 }
 
-function MermaidContent({ chart }: { chart: string }) {
+function MermaidContent({ chart }: Readonly<{ chart: string }>) {
     const id = useId();
     const { resolvedTheme } = useTheme();
     const { default: mermaid } = use(cachePromise('mermaid', () => import('mermaid')));
@@ -44,7 +44,7 @@ function MermaidContent({ chart }: { chart: string }) {
     );
 }
 
-export function Mermaid({ chart }: { chart: string }) {
+export function Mermaid({ chart }: Readonly<{ chart: string }>) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {

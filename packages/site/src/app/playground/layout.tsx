@@ -6,6 +6,6 @@ export const metadata: Metadata = {
     description: 'Try the markdown-for-agents HTML-to-Markdown converter live in your browser.'
 };
 
-export default function PlaygroundLayout({ children }: { children: ReactNode }) {
+export default function PlaygroundLayout({ children }: Readonly<{ children: ReactNode }>) {
     return <>{children}</>;
 }

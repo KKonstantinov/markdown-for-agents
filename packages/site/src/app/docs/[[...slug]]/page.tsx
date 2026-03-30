@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { DocsPage, DocsBody, DocsTitle, DocsDescription } from 'fumadocs-ui/layouts/docs/page';
 import { getMDXComponents } from '@/components/mdx';
 
-export default async function Page({ params }: { params: Promise<{ slug?: string[] }> }) {
+export default async function Page({ params }: Readonly<{ params: Promise<{ slug?: string[] }> }>) {
     const { slug } = await params;
     const page = source.getPage(slug);
 

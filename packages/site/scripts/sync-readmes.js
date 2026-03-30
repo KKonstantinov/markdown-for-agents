@@ -76,8 +76,7 @@ function badgeLinesToFlex(badgeLines) {
     return `<div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap'}}>\n${links.join('\n')}\n</div>`;
 }
 
-function transformContent(content) {
-    const lines = content.split('\n');
+function findBadgesAndHeader(lines) {
     const badgeLineIndices = [];
     let headerImageIndex = -1;
     let headerImageLine = '';
@@ -94,16 +93,10 @@ function transformContent(content) {
         }
     }
 
-    if (badgeLineIndices.length === 0) return content;
+    return { badgeLineIndices, headerImageIndex, headerImageLine };
+}
 
-    const badgeLines = badgeLineIndices.map(i => lines[i]);
-    const flexHtml = badgeLinesToFlex(badgeLines);
-
-    // Build new lines array, removing old badge lines and header image,
-    // then inserting image + badges after the H1 heading
-    const removeSet = new Set(badgeLineIndices);
-    if (headerImageIndex !== -1) removeSet.add(headerImageIndex);
-
+function insertBadgesAfterH1(lines, removeSet, headerImageLine, flexHtml) {
     const result = [];
     let inserted = false;
 
@@ -112,32 +105,41 @@ function transformContent(content) {
 
         result.push(lines[i]);
 
-        // Insert image + badges right after the H1 heading line
         if (!inserted && lines[i].startsWith('# ')) {
-            result.push('');
-            if (headerImageLine) {
-                result.push(headerImageLine);
-                result.push('');
-            }
-            result.push(flexHtml);
+            const insertion = headerImageLine ? ['', headerImageLine, '', flexHtml] : ['', flexHtml];
+            result.push(...insertion);
             inserted = true;
         }
     }
 
-    // Collapse runs of 3+ blank lines down to 2
+    return result;
+}
+
+function collapseBlankLines(lines) {
     const cleaned = [];
     let blanks = 0;
-    for (const line of result) {
-        if (line.trim() === '') {
-            blanks++;
-            if (blanks <= 2) cleaned.push(line);
-        } else {
-            blanks = 0;
-            cleaned.push(line);
-        }
+    for (const line of lines) {
+        const isBlank = line.trim() === '';
+        blanks = isBlank ? blanks + 1 : 0;
+        if (!isBlank || blanks <= 2) cleaned.push(line);
     }
+    return cleaned;
+}
 
-    return cleaned.join('\n');
+function transformContent(content) {
+    const lines = content.split('\n');
+    const { badgeLineIndices, headerImageIndex, headerImageLine } = findBadgesAndHeader(lines);
+
+    if (badgeLineIndices.length === 0) return content;
+
+    const badgeLines = badgeLineIndices.map(i => lines[i]);
+    const flexHtml = badgeLinesToFlex(badgeLines);
+
+    const removeSet = new Set(badgeLineIndices);
+    if (headerImageIndex !== -1) removeSet.add(headerImageIndex);
+
+    const result = insertBadgesAfterH1(lines, removeSet, headerImageLine, flexHtml);
+    return collapseBlankLines(result).join('\n');
 }
 
 mkdirSync(outDir, { recursive: true });

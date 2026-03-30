@@ -28,7 +28,7 @@ function PythonIcon() {
     );
 }
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: Readonly<{ children: ReactNode }>) {
     return (
         <DocsLayout
             tree={source.getPageTree()}
