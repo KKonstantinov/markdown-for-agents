@@ -7,7 +7,7 @@ Runtime-agnostic HTML to Markdown converter built for AI agents. One dependency,
 
 Convert any HTML page into clean, token-efficient Markdown — with built-in content extraction to strip away navigation, ads, and boilerplate. Inspired by [Cloudflare's Markdown for Agents](https://blog.cloudflare.com/markdown-for-agents/).
 
-**[Try it in the playground](https://markdown-for-agents-playground.vercel.app)** — paste a URL or HTML and see the conversion live.
+**[Try it in the playground](https://markdown-for-agents.vercel.app/playground)** — paste a URL or HTML and see the conversion live.
 
 ![markdown-for-agents](docs/markdown_for_agents_header.png)
 
@@ -329,7 +329,7 @@ import { estimateTokens } from 'markdown-for-agents/tokens';
 
 ## Documentation
 
-**[View the full documentation](https://kkonstantinov.github.io/markdown-for-agents/)** | **[Playground](https://markdown-for-agents-playground.vercel.app)**
+**[View the full documentation](https://markdown-for-agents.vercel.app/docs)** | **[Playground](https://markdown-for-agents.vercel.app/playground)**
 
 - [Getting Started](docs/getting-started.md) — installation, first conversion, common patterns
 - [Content Extraction](docs/extraction.md) — stripping non-content elements from web pages

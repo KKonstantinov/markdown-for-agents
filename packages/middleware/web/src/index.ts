@@ -25,17 +25,6 @@ type Handler = (request: Request) => Response | Promise<Response>;
 type Middleware = (request: Request, next: Handler) => Response | Promise<Response>;
 
 /**
- * Checks whether the client is requesting markdown content.
- *
- * @param request - The incoming `Request` object.
- * @returns `true` if the `Accept` header includes `text/markdown`.
- */
-function wantsMarkdown(request: Request): boolean {
-    const accept = request.headers.get('accept') ?? '';
-    return accept.includes('text/markdown');
-}
-
-/**
  * Web-standard middleware that converts HTML responses to markdown
  * when the client sends an `Accept: text/markdown` header.
  *
@@ -64,7 +53,8 @@ export function markdownMiddleware(options?: MiddlewareOptions): Middleware {
         // separate entries for HTML and Markdown representations.
         response.headers.append('vary', 'Accept');
 
-        if (!wantsMarkdown(request)) {
+        const accept = request.headers.get('accept') ?? '';
+        if (!accept.includes('text/markdown')) {
             return response;
         }
 

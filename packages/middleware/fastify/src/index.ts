@@ -35,7 +35,8 @@ export function markdown(options?: MiddlewareOptions): FastifyPlugin {
             // Always signal that responses vary by Accept so caches store
             // separate entries for HTML and Markdown representations.
             const existing = reply.getHeader('vary');
-            reply.header('vary', existing ? `${String(existing)}, Accept` : 'Accept');
+            const vary = existing ? `${String(existing)}, Accept` : 'Accept';
+            reply.header('vary', vary);
 
             const accept = typeof request.headers.accept === 'string' ? request.headers.accept : '';
 

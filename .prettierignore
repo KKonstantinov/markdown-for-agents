@@ -1,17 +1,31 @@
 # Test fixtures contain expected converter output and must not be reformatted
 packages/core/test/fixtures/
 
-# Symlinked package READMEs (Prettier cannot follow symlinks)
-docs/packages/
+# Generated README copies (Prettier should not reformat)
+packages/site/content/docs/packages/core.mdx
+packages/site/content/docs/packages/audit.mdx
+packages/site/content/docs/packages/express.mdx
+packages/site/content/docs/packages/fastify.mdx
+packages/site/content/docs/packages/hono.mdx
+packages/site/content/docs/packages/nextjs.mdx
+packages/site/content/docs/packages/web.mdx
+packages/site/content/docs/packages/python.mdx
+
+# Docs build output
+packages/site/.next/
+packages/site/next-env.d.ts
 
 # Build output
 **/dist/
 
 # Next.js
-packages/playground/.next/
-packages/playground/next-env.d.ts
 examples/nextjs/.next/
 examples/nextjs/next-env.d.ts
+
+# Python
+python/.mypy_cache/
+python/.pytest_cache/
+python/.venv/
 
 # Lock files
 pnpm-lock.yaml

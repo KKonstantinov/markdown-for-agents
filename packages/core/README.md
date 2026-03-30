@@ -5,7 +5,7 @@
 
 Runtime-agnostic HTML to Markdown converter built for AI agents. One dependency, works everywhere.
 
-**[Try it in the playground](https://markdown-for-agents-playground.vercel.app)** — paste a URL or HTML and see the conversion live.
+**[Try it in the playground](https://markdown-for-agents.vercel.app/playground)** — paste a URL or HTML and see the conversion live.
 
 ![markdown-for-agents](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/docs/markdown_for_agents_header.png)
 

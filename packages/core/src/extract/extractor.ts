@@ -95,12 +95,28 @@ function shouldStrip(
     if (role && stripRoles.has(role)) return true;
 
     const className = el.attribs.class;
-    if (className && matchesAny(className, stripClasses)) return true;
+    if (className && matchesAny(stripBrackets(className), stripClasses)) return true;
 
     const id = el.attribs.id;
     if (id && matchesAny(id, stripIds)) return true;
 
     return false;
+}
+
+/**
+ * Remove Tailwind CSS arbitrary-value brackets from a class string so that
+ * CSS custom property names (e.g. `[--fd-sidebar-width:268px]`) don't
+ * trigger semantic class-name patterns like `/sidebar/`.
+ */
+function stripBrackets(value: string): string {
+    let result = '';
+    let depth = 0;
+    for (const element of value) {
+        if (element === '[') depth++;
+        else if (element === ']') depth--;
+        else if (depth === 0) result += element;
+    }
+    return result;
 }
 
 /**

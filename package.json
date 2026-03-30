@@ -21,10 +21,8 @@
         "release": "pnpm build && changeset publish",
         "release:jsr": "pnpm -r --if-present run release:jsr",
         "prepare": "lefthook install",
-        "playground:dev": "pnpm --filter @markdown-for-agents/playground dev",
-        "docs:dev": "vitepress dev docs",
-        "docs:build": "vitepress build docs",
-        "docs:preview": "vitepress preview docs"
+        "dev": "pnpm --filter @markdown-for-agents/site dev",
+        "site:build": "pnpm --filter @markdown-for-agents/site build"
     },
     "devDependencies": {
         "@changesets/changelog-github": "^0.6.0",
@@ -42,8 +40,6 @@
         "tsdown": "^0.21.2",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.57.0",
-        "vitepress": "^1.6.4",
-        "vitepress-mermaid-renderer": "^1.1.18",
         "vitest": "^4.1.0"
     },
     "pnpm": {

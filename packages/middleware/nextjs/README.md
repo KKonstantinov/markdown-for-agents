@@ -8,7 +8,7 @@ Next.js middleware for [markdown-for-agents](https://www.npmjs.com/package/markd
 ![markdown-for-agents + Next.js](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/packages/middleware/nextjs/mda_nextjs_header.png)
 
 > [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) converts HTML to clean, token-efficient Markdown for AI agents — typically saving 80–90% of tokens. This package adds automatic content negotiation to your Next.js app via `Accept: text/markdown`.
-> **[Try the playground](https://markdown-for-agents-playground.vercel.app)** to see the core conversion in action.
+> **[Try the playground](https://markdown-for-agents.vercel.app/playground)** to see the core conversion in action.
 
 Add a proxy and AI agents get clean, token-efficient Markdown instead of HTML. Normal browser requests pass through untouched. Includes a built-in rule that unwraps Next.js `/_next/image` optimization URLs back to their original paths.
 

@@ -13,7 +13,8 @@ function createMockContext(acceptHeader: string, responseBody: string, responseC
         req: {
             header: (name: string): string | undefined => {
                 if (name === 'accept') return acceptHeader;
-            }
+            },
+            path: '/'
         },
         res: new Response(responseBody, { headers: resHeaders })
     };
@@ -101,9 +102,8 @@ describe('hono middleware', () => {
             }
             const c = {
                 req: {
-                    header: (name: string): string | undefined => {
-                        if (name === 'accept') return accept;
-                    }
+                    header: (name: string): string | undefined => (name === 'accept' ? accept : undefined),
+                    path: '/'
                 },
                 res: new Response(body, { headers: resHeaders })
             };

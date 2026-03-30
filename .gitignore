@@ -2,8 +2,17 @@ node_modules/
 dist/
 *.tsbuildinfo
 .DS_Store
-docs/.vitepress/cache/
-docs/.vitepress/dist/
+# Fumadocs
+.source/
+packages/site/.next/
+packages/site/content/docs/packages/core.mdx
+packages/site/content/docs/packages/audit.mdx
+packages/site/content/docs/packages/express.mdx
+packages/site/content/docs/packages/fastify.mdx
+packages/site/content/docs/packages/hono.mdx
+packages/site/content/docs/packages/nextjs.mdx
+packages/site/content/docs/packages/web.mdx
+packages/site/content/docs/packages/python.mdx
 .playwright-mcp
 .next/
 
