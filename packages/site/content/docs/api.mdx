@@ -380,7 +380,6 @@ interface MiddlewareOptions extends ConvertOptions {
     tokenHeader?: string;
     timingHeader?: string;
     contentSignal?: ContentSignalOptions;
-    detectAgents?: boolean | string[];
     logger?: MiddlewareLogger;
 }
 ```
@@ -392,7 +391,6 @@ Extends `ConvertOptions` with:
 | `tokenHeader`   | `string`               | `"x-markdown-tokens"` | Response header name for token count                                                                                   |
 | `timingHeader`  | `string`               | `"x-markdown-timing"` | Response header name for the CDN-safe timing duplicate                                                                 |
 | `contentSignal` | `ContentSignalOptions` | -                     | Publisher consent signals for the `content-signal` header                                                              |
-| `detectAgents`  | `boolean \| string[]`  | `false`               | Auto-serve markdown to AI agents by user-agent. `true` uses built-in list, `string[]` replaces it with custom patterns |
 | `logger`        | `MiddlewareLogger`     | -                     | Optional logger for conversion events. Compatible with pino, winston, and `console`                                    |
 
 When `serverTiming` is `true` (inherited from `ConvertOptions`), middleware sets both a
