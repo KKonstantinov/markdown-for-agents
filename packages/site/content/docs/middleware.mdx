@@ -37,7 +37,8 @@ All middleware packages depend on `markdown-for-agents` (the core library), whic
 
 All responses (converted or not) include `Vary: Accept` so that CDNs and proxies cache HTML and Markdown representations separately.
 
-If the `Accept` header doesn't include `text/markdown`, or the upstream response isn't HTML, the middleware passes through without modification.
+If the `Accept` header doesn't include `text/markdown`, or the upstream response isn't HTML, the middleware passes through without
+modification.
 
 ## Express
 

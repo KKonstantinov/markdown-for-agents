@@ -22,6 +22,11 @@ packages/site/next-env.d.ts
 examples/nextjs/.next/
 examples/nextjs/next-env.d.ts
 
+# Python
+python/.mypy_cache/
+python/.pytest_cache/
+python/.venv/
+
 # Lock files
 pnpm-lock.yaml
 .npmrc

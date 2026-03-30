@@ -386,12 +386,12 @@ interface MiddlewareOptions extends ConvertOptions {
 
 Extends `ConvertOptions` with:
 
-| Property        | Type                   | Default               | Description                                                                                                            |
-| --------------- | ---------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `tokenHeader`   | `string`               | `"x-markdown-tokens"` | Response header name for token count                                                                                   |
-| `timingHeader`  | `string`               | `"x-markdown-timing"` | Response header name for the CDN-safe timing duplicate                                                                 |
-| `contentSignal` | `ContentSignalOptions` | -                     | Publisher consent signals for the `content-signal` header                                                              |
-| `logger`        | `MiddlewareLogger`     | -                     | Optional logger for conversion events. Compatible with pino, winston, and `console`                                    |
+| Property        | Type                   | Default               | Description                                                                         |
+| --------------- | ---------------------- | --------------------- | ----------------------------------------------------------------------------------- |
+| `tokenHeader`   | `string`               | `"x-markdown-tokens"` | Response header name for token count                                                |
+| `timingHeader`  | `string`               | `"x-markdown-timing"` | Response header name for the CDN-safe timing duplicate                              |
+| `contentSignal` | `ContentSignalOptions` | -                     | Publisher consent signals for the `content-signal` header                           |
+| `logger`        | `MiddlewareLogger`     | -                     | Optional logger for conversion events. Compatible with pino, winston, and `console` |
 
 When `serverTiming` is `true` (inherited from `ConvertOptions`), middleware sets both a
 [`Server-Timing`](https://www.w3.org/TR/server-timing/) header and an `x-markdown-timing` header with `mfa.convert` duration. The
