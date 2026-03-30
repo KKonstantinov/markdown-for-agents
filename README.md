@@ -9,7 +9,7 @@ Convert any HTML page into clean, token-efficient Markdown — with built-in con
 
 **[Try it in the playground](https://markdown-for-agents.vercel.app/playground)** — paste a URL or HTML and see the conversion live.
 
-![markdown-for-agents](docs/markdown_for_agents_header.png)
+![markdown-for-agents](packages/site/public/markdown_for_agents_header.png)
 
 Audit any URL — no installation required:
 

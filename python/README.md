@@ -7,7 +7,7 @@ HTML-to-Markdown converter built for AI agents. Zero dependencies, pure Python.
 
 **[Try it in the playground](https://markdown-for-agents.vercel.app/playground)** - paste a URL or HTML and see the conversion live.
 
-![markdown-for-agents](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/docs/markdown_for_agents_header.png)
+![markdown-for-agents](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/packages/site/public/markdown_for_agents_header.png)
 
 Convert any HTML page into clean, token-efficient Markdown - with built-in content extraction to strip away navigation, ads, and boilerplate. Python port of the [TypeScript library](https://www.npmjs.com/package/markdown-for-agents), inspired by
 [Cloudflare's Markdown for Agents](https://blog.cloudflare.com/markdown-for-agents/).

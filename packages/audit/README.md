@@ -5,7 +5,7 @@
 
 Audit token savings when converting HTML to Markdown with [markdown-for-agents](https://www.npmjs.com/package/markdown-for-agents) — a runtime-agnostic HTML to Markdown converter built for AI agents.
 
-![markdown-for-agents](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/docs/markdown_for_agents_header.png)
+![markdown-for-agents](https://raw.githubusercontent.com/KKonstantinov/markdown-for-agents/main/packages/site/public/markdown_for_agents_header.png)
 
 Audit any URL — no installation required:
 
