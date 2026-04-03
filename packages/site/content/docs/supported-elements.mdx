@@ -1,0 +1,56 @@
+---
+title: Supported Elements
+description: Complete reference of HTML elements and their Markdown output.
+---
+
+# Supported Elements
+
+Both the TypeScript and Python implementations convert the same set of HTML elements to Markdown.
+
+## Block
+
+| HTML                                              | Markdown                                |
+| ------------------------------------------------- | --------------------------------------- |
+| `<h1>`...`<h6>`                                   | `# Heading` (atx) or underline (setext) |
+| `<p>`                                             | Paragraph with blank lines              |
+| `<blockquote>`                                    | `> Quoted text`                         |
+| `<pre><code>`                                     | Fenced code block with language         |
+| `<hr>`                                            | `---`                                   |
+| `<br>`                                            | Trailing double-space line break        |
+| `<ul>`, `<ol>`, `<li>`                            | Lists with nesting and indentation      |
+| `<table>`                                         | GFM pipe table with separator row       |
+| `<script>`, `<style>`, `<noscript>`, `<template>` | Stripped                                |
+
+## Inline
+
+| HTML                       | Markdown                                     |
+| -------------------------- | -------------------------------------------- |
+| `<strong>`, `<b>`          | `**bold**`                                   |
+| `<em>`, `<i>`              | `*italic*`                                   |
+| `<del>`, `<s>`, `<strike>` | `~~strikethrough~~`                          |
+| `<code>`                   | `` `inline code` ``                          |
+| `<a>`                      | `[text](url)` with title and baseUrl support |
+| `<img>`                    | `![alt](src)` with title and baseUrl support |
+| `<sub>`                    | `~subscript~`                                |
+| `<sup>`                    | `^superscript^`                              |
+| `<abbr>`, `<mark>`         | Pass-through (text preserved)                |
+
+## Unsupported Elements
+
+Elements not listed above are treated as pass-through containers - their children are converted but the element itself produces no Markdown syntax. This means content is never lost, even for unknown or custom elements.
+
+To add support for additional elements or override built-in behavior, see [Custom Rules](/docs/rules).
+
+## Output Styles
+
+Several elements support configurable output styles via [convert options](/docs/api#convertoptions):
+
+| Option            | Default      | Alternative  | Affects                      |
+| ----------------- | ------------ | ------------ | ---------------------------- |
+| `headingStyle`    | `atx` (`#`)  | `setext`     | `<h1>`, `<h2>`              |
+| `bulletChar`      | `-`          | `*`, `+`     | `<ul>` / `<li>`             |
+| `codeBlockStyle`  | `fenced`     | `indented`   | `<pre><code>`               |
+| `fenceChar`       | `` ` ``      | `~`          | Fenced code blocks           |
+| `strongDelimiter` | `**`         | `__`         | `<strong>`, `<b>`           |
+| `emDelimiter`     | `*`          | `_`          | `<em>`, `<i>`               |
+| `linkStyle`       | `inlined`    | `referenced` | `<a>`                       |

@@ -1,0 +1,108 @@
+---
+title: Frontmatter
+description: Automatically extract metadata from HTML and prepend it as YAML frontmatter.
+---
+
+# Frontmatter
+
+By default, metadata is extracted from the HTML `<head>` element and prepended as YAML frontmatter. This aligns with [Cloudflare's Markdown for Agents](https://developers.cloudflare.com/agents/guides/enable-markdown-for-agents/) convention, giving AI agents structured context about the page before the content begins.
+
+## Basic Usage
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+import { convert } from 'markdown-for-agents';
+
+const html = `<html>
+  <head>
+    <title>My Page</title>
+    <meta name="description" content="A great page about things">
+    <meta property="og:image" content="https://example.com/hero.png">
+  </head>
+  <body><p>Content here</p></body>
+</html>`;
+
+const { markdown } = convert(html);
+```
+    </Tab>
+    <Tab value="Python">
+```python
+from markdown_for_agents import convert
+
+html = """<html>
+  <head>
+    <title>My Page</title>
+    <meta name="description" content="A great page about things">
+    <meta property="og:image" content="https://example.com/hero.png">
+  </head>
+  <body><p>Content here</p></body>
+</html>"""
+
+result = convert(html)
+```
+    </Tab>
+</Tabs>
+
+Output:
+
+```markdown
+---
+title: My Page
+description: A great page about things
+image: https://example.com/hero.png
+---
+
+Content here
+```
+
+## Extracted Fields
+
+| Field         | Source                              |
+| ------------- | ----------------------------------- |
+| `title`       | `<title>` element                   |
+| `description` | `<meta name="description">`         |
+| `image`       | `<meta property="og:image">`        |
+
+## Disabling Frontmatter
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+convert(html, { frontmatter: false });
+```
+    </Tab>
+    <Tab value="Python">
+```python
+convert(html, frontmatter=False)
+```
+    </Tab>
+</Tabs>
+
+## Custom Fields
+
+Pass an object/dict to merge custom fields into the extracted metadata. Custom values override extracted ones:
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+convert(html, { frontmatter: { author: 'Jane', title: 'Custom Title' } });
+```
+    </Tab>
+    <Tab value="Python">
+```python
+convert(html, frontmatter={"author": "Jane", "title": "Custom Title"})
+```
+    </Tab>
+</Tabs>
+
+Output:
+
+```markdown
+---
+title: Custom Title
+description: A great page about things
+image: https://example.com/hero.png
+author: Jane
+---
+```

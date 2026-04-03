@@ -40,7 +40,9 @@ All responses (converted or not) include `Vary: Accept` so that CDNs and proxies
 If the `Accept` header doesn't include `text/markdown`, or the upstream response isn't HTML, the middleware passes through without
 modification.
 
-## Express
+## Frameworks
+
+### Express
 
 ```bash
 npm install @markdown-for-agents/express
@@ -90,7 +92,7 @@ curl http://localhost:3000/
 curl -H "Accept: text/markdown" http://localhost:3000/
 ```
 
-## Fastify
+### Fastify
 
 ```bash
 npm install @markdown-for-agents/fastify
@@ -131,7 +133,7 @@ fastify.listen({ port: 3000 });
 The Fastify middleware uses the `onSend` hook to intercept the response payload before it's sent to the client. This is the idiomatic
 Fastify approach for response transformation.
 
-## Hono
+### Hono
 
 ```bash
 npm install @markdown-for-agents/hono
@@ -180,7 +182,7 @@ curl -H "Accept: text/markdown" https://localhost:3000/
 
 The Hono middleware uses `MiddlewareHandler` from Hono, so it integrates natively with Hono's middleware chain.
 
-## Next.js
+### Next.js
 
 ```bash
 npm install @markdown-for-agents/nextjs
@@ -273,7 +275,7 @@ const { markdown } = convert(html, { rules: [nextImageRule] });
 > **Full working example:** See [`examples/nextjs/`](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a
 > complete Next.js app demonstrating the proxy pattern with integration tests.
 
-## Web Standard (Generic)
+### Web Standard (Generic)
 
 ```bash
 npm install @markdown-for-agents/web
@@ -333,7 +335,9 @@ Bun.serve({
 });
 ```
 
-## Options
+## Configuration
+
+### Options
 
 All middleware functions accept `MiddlewareOptions`, which extends `ConvertOptions` with middleware-specific properties:
 
@@ -371,7 +375,7 @@ const mw = markdownMiddleware({
 });
 ```
 
-## Response Headers
+### Response Headers
 
 When the middleware converts a response, it sets these headers:
 
@@ -406,7 +410,7 @@ markdown({ serverTiming: true, timingHeader: 'x-my-timing' });
 Note that local benchmarks will underestimate the `mfa.fetch` overhead since the self-fetch goes to localhost; in production (e.g. Vercel
 Edge), the request goes through DNS, TLS, and CDN routing.
 
-## Logging
+### Logging
 
 Pass a `logger` to observe when and why the middleware converts a response. Any object with an `info` method works - pino, winston, bunyan,
 or `console`:
@@ -437,7 +441,7 @@ interface MiddlewareLogContext {
 
 Only conversion events are logged. Pass-through requests (no conversion) are silent.
 
-## Caching
+### Caching
 
 The middleware sets two headers that enable efficient caching out of the box:
 
@@ -459,7 +463,7 @@ app.use((req, res, next) => {
 app.use(markdown());
 ```
 
-## Import Paths
+### Import Paths
 
 Each middleware is a separate npm package:
 
@@ -480,7 +484,7 @@ import { withMarkdown, nextImageRule } from '@markdown-for-agents/nextjs';
 import { markdownMiddleware } from '@markdown-for-agents/web';
 ```
 
-## How Each Middleware Intercepts Responses
+### How Each Middleware Intercepts Responses
 
 | Framework    | Mechanism                                                       |
 | ------------ | --------------------------------------------------------------- |

@@ -7,7 +7,9 @@ description: Complete API documentation for markdown-for-agents.
 
 ## Functions
 
-### `convert(html, options?)`
+### Core
+
+#### `convert(html, options?)`
 
 Converts an HTML string to Markdown.
 
@@ -35,7 +37,7 @@ const { markdown, tokenEstimate, contentHash } = convert('<h1>Hello</h1>', {
 
 ---
 
-### `createRule(filter, replacement, priority?)`
+#### `createRule(filter, replacement, priority?)`
 
 Creates a conversion rule.
 
@@ -59,7 +61,7 @@ function createRule(
 
 ---
 
-### `getDefaultRules()`
+#### `getDefaultRules()`
 
 Returns the array of built-in conversion rules.
 
@@ -73,7 +75,9 @@ The result is cached - subsequent calls return the same array.
 
 ---
 
-### `extractContent(document, options?)`
+### Extraction
+
+#### `extractContent(document, options?)`
 
 Prunes a parsed DOM tree in-place, removing non-content elements.
 
@@ -92,7 +96,7 @@ This mutates the document. Stripped elements are removed from the tree.
 
 ---
 
-### `estimateTokens(text)`
+#### `estimateTokens(text)`
 
 Estimates token, character, and word counts for a string.
 
@@ -106,7 +110,9 @@ Uses a ~4 characters per token heuristic.
 
 ---
 
-### `markdownMiddleware(options?)`
+### Middleware
+
+#### `markdownMiddleware(options?)`
 
 Creates a Web Standard middleware that converts HTML responses to Markdown based on the `Accept` header.
 
@@ -118,7 +124,7 @@ function markdownMiddleware(options?: MiddlewareOptions): (request: Request, nex
 
 ---
 
-### `markdown(options?)` (Express)
+#### `markdown(options?)` (Express)
 
 Creates an Express middleware for content negotiation.
 
@@ -133,7 +139,7 @@ Markdown.
 
 ---
 
-### `markdown(options?)` (Fastify)
+#### `markdown(options?)` (Fastify)
 
 Creates a Fastify plugin that registers an `onSend` hook for content negotiation.
 
@@ -147,7 +153,7 @@ Register it with `fastify.register(markdown())`. The plugin intercepts HTML resp
 
 ---
 
-### `markdown(options?)` (Hono)
+#### `markdown(options?)` (Hono)
 
 Creates a Hono middleware for content negotiation.
 
@@ -159,7 +165,7 @@ function markdown(options?: MiddlewareOptions): MiddlewareHandler;
 
 ---
 
-### `withMarkdown(handler, options?)` (Next.js)
+#### `withMarkdown(handler, options?)` (Next.js)
 
 Wraps a Next.js route handler with Markdown content negotiation. Automatically includes `nextImageRule` to unwrap `/_next/image`
 optimization URLs. See the [Next.js example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete
@@ -173,7 +179,7 @@ function withMarkdown(handler: NextMiddleware, options?: MiddlewareOptions): Nex
 
 ---
 
-### `nextImageRule` (Next.js)
+#### `nextImageRule` (Next.js)
 
 A conversion rule that extracts original image URLs from Next.js `/_next/image` optimization paths. Automatically included by
 `withMarkdown`, but can also be used standalone with the core `convert` function.

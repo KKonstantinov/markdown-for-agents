@@ -73,7 +73,9 @@ console.log(tokenEstimate);
 // { tokens: 12, characters: 46, words: 8 }
 ```
 
-## Content Extraction
+## Features
+
+### Content Extraction
 
 Real-world pages are full of boilerplate. Enable extraction to get just the main content:
 
@@ -83,7 +85,7 @@ const { markdown } = convert(html, { extract: true });
 
 This strips `<nav>`, `<header>`, `<footer>`, `<aside>`, ads, cookie banners, social widgets, and more - typically saving **80%+ tokens**.
 
-## Middleware
+### Middleware
 
 Serve Markdown automatically when AI agents request it via `Accept: text/markdown`. Normal browser requests pass through untouched:
 
@@ -93,7 +95,7 @@ import { markdown } from '@markdown-for-agents/express';
 app.use(markdown({ extract: true }));
 ```
 
-## Frontmatter
+### Frontmatter
 
 Metadata is automatically extracted from `<head>` and prepended as YAML frontmatter:
 
@@ -105,7 +107,7 @@ const { markdown } = convert('<html><head><title>My Page</title></head>...</html
 // ---
 ```
 
-## Custom Rules
+### Custom Rules
 
 Override how any element is converted:
 
@@ -122,7 +124,7 @@ const { markdown } = convert(html, {
 });
 ```
 
-## Content-Signal Header
+### Content-Signal Header
 
 Middleware can set a `content-signal` HTTP header to communicate publisher consent for AI usage:
 

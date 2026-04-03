@@ -2,6 +2,16 @@
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 
+:root {
+    --color-fd-primary: hsl(152, 55%, 30%);
+    --color-fd-primary-foreground: hsl(0, 0%, 98%);
+}
+
+.dark {
+    --color-fd-primary: hsl(152, 50%, 50%);
+    --color-fd-primary-foreground: hsl(152, 30%, 8%);
+}
+
 @theme {
     --font-mono: 'SF Mono', ui-monospace, SFMono-Regular, 'Menlo', 'Consolas', 'Liberation Mono', monospace;
 }

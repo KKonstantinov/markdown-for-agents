@@ -1,0 +1,251 @@
+---
+title: Advanced Options
+description: Token estimation, deduplication, and server timing for fine-tuning conversions.
+---
+
+# Advanced Options
+
+## Token Estimation
+
+Every conversion returns a `tokenEstimate` with token, character, and word counts. This helps with LLM context window planning and cost estimation without needing a separate tokenizer dependency.
+
+### Built-in Heuristic
+
+The default estimator uses a fast heuristic of ~4 characters per token. This is accurate enough for planning purposes and adds zero overhead:
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+import { convert } from 'markdown-for-agents';
+
+const { markdown, tokenEstimate } = convert(html);
+
+console.log(tokenEstimate);
+// { tokens: 12, characters: 46, words: 8 }
+```
+    </Tab>
+    <Tab value="Python">
+```python
+from markdown_for_agents import convert
+
+result = convert(html)
+
+print(result.token_estimate)
+# TokenEstimate(tokens=12, characters=46, words=8)
+```
+    </Tab>
+</Tabs>
+
+The estimate is also surfaced by middleware via the `x-markdown-tokens` response header.
+
+### Custom Token Counter
+
+Replace the built-in heuristic with an exact tokenizer when precision matters:
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+import { convert } from 'markdown-for-agents';
+import { encoding_for_model } from 'tiktoken';
+
+const enc = encoding_for_model('gpt-4o');
+
+const { markdown, tokenEstimate } = convert(html, {
+    tokenCounter: text => ({
+        tokens: enc.encode(text).length,
+        characters: text.length,
+        words: text.split(/\s+/).filter(Boolean).length
+    })
+});
+```
+    </Tab>
+    <Tab value="Python">
+```python
+from markdown_for_agents import convert, TokenEstimate
+import tiktoken
+
+enc = tiktoken.encoding_for_model("gpt-4o")
+
+result = convert(html, token_counter=lambda text: TokenEstimate(
+    tokens=len(enc.encode(text)),
+    characters=len(text),
+    words=len(text.split()),
+))
+```
+    </Tab>
+</Tabs>
+
+The custom counter receives the final markdown string and must return a `TokenEstimate` with `tokens`, `characters`, and `words` fields. When used with middleware, the custom counter's value flows through to the `x-markdown-tokens` response header.
+
+### Standalone Usage
+
+The token estimator is also available as a standalone function:
+
+```ts
+import { estimateTokens } from 'markdown-for-agents/tokens';
+
+const estimate = estimateTokens('Some markdown text');
+// { tokens: 5, characters: 18, words: 3 }
+```
+
+## Deduplication
+
+Real-world HTML pages often contain repeated content - navigation links that appear in multiple places, "Read more" buttons, or footer text duplicated across sections. Deduplication removes these repeated blocks from the converted Markdown.
+
+### Basic Usage
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+import { convert } from 'markdown-for-agents';
+
+const { markdown } = convert(html, { deduplicate: true });
+```
+    </Tab>
+    <Tab value="Python">
+```python
+from markdown_for_agents import convert
+
+result = convert(html, deduplicate=True)
+```
+    </Tab>
+</Tabs>
+
+### Minimum Length
+
+The `minLength` option (default: `10`) controls the minimum block length in characters eligible for deduplication. Blocks shorter than this are always kept, which protects separators (`---`), short headings, and formatting elements.
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+const { markdown } = convert(html, {
+    deduplicate: { minLength: 5 } // catch short repeated phrases like "Read more"
+});
+```
+    </Tab>
+    <Tab value="Python">
+```python
+from markdown_for_agents import DeduplicateOptions
+
+result = convert(html, deduplicate=DeduplicateOptions(min_length=5))
+```
+    </Tab>
+</Tabs>
+
+Lower it to catch short repeated phrases. Raise it for more conservative deduplication.
+
+### When to Use It
+
+Deduplication is most useful when combined with content extraction disabled or partially disabled. When `extract: true` is set, most boilerplate is already stripped before conversion, so there is less to deduplicate.
+
+Enable deduplication when:
+
+- You're converting pages without extraction and want to clean up repeated blocks
+- Pages have content that is legitimately repeated across sections (e.g. repeated CTAs)
+- You want to minimize token usage as aggressively as possible
+
+## Server Timing
+
+Enable `serverTiming` to measure conversion duration. The result includes `convertDuration` (in milliseconds), and middleware adapters use it to set a [`Server-Timing`](https://www.w3.org/TR/server-timing/) header:
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+const { markdown, convertDuration } = convert(html, { serverTiming: true });
+console.log(`Conversion took ${convertDuration}ms`);
+// Middleware sets: Server-Timing: mfa.convert;dur=4.7;desc="HTML to Markdown"
+```
+    </Tab>
+    <Tab value="Python">
+```python
+result = convert(html, server_timing=True)
+print(f"Conversion took {result.convert_duration}ms")
+# Middleware sets: Server-Timing: mfa.convert;dur=4.7;desc="HTML to Markdown"
+```
+    </Tab>
+</Tabs>
+
+`Server-Timing` surfaces in browser devtools (Network tab > Timing) and is accessible via the `PerformanceServerTiming` API. Middleware also sets an `x-markdown-timing` header with the same data, which survives CDN caching.
+
+## Content-Signal Header
+
+Middleware can set a `content-signal` HTTP header to communicate publisher consent for AI usage. This is opt-in - the header is only set when explicitly configured.
+
+### Basic Usage
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+import { markdown } from '@markdown-for-agents/express';
+
+app.use(
+    markdown({
+        contentSignal: {
+            aiTrain: true,
+            search: true,
+            aiInput: true
+        }
+    })
+);
+// Sets header: content-signal: ai-train=yes, search=yes, ai-input=yes
+```
+    </Tab>
+    <Tab value="Python">
+```python
+from markdown_for_agents import MiddlewareOptions, ContentSignalOptions
+
+app.add_middleware(
+    MarkdownMiddleware,
+    options=MiddlewareOptions(
+        content_signal=ContentSignalOptions(
+            ai_train=True,
+            search=True,
+            ai_input=True,
+        ),
+    ),
+)
+# Sets header: content-signal: ai-train=yes, search=yes, ai-input=yes
+```
+    </Tab>
+</Tabs>
+
+### Signal Fields
+
+| Field      | Header value   | Description                                    |
+| ---------- | -------------- | ---------------------------------------------- |
+| `aiTrain`  | `ai-train=yes` | Consent for AI model training on this content   |
+| `search`   | `search=yes`   | Consent for search engine indexing              |
+| `aiInput`  | `ai-input=yes` | Consent for AI agents to use content as context |
+
+### Granular Control
+
+Only explicitly set fields are included in the header. Set a field to `false` to signal denial, or omit it to exclude it entirely:
+
+<Tabs items={['TypeScript', 'Python']}>
+    <Tab value="TypeScript">
+```ts
+app.use(
+    markdown({
+        contentSignal: {
+            aiTrain: false, // ai-train=no
+            search: true    // search=yes
+            // aiInput omitted - not included in header
+        }
+    })
+);
+// Sets header: content-signal: ai-train=no, search=yes
+```
+    </Tab>
+    <Tab value="Python">
+```python
+MiddlewareOptions(
+    content_signal=ContentSignalOptions(
+        ai_train=False,  # ai-train=no
+        search=True,     # search=yes
+        # ai_input omitted - not included in header
+    ),
+)
+# Sets header: content-signal: ai-train=no, search=yes
+```
+    </Tab>
+</Tabs>

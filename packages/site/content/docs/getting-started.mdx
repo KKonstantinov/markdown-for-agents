@@ -97,19 +97,20 @@ const { markdown } = convert(html, {
 });
 ```
 
-### Getting Token Estimates
+### Frontmatter
 
-Every call to `convert` returns a token estimate. You can also estimate tokens independently:
+By default, metadata from the HTML `<head>` is extracted and prepended as YAML frontmatter:
 
 ```ts
-import { estimateTokens } from 'markdown-for-agents/tokens';
-
-const estimate = estimateTokens('Some markdown text...');
-console.log(estimate);
-// { tokens: 6, characters: 22, words: 3 }
+const { markdown } = convert('<html><head><title>My Page</title></head><body><p>Hello</p></body></html>');
+// ---
+// title: My Page
+// ---
+//
+// Hello
 ```
 
-The estimator uses a ~4 characters per token heuristic, which is a reasonable approximation for English text with most LLM tokenizers.
+Disable it with `frontmatter: false`, or merge custom fields with `frontmatter: { author: 'Jane' }`. See the [Frontmatter guide](/docs/frontmatter) for details.
 
 ### Using Custom Rules
 
@@ -184,10 +185,53 @@ When a client sends `Accept: text/markdown`, the response is automatically conve
 [Next.js example](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a complete working app with the proxy
 pattern.
 
+### Token Estimation
+
+Every conversion returns a token estimate for LLM cost planning. The built-in heuristic works out of the box, or plug in an exact tokenizer:
+
+```ts
+const { tokenEstimate } = convert(html);
+console.log(tokenEstimate);
+// { tokens: 12, characters: 46, words: 8 }
+```
+
+### Deduplication
+
+Real-world pages often repeat content (nav links, CTAs, footers). Enable deduplication to remove repeated blocks:
+
+```ts
+const { markdown } = convert(html, { deduplicate: true });
+```
+
+### Server Timing
+
+Measure conversion performance with the `serverTiming` option. Middleware adapters surface this as a `Server-Timing` header:
+
+```ts
+const { markdown, convertDuration } = convert(html, { serverTiming: true });
+console.log(`Took ${convertDuration}ms`);
+```
+
+### Content-Signal Header
+
+Signal publisher consent for AI usage via an HTTP header. Only set when explicitly configured:
+
+```ts
+app.use(markdown({
+    contentSignal: { aiTrain: true, search: true, aiInput: true }
+}));
+// Sets: content-signal: ai-train=yes, search=yes, ai-input=yes
+```
+
+See [Advanced Options](/docs/advanced-options) for full details on all of the above.
+
 ## What's Next
 
 - [Playground](/playground) - try the converter interactively with any URL or HTML
 - [Content Extraction](/docs/extraction) - fine-tune what gets stripped from web pages
-- [Middleware](/docs/middleware) - integrate with Express, Fastify, Hono, Next.js, or any Web Standard server
+- [Frontmatter](/docs/frontmatter) - control the YAML metadata prepended to output
 - [Custom Rules](/docs/rules) - extend the converter with your own element handlers
+- [Middleware](/docs/middleware) - integrate with Express, Fastify, Hono, Next.js, or any Web Standard server
+- [Supported Elements](/docs/supported-elements) - full reference of HTML-to-Markdown mappings
+- [Advanced Options](/docs/advanced-options) - custom token counters, deduplication, server timing, and content-signal headers
 - [API Reference](/docs/api) - complete API documentation
