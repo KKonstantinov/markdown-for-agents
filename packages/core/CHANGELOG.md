@@ -1,5 +1,11 @@
 # markdown-for-agents
 
+## 1.3.4
+
+### Patch Changes
+
+- 9e1b395: fix arbitrary-value brackets
+
 ## 1.3.3
 
 ### Patch Changes
