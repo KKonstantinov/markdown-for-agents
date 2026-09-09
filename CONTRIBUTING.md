@@ -15,8 +15,8 @@ Thanks for your interest in contributing to `markdown-for-agents`. This document
 
 ```bash
 # Clone the repository
-git clone https://github.com/kkonstantinov/agent-markdown.git
-cd agent-markdown
+git clone https://github.com/KKonstantinov/markdown-for-agents.git
+cd markdown-for-agents
 
 # Install dependencies
 pnpm install
@@ -55,11 +55,16 @@ packages/
     nextjs/                 # @markdown-for-agents/nextjs (+ nextImageRule)
     web/                    # @markdown-for-agents/web
 examples/
+  express/                  # Express example app
+  fastify/                  # Fastify example app
+  hono/                     # Hono example app
   nextjs/                   # Next.js example app (route handler + proxy patterns)
-docs/                       # Documentation
+  shared/                   # Shared example integration test helpers
+  web/                      # Web middleware example app
+packages/site/content/docs/ # Documentation
 ```
 
-See [Architecture](docs/architecture.md) for how the pipeline works internally.
+See [Architecture](packages/site/content/docs/architecture.mdx) for how the pipeline works internally.
 
 ## Scripts
 
@@ -82,6 +87,10 @@ You can also run scripts for a specific package:
 ```bash
 pnpm --filter markdown-for-agents test
 pnpm --filter @markdown-for-agents/express test
+pnpm --filter @markdown-for-agents/fastify test
+pnpm --filter @markdown-for-agents/hono test
+pnpm --filter @markdown-for-agents/nextjs test
+pnpm --filter @markdown-for-agents/web test
 ```
 
 ### Core-specific Scripts
@@ -203,13 +212,13 @@ pnpm lint:fix    # Auto-fix what's possible
 2. Add `package.json`, `tsdown.config.ts`, `tsconfig.json`, `vitest.config.ts`
 3. Implement the middleware in `src/index.ts`, importing from `markdown-for-agents`
 4. Add unit tests in `test/unit/` and integration tests in `test/integration/`
-5. Document it in `docs/middleware.md`
+5. Document it in `packages/site/content/docs/middleware.mdx`
 
 ### Changing the Pipeline
 
 If modifying the core pipeline (parser, walker, renderer):
 
-1. Read the [Architecture](docs/architecture.md) doc first
+1. Read the [Architecture](packages/site/content/docs/architecture.mdx) doc first
 2. Ensure all existing tests still pass
 3. Consider edge cases: empty input, whitespace-only content, deeply nested structures, tables inside lists, pre-formatted content
 
