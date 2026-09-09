@@ -1,6 +1,6 @@
 ---
 title: Middleware
-description: Serve Markdown responses via content negotiation with Express, Fastify, Hono, Next.js, or any Web Standard server.
+description: Serve Markdown responses via content negotiation with Express, Fastify, Hono, Next.js, SvelteKit, or any Web Standard server.
 ---
 
 # Middleware
@@ -16,6 +16,7 @@ npm install @markdown-for-agents/express
 npm install @markdown-for-agents/fastify
 npm install @markdown-for-agents/hono
 npm install @markdown-for-agents/nextjs
+npm install @markdown-for-agents/sveltekit
 npm install @markdown-for-agents/web
 ```
 
@@ -275,6 +276,38 @@ const { markdown } = convert(html, { rules: [nextImageRule] });
 > **Full working example:** See [`examples/nextjs/`](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/nextjs) for a
 > complete Next.js app demonstrating the proxy pattern with integration tests.
 
+### SvelteKit
+
+```bash
+npm install @markdown-for-agents/sveltekit
+```
+
+Use a SvelteKit `handle` hook for site-wide conversion:
+
+```ts
+// src/hooks.server.ts
+import { sequence } from '@sveltejs/kit/hooks';
+import { markdown } from '@markdown-for-agents/sveltekit';
+
+export const handle = sequence(
+    authHandle,
+    markdown({
+        extract: true,
+        deduplicate: true,
+        contentSignal: { aiTrain: true, search: true, aiInput: true }
+    })
+);
+```
+
+Place `markdown()` after hooks that populate `event.locals`, authenticate, localize, or rewrite requests so SvelteKit renders the correct
+HTML before conversion. Hooks that need to inspect the final Markdown response should run after it.
+
+The adapter calls `resolve(event)`, then converts only HTML responses when the request includes `Accept: text/markdown`. JSON endpoints,
+redirects, assets, XML, RSS, and ordinary browser requests pass through without conversion work.
+
+> **Full working example:** See [`examples/sveltekit/`](https://github.com/KKonstantinov/markdown-for-agents/tree/main/examples/sveltekit)
+> for a complete SvelteKit app with integration tests.
+
 ### Web Standard (Generic)
 
 ```bash
@@ -479,6 +512,9 @@ import { markdown } from '@markdown-for-agents/hono';
 
 // Next.js - requires next as peer dependency
 import { withMarkdown, nextImageRule } from '@markdown-for-agents/nextjs';
+
+// SvelteKit - requires @sveltejs/kit as peer dependency
+import { markdown } from '@markdown-for-agents/sveltekit';
 
 // Generic Web Standard - no framework dependency
 import { markdownMiddleware } from '@markdown-for-agents/web';

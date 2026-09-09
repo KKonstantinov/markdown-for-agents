@@ -179,6 +179,20 @@ function withMarkdown(handler: NextMiddleware, options?: MiddlewareOptions): Nex
 
 ---
 
+#### `markdown(options?)` (SvelteKit)
+
+Creates a SvelteKit `handle` hook for content negotiation.
+
+```ts
+import { markdown } from '@markdown-for-agents/sveltekit';
+
+function markdown(options?: SvelteKitMarkdownOptions): Handle;
+```
+
+Use it in `src/hooks.server.ts`, optionally composed with `sequence()` from `@sveltejs/kit/hooks`.
+
+---
+
 #### `nextImageRule` (Next.js)
 
 A conversion rule that extracts original image URLs from Next.js `/_next/image` optimization paths. Automatically included by

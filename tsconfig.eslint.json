@@ -11,6 +11,7 @@
             "@markdown-for-agents/fastify": ["./packages/middleware/fastify/src/index.ts"],
             "@markdown-for-agents/hono": ["./packages/middleware/hono/src/index.ts"],
             "@markdown-for-agents/nextjs": ["./packages/middleware/nextjs/src/index.ts"],
+            "@markdown-for-agents/sveltekit": ["./packages/middleware/sveltekit/src/index.ts"],
             "@markdown-for-agents/web": ["./packages/middleware/web/src/index.ts"]
         }
     },

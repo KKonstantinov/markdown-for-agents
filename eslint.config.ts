@@ -22,6 +22,10 @@ export default tseslint.config(
             'examples/nextjs/.next/',
             'examples/nextjs/next-env.d.ts',
             'examples/nextjs/*.config.*',
+            'examples/sveltekit/.svelte-kit/',
+            'examples/sveltekit/build/',
+            'examples/sveltekit/*.config.*',
+            'examples/sveltekit/**/*.svelte',
             'scripts/'
         ]
     },

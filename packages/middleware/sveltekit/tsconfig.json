@@ -1,0 +1,13 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "paths": {
+            "@markdown-for-agents/web": ["../web/src/index.ts"],
+            "markdown-for-agents": ["../../core/src/index.ts"]
+        }
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist", "test"]
+}
