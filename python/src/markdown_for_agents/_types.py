@@ -42,6 +42,7 @@ class ExtractOptions:
     keep_header: bool = False
     keep_footer: bool = False
     keep_nav: bool = False
+    keep_hidden: bool = False
 
 
 @dataclass(frozen=True, slots=True)

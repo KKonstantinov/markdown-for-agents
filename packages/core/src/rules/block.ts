@@ -49,7 +49,8 @@ export const blockRules: Rule[] = [
         filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
         replacement: ({ node, convertChildren, options }) => {
             const level = Number.parseInt(node.name[1], 10);
-            const content = convertChildren(node).trim();
+            // A Markdown heading is one line: <br> and wrapped source lines collapse to a space.
+            const content = convertChildren(node).replaceAll(/\s+/g, ' ').trim();
             if (!content) return null;
 
             if (options.headingStyle === 'setext' && level <= 2) {

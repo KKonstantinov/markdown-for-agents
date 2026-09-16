@@ -26,6 +26,11 @@ class TestHeadings:
     def test_skips_empty_headings(self):
         assert convert("<h1></h1>").markdown == "\n"
 
+    def test_collapses_line_breaks_and_whitespace_inside_headings(self):
+        assert convert("<h2>Test behavior.<br>Before release.</h2>").markdown == "## Test behavior. Before release.\n"
+        assert convert("<h1>\n  Multi\n  line\n</h1>").markdown == "# Multi line\n"
+        assert convert("<h1>A<br>B</h1>", heading_style="setext").markdown == "A B\n===\n"
+
 
 class TestParagraphs:
     def test_converts_paragraphs(self):

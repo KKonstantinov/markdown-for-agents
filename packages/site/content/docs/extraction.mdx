@@ -39,6 +39,16 @@ With `extract: true`, the library strips elements using a built-in set of heuris
 | `<svg>`      | Vector graphics                 |
 | `<form>`     | Forms                           |
 
+### By Hidden State
+
+| Attribute            | Description                                                                   |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `hidden`             | Not rendered (any value, including `until-found`)                             |
+| `aria-hidden="true"` | Hidden from the accessibility tree: decorative icons, sizing ghosts, overlays |
+
+Content that a page hides from assistive technology is decorative, collapsed, or a layout duplicate of visible text, so it is stripped the
+same way. Elements with `aria-hidden="false"` are kept.
+
 ### By ARIA Role
 
 | Role              | Description                      |
@@ -84,12 +94,13 @@ const { markdown } = convert(html, {
     extract: {
         keepHeader: true, // Keep <header> elements
         keepFooter: true, // Keep <footer> elements
-        keepNav: true // Keep <nav> elements
+        keepNav: true, // Keep <nav> elements
+        keepHidden: true // Keep hidden and aria-hidden elements
     }
 });
 ```
 
-This is useful when the page header or navigation contains important content.
+This is useful when the page header or navigation contains important content, or when a page hides text it still wants read.
 
 ## Custom Strip Rules
 

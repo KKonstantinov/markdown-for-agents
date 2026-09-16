@@ -25,7 +25,9 @@ export function extractContent(document: Document, options?: ExtractOptions): vo
 
     const stripIds = [...DEFAULT_STRIP_IDS, ...(options?.stripIds ?? [])];
 
-    pruneTree(document, stripTags, stripRoles, stripClasses, stripIds);
+    const stripHidden = !options?.keepHidden;
+
+    pruneTree(document, stripTags, stripRoles, stripClasses, stripIds, stripHidden);
 }
 
 /**
@@ -38,13 +40,15 @@ export function extractContent(document: Document, options?: ExtractOptions): vo
  * @param stripRoles - ARIA roles to remove (e.g. `navigation`, `banner`).
  * @param stripClasses - CSS class substrings or regex patterns to match for removal.
  * @param stripIds - Element ID substrings or regex patterns to match for removal.
+ * @param stripHidden - Whether to remove elements hidden from rendering or from the accessibility tree.
  */
 function pruneTree(
     node: Document | Element,
     stripTags: Set<string>,
     stripRoles: Set<string>,
     stripClasses: (string | RegExp)[],
-    stripIds: (string | RegExp)[]
+    stripIds: (string | RegExp)[],
+    stripHidden: boolean
 ): void {
     const toRemove: ChildNode[] = [];
 
@@ -53,12 +57,12 @@ function pruneTree(
 
         const el = child;
 
-        if (shouldStrip(el, stripTags, stripRoles, stripClasses, stripIds)) {
+        if (shouldStrip(el, stripTags, stripRoles, stripClasses, stripIds, stripHidden)) {
             toRemove.push(child);
             continue;
         }
 
-        pruneTree(el, stripTags, stripRoles, stripClasses, stripIds);
+        pruneTree(el, stripTags, stripRoles, stripClasses, stripIds, stripHidden);
     }
 
     for (const child of toRemove) {
@@ -73,13 +77,14 @@ function pruneTree(
 /**
  * Determines whether an element should be stripped from the DOM tree.
  *
- * Checks against tag name, ARIA role, CSS class, and element ID in that order.
+ * Checks against tag name, hidden state, ARIA role, CSS class, and element ID in that order.
  *
  * @param el - The element to evaluate.
  * @param stripTags - Tag names to match.
  * @param stripRoles - ARIA roles to match.
  * @param stripClasses - CSS class substrings or regex patterns to match.
  * @param stripIds - Element ID substrings or regex patterns to match.
+ * @param stripHidden - Whether hidden elements match.
  * @returns `true` if the element matches any strip criterion.
  */
 function shouldStrip(
@@ -87,9 +92,12 @@ function shouldStrip(
     stripTags: Set<string>,
     stripRoles: Set<string>,
     stripClasses: (string | RegExp)[],
-    stripIds: (string | RegExp)[]
+    stripIds: (string | RegExp)[],
+    stripHidden: boolean
 ): boolean {
     if (stripTags.has(el.name)) return true;
+
+    if (stripHidden && isHidden(el)) return true;
 
     const role = el.attribs.role;
     if (role && stripRoles.has(role)) return true;
@@ -101,6 +109,18 @@ function shouldStrip(
     if (id && matchesAny(id, stripIds)) return true;
 
     return false;
+}
+
+/**
+ * Whether an element is hidden from rendering (the `hidden` attribute, with any
+ * value including `until-found`) or from the accessibility tree
+ * (`aria-hidden="true"`). Such content is decorative, collapsed, or a layout
+ * duplicate of visible text, and never what an agent should read.
+ */
+function isHidden(el: Element): boolean {
+    if ('hidden' in el.attribs) return true;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- attribute may be undefined at runtime
+    return el.attribs['aria-hidden']?.toLowerCase() === 'true';
 }
 
 /**

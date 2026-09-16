@@ -27,6 +27,12 @@ describe('block rules', () => {
         it('skips empty headings', () => {
             expect(convert('<h1></h1>').markdown).toBe('\n');
         });
+
+        it('collapses line breaks and whitespace inside headings', () => {
+            expect(convert('<h2>Test behavior.<br>Before release.</h2>').markdown).toBe('## Test behavior. Before release.\n');
+            expect(convert('<h1>\n  Multi\n  line\n</h1>').markdown).toBe('# Multi line\n');
+            expect(convert('<h1>A<br>B</h1>', { headingStyle: 'setext' }).markdown).toBe('A B\n===\n');
+        });
     });
 
     describe('paragraphs', () => {

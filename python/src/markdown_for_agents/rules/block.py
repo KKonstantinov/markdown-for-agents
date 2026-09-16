@@ -84,7 +84,8 @@ block_rules: list[Rule] = [
 
 def _heading_replacement(ctx: RuleContext) -> str | None:
     level = int(ctx.node.name[1])
-    content = ctx.convert_children(ctx.node).strip()
+    # A Markdown heading is one line: <br> and wrapped source lines collapse to a space.
+    content = re.sub(r"\s+", " ", ctx.convert_children(ctx.node)).strip()
     if not content:
         return None
 

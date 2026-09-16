@@ -237,8 +237,8 @@ export interface Rule {
 /**
  * Options for the content extraction pass that runs before conversion.
  * All arrays are **merged** with the built-in defaults (they do not replace them).
- * Use `keepHeader`, `keepFooter`, or `keepNav` to selectively preserve
- * elements that would otherwise be stripped.
+ * Use `keepHeader`, `keepFooter`, `keepNav`, or `keepHidden` to selectively
+ * preserve elements that would otherwise be stripped.
  */
 export interface ExtractOptions {
     /** Additional HTML tag names to strip (merged with defaults like `nav`, `aside`, `script`, etc.). */
@@ -261,6 +261,14 @@ export interface ExtractOptions {
 
     /** Keep `<nav>` elements instead of stripping them. @defaultValue `false` */
     keepNav?: boolean;
+
+    /**
+     * Keep elements carrying the `hidden` attribute or `aria-hidden="true"`
+     * instead of stripping them. Such elements are not rendered, or are hidden
+     * from the accessibility tree: decorative icons, sizing ghosts, collapsed
+     * panels. @defaultValue `false`
+     */
+    keepHidden?: boolean;
 }
 
 /**

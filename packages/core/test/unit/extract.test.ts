@@ -122,4 +122,29 @@ describe('content extraction', () => {
         expect(markdown).toContain('Content');
         expect(markdown).not.toContain('Prev');
     });
+
+    it('strips hidden and aria-hidden elements', () => {
+        const { markdown } = convert(
+            '<p>Keep</p><div hidden>Gone</div><span aria-hidden="true">Ghost</span><span aria-hidden="false">Seen</span>',
+            { extract: true }
+        );
+        expect(markdown).toContain('Keep');
+        expect(markdown).toContain('Seen');
+        expect(markdown).not.toContain('Gone');
+        expect(markdown).not.toContain('Ghost');
+    });
+
+    it('keeps hidden elements when configured', () => {
+        const { markdown } = convert('<p>Keep</p><div hidden>Gone</div><span aria-hidden="true">Ghost</span>', {
+            extract: { keepHidden: true }
+        });
+        expect(markdown).toContain('Gone');
+        expect(markdown).toContain('Ghost');
+    });
+
+    it('leaves hidden elements alone without extraction', () => {
+        const { markdown } = convert('<p>Keep</p><div hidden>Gone</div><span aria-hidden="true">Ghost</span>');
+        expect(markdown).toContain('Gone');
+        expect(markdown).toContain('Ghost');
+    });
 });
