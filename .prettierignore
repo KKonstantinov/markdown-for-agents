@@ -11,6 +11,11 @@ packages/site/content/docs/packages/nextjs.mdx
 packages/site/content/docs/packages/web.mdx
 packages/site/content/docs/packages/python.mdx
 
+# Prettier's MDX printer corrupts these two: it rewrites their ``` code fences to ````
+# and reflows the embedded JavaScript across arbitrary line breaks. Format them by hand.
+packages/site/content/docs/advanced-options.mdx
+packages/site/content/docs/frontmatter.mdx
+
 # Docs build output
 packages/site/.next/
 packages/site/next-env.d.ts
@@ -31,6 +36,9 @@ examples/sveltekit/**/*.svelte
 python/.mypy_cache/
 python/.pytest_cache/
 python/.venv/
+
+# Local agent tooling state, never committed
+.claude/
 
 # Lock files
 pnpm-lock.yaml
