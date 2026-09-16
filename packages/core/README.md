@@ -136,6 +136,10 @@ app.use(markdown());
 import { withMarkdown } from '@markdown-for-agents/nextjs';
 export default withMarkdown(handler);
 
+// SvelteKit
+import { markdown } from '@markdown-for-agents/sveltekit';
+export const handle = markdown();
+
 // Any Web Standard server (Cloudflare Workers, Deno, Bun)
 import { markdownMiddleware } from '@markdown-for-agents/web';
 const mw = markdownMiddleware();
@@ -143,13 +147,14 @@ const mw = markdownMiddleware();
 
 The middleware inspects the `Accept` header. Normal browser requests pass through untouched. When an AI agent sends `Accept: text/markdown`, the HTML response is automatically converted.
 
-| Package                                                                                      | Framework                                    |
-| -------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| [`@markdown-for-agents/express`](https://www.npmjs.com/package/@markdown-for-agents/express) | Express                                      |
-| [`@markdown-for-agents/fastify`](https://www.npmjs.com/package/@markdown-for-agents/fastify) | Fastify                                      |
-| [`@markdown-for-agents/hono`](https://www.npmjs.com/package/@markdown-for-agents/hono)       | Hono                                         |
-| [`@markdown-for-agents/nextjs`](https://www.npmjs.com/package/@markdown-for-agents/nextjs)   | Next.js                                      |
-| [`@markdown-for-agents/web`](https://www.npmjs.com/package/@markdown-for-agents/web)         | Web Standard (Cloudflare Workers, Deno, Bun) |
+| Package                                                                                          | Framework                                    |
+| ------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| [`@markdown-for-agents/express`](https://www.npmjs.com/package/@markdown-for-agents/express)     | Express                                      |
+| [`@markdown-for-agents/fastify`](https://www.npmjs.com/package/@markdown-for-agents/fastify)     | Fastify                                      |
+| [`@markdown-for-agents/hono`](https://www.npmjs.com/package/@markdown-for-agents/hono)           | Hono                                         |
+| [`@markdown-for-agents/nextjs`](https://www.npmjs.com/package/@markdown-for-agents/nextjs)       | Next.js                                      |
+| [`@markdown-for-agents/sveltekit`](https://www.npmjs.com/package/@markdown-for-agents/sveltekit) | SvelteKit                                    |
+| [`@markdown-for-agents/web`](https://www.npmjs.com/package/@markdown-for-agents/web)             | Web Standard (Cloudflare Workers, Deno, Bun) |
 
 ## Custom Rules
 

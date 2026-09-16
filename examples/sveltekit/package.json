@@ -1,0 +1,23 @@
+{
+    "name": "@markdown-for-agents/example-sveltekit",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "preview": "vite preview",
+        "test:integration": "vitest run",
+        "typecheck": "svelte-kit sync && tsgo --noEmit"
+    },
+    "dependencies": {
+        "@markdown-for-agents/sveltekit": "workspace:*",
+        "@sveltejs/adapter-node": "^5.5.7",
+        "@sveltejs/kit": "^2.70.3",
+        "markdown-for-agents": "workspace:*",
+        "svelte": "^5.57.0"
+    },
+    "devDependencies": {
+        "vite": "^8.0.0"
+    }
+}

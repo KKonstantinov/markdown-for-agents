@@ -161,6 +161,8 @@ packages/
       src/index.ts              # Hono middleware
     nextjs/                     # @markdown-for-agents/nextjs
       src/index.ts              # Next.js middleware + nextImageRule
+    sveltekit/                  # @markdown-for-agents/sveltekit
+      src/index.ts              # SvelteKit handle middleware
     web/                        # @markdown-for-agents/web
       src/index.ts              # Web Standard middleware
 ```
@@ -191,8 +193,9 @@ with subpath exports.
 
 ### Why separate middleware packages?
 
-Each middleware has its own framework dependency (Express, Fastify, Hono, Next.js). Separate packages avoid pulling in unused framework
-types and keep install sizes minimal. All middleware packages depend on `markdown-for-agents` (the core library) as a regular dependency.
+Each middleware has its own framework dependency (Express, Fastify, Hono, Next.js, SvelteKit). Separate packages avoid pulling in unused
+framework types and keep install sizes minimal. All middleware packages depend on `markdown-for-agents` (the core library) as a regular
+dependency.
 
 ### Why pnpm workspaces?
 

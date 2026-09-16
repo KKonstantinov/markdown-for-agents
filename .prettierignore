@@ -22,6 +22,11 @@ packages/site/next-env.d.ts
 examples/nextjs/.next/
 examples/nextjs/next-env.d.ts
 
+# SvelteKit
+examples/sveltekit/.svelte-kit/
+examples/sveltekit/build/
+examples/sveltekit/**/*.svelte
+
 # Python
 python/.mypy_cache/
 python/.pytest_cache/

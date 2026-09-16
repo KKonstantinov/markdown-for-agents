@@ -30,7 +30,7 @@ Size       541.3 KB        36.6 KB         -93.2%
 
 - **Runtime-agnostic** — Node.js, Bun, Deno, Cloudflare Workers, Vercel Edge, browsers
 - **Content extraction** — strip nav, footer, ads, sidebars, cookie banners automatically
-- **Framework middleware** — drop-in support for Express, Fastify, Hono, Next.js, and any Web Standard server
+- **Framework middleware** — drop-in support for Express, Fastify, Hono, Next.js, SvelteKit, and any Web Standard server
 - **Content negotiation** — respond with Markdown when clients send `Accept: text/markdown`
 - **Token estimation** — built-in heuristic token counter for LLM cost planning, with support for custom tokenizers
 - **Plugin system** — override or extend any element conversion with custom rules
@@ -49,6 +49,7 @@ npm install @markdown-for-agents/express
 npm install @markdown-for-agents/fastify
 npm install @markdown-for-agents/hono
 npm install @markdown-for-agents/nextjs
+npm install @markdown-for-agents/sveltekit
 npm install @markdown-for-agents/web
 ```
 
@@ -113,6 +114,10 @@ app.use(markdown());
 // Next.js (auto-unwraps /_next/image URLs)
 import { withMarkdown } from '@markdown-for-agents/nextjs';
 export default withMarkdown(handler);
+
+// SvelteKit
+import { markdown } from '@markdown-for-agents/sveltekit';
+export const handle = markdown();
 
 // Any Web Standard server (Cloudflare Workers, Deno, Bun)
 import { markdownMiddleware } from '@markdown-for-agents/web';
@@ -301,15 +306,16 @@ The `minLength` option (default: `10`) controls the minimum block length eligibl
 
 Monorepo managed with [pnpm workspaces](https://pnpm.io/workspaces):
 
-| Package                                                       | Description                                             |
-| ------------------------------------------------------------- | ------------------------------------------------------- |
-| [`markdown-for-agents`](packages/core)                        | Core HTML-to-Markdown converter                         |
-| [`@markdown-for-agents/audit`](packages/audit)                | CLI & library to audit token/byte savings               |
-| [`@markdown-for-agents/express`](packages/middleware/express) | Express middleware                                      |
-| [`@markdown-for-agents/fastify`](packages/middleware/fastify) | Fastify plugin                                          |
-| [`@markdown-for-agents/hono`](packages/middleware/hono)       | Hono middleware                                         |
-| [`@markdown-for-agents/nextjs`](packages/middleware/nextjs)   | Next.js middleware (with `/_next/image` URL unwrapping) |
-| [`@markdown-for-agents/web`](packages/middleware/web)         | Web Standard middleware                                 |
+| Package                                                           | Description                                             |
+| ----------------------------------------------------------------- | ------------------------------------------------------- |
+| [`markdown-for-agents`](packages/core)                            | Core HTML-to-Markdown converter                         |
+| [`@markdown-for-agents/audit`](packages/audit)                    | CLI & library to audit token/byte savings               |
+| [`@markdown-for-agents/express`](packages/middleware/express)     | Express middleware                                      |
+| [`@markdown-for-agents/fastify`](packages/middleware/fastify)     | Fastify plugin                                          |
+| [`@markdown-for-agents/hono`](packages/middleware/hono)           | Hono middleware                                         |
+| [`@markdown-for-agents/nextjs`](packages/middleware/nextjs)       | Next.js middleware (with `/_next/image` URL unwrapping) |
+| [`@markdown-for-agents/sveltekit`](packages/middleware/sveltekit) | SvelteKit handle middleware                             |
+| [`@markdown-for-agents/web`](packages/middleware/web)             | Web Standard middleware                                 |
 
 ### Python
 
@@ -333,7 +339,7 @@ import { estimateTokens } from 'markdown-for-agents/tokens';
 
 - [Getting Started](docs/getting-started.md) — installation, first conversion, common patterns
 - [Content Extraction](docs/extraction.md) — stripping non-content elements from web pages
-- [Middleware](docs/middleware.md) — Express, Fastify, Hono, Next.js, and Web Standard middleware
+- [Middleware](docs/middleware.md) — Express, Fastify, Hono, Next.js, SvelteKit, and Web Standard middleware
 - [Custom Rules](docs/rules.md) — the rule system, priorities, and writing plugins
 - [API Reference](docs/api.md) — complete API documentation with all types
 - [Architecture](docs/architecture.md) — how the library works internally
