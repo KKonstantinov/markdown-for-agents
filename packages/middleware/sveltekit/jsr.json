@@ -1,14 +1,14 @@
 {
     "name": "@markdown-for-agents/sveltekit",
-    "version": "1.3.4",
+    "version": "1.4.0",
     "license": "MIT",
     "exports": {
         ".": "./src/index.ts"
     },
     "imports": {
         "@markdown-for-agents/web": "npm:@markdown-for-agents/web@^1.3.4",
-        "@sveltejs/kit": "npm:@sveltejs/kit@^2.0.0",
-        "markdown-for-agents": "npm:markdown-for-agents@^1.3.4"
+        "markdown-for-agents": "npm:markdown-for-agents@^1.3.4",
+        "@sveltejs/kit": "npm:@sveltejs/kit@^2.0.0"
     },
     "publish": {
         "include": ["src/", "LICENSE", "README.md", "jsr.json"]
