@@ -42,7 +42,18 @@ function handler(request: Request): Response {
 const port = Number(process.env['PORT'] ?? 3000);
 
 async function handleRequest(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
-    const url = `http://127.0.0.1:${String(port)}${req.url ?? '/'}`;
+    const target = req.url ?? '/';
+
+    // Node also accepts absolute-form (`GET http://host/path`) and asterisk-form
+    // (`OPTIONS *`) request targets. Neither concatenates into a parsable URL,
+    // so reject them before constructing the Request.
+    if (!target.startsWith('/')) {
+        res.writeHead(400, { 'content-type': 'text/plain' });
+        res.end('Bad Request');
+        return;
+    }
+
+    const url = `http://127.0.0.1:${String(port)}${target}`;
     const headers = new Headers();
     for (const [key, value] of Object.entries(req.headers)) {
         if (value) headers.set(key, Array.isArray(value) ? value.join(', ') : value);
@@ -56,7 +67,15 @@ async function handleRequest(req: import('node:http').IncomingMessage, res: impo
 }
 
 const server = createServer((req, res) => {
-    void handleRequest(req, res);
+    // Without a catch, a rejection here becomes an unhandled rejection and
+    // takes the process down.
+    void handleRequest(req, res).catch((error: unknown) => {
+        console.error('Request failed:', error);
+        if (!res.headersSent) {
+            res.writeHead(500, { 'content-type': 'text/plain' });
+        }
+        res.end('Internal Server Error');
+    });
 });
 
 server.listen(port, '127.0.0.1', () => {

@@ -23,6 +23,11 @@ jobs:
                   node-version: 24
                   cache: pnpm
                   registry-url: 'https://registry.npmjs.org'
+            # `pnpm version-packages` runs `uv lock` so python/uv.lock keeps up
+            # with the version bump written into python/pyproject.toml.
+            - uses: astral-sh/setup-uv@v6
+              with:
+                  enable-cache: true
             - run: pnpm install --frozen-lockfile
             - name: Create Release Pull Request or Publish
               id: changesets

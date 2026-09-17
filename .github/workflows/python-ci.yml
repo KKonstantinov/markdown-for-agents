@@ -18,6 +18,12 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
 
+env:
+    # Assert that uv.lock already matches pyproject.toml instead of silently
+    # re-resolving, mirroring `pnpm install --frozen-lockfile` on the JS side.
+    # Applies to every `uv sync` and `uv run` in this workflow.
+    UV_LOCKED: '1'
+
 jobs:
     lint:
         name: Lint
