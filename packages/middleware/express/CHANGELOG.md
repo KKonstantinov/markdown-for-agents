@@ -1,5 +1,12 @@
 # @markdown-for-agents/express
 
+## 1.3.5
+
+### Patch Changes
+
+- Updated dependencies [ef84782]
+    - markdown-for-agents@1.4.0
+
 ## 1.3.4
 
 ### Patch Changes
