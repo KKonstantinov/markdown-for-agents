@@ -349,18 +349,20 @@ interface ExtractOptions {
     keepHeader?: boolean;
     keepFooter?: boolean;
     keepNav?: boolean;
+    keepHidden?: boolean;
 }
 ```
 
-| Property       | Type                   | Default | Description                        |
-| -------------- | ---------------------- | ------- | ---------------------------------- |
-| `stripTags`    | `string[]`             | `[]`    | Additional tags to strip           |
-| `stripClasses` | `(string \| RegExp)[]` | `[]`    | Additional class patterns to strip |
-| `stripRoles`   | `string[]`             | `[]`    | Additional ARIA roles to strip     |
-| `stripIds`     | `(string \| RegExp)[]` | `[]`    | Additional ID patterns to strip    |
-| `keepHeader`   | `boolean`              | `false` | Keep `<header>` elements           |
-| `keepFooter`   | `boolean`              | `false` | Keep `<footer>` elements           |
-| `keepNav`      | `boolean`              | `false` | Keep `<nav>` elements              |
+| Property       | Type                   | Default | Description                                     |
+| -------------- | ---------------------- | ------- | ----------------------------------------------- |
+| `stripTags`    | `string[]`             | `[]`    | Additional tags to strip                        |
+| `stripClasses` | `(string \| RegExp)[]` | `[]`    | Additional class patterns to strip              |
+| `stripRoles`   | `string[]`             | `[]`    | Additional ARIA roles to strip                  |
+| `stripIds`     | `(string \| RegExp)[]` | `[]`    | Additional ID patterns to strip                 |
+| `keepHeader`   | `boolean`              | `false` | Keep `<header>` elements                        |
+| `keepFooter`   | `boolean`              | `false` | Keep `<footer>` elements                        |
+| `keepNav`      | `boolean`              | `false` | Keep `<nav>` elements                           |
+| `keepHidden`   | `boolean`              | `false` | Keep `hidden` and `aria-hidden="true"` elements |
 
 ---
 

@@ -103,3 +103,26 @@ class TestContentExtraction:
         result = convert('<p>Content</p><div class="prev-next"><a href="/prev">Prev</a></div>', extract=True)
         assert "Content" in result.markdown
         assert "Prev" not in result.markdown
+
+    def test_strips_hidden_and_aria_hidden_elements(self):
+        html = (
+            "<p>Keep</p><div hidden>Gone</div>"
+            '<span aria-hidden="true">Ghost</span><span aria-hidden="false">Seen</span>'
+        )
+        result = convert(html, extract=True)
+        assert "Keep" in result.markdown
+        assert "Seen" in result.markdown
+        assert "Gone" not in result.markdown
+        assert "Ghost" not in result.markdown
+
+    def test_keeps_hidden_elements_when_configured(self):
+        html = '<p>Keep</p><div hidden>Gone</div><span aria-hidden="true">Ghost</span>'
+        result = convert(html, extract=ExtractOptions(keep_hidden=True))
+        assert "Gone" in result.markdown
+        assert "Ghost" in result.markdown
+
+    def test_leaves_hidden_elements_alone_without_extraction(self):
+        html = '<p>Keep</p><div hidden>Gone</div><span aria-hidden="true">Ghost</span>'
+        result = convert(html)
+        assert "Gone" in result.markdown
+        assert "Ghost" in result.markdown

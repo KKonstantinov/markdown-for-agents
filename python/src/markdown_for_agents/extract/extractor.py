@@ -34,7 +34,9 @@ def extract_content(document: Document, options: ExtractOptions | None = None) -
     if options is not None:
         strip_ids.extend(options.strip_ids)
 
-    _prune_tree(document, strip_tags, strip_roles, strip_classes, strip_ids)
+    strip_hidden = options is None or not options.keep_hidden
+
+    _prune_tree(document, strip_tags, strip_roles, strip_classes, strip_ids, strip_hidden)
 
 
 def _prune_tree(
@@ -43,6 +45,7 @@ def _prune_tree(
     strip_roles: set[str],
     strip_classes: list[str | re.Pattern[str]],
     strip_ids: list[str | re.Pattern[str]],
+    strip_hidden: bool,
 ) -> None:
     """Recursively walk the DOM tree and remove elements matching strip criteria."""
     to_remove: list[Element] = []
@@ -52,11 +55,11 @@ def _prune_tree(
             continue
         assert isinstance(child, Element)
 
-        if _should_strip(child, strip_tags, strip_roles, strip_classes, strip_ids):
+        if _should_strip(child, strip_tags, strip_roles, strip_classes, strip_ids, strip_hidden):
             to_remove.append(child)
             continue
 
-        _prune_tree(child, strip_tags, strip_roles, strip_classes, strip_ids)
+        _prune_tree(child, strip_tags, strip_roles, strip_classes, strip_ids, strip_hidden)
 
     for child in to_remove:
         if child in node.children:
@@ -70,9 +73,13 @@ def _should_strip(
     strip_roles: set[str],
     strip_classes: list[str | re.Pattern[str]],
     strip_ids: list[str | re.Pattern[str]],
+    strip_hidden: bool,
 ) -> bool:
     """Determine whether an element should be stripped from the DOM tree."""
     if el.name in strip_tags:
+        return True
+
+    if strip_hidden and _is_hidden(el):
         return True
 
     role = el.attribs.get("role", "")
@@ -85,6 +92,11 @@ def _should_strip(
 
     el_id = el.attribs.get("id", "")
     return bool(el_id and _matches_any(el_id, strip_ids))
+
+
+def _is_hidden(el: Element) -> bool:
+    """Hidden from rendering (``hidden``, any value) or from the accessibility tree (``aria-hidden="true"``)."""
+    return "hidden" in el.attribs or el.attribs.get("aria-hidden", "").lower() == "true"
 
 
 def _matches_any(value: str, patterns: list[str | re.Pattern[str]]) -> bool:

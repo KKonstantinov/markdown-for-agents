@@ -73,6 +73,7 @@ from markdown_for_agents import ExtractOptions
 result = convert(html, extract=ExtractOptions(
     keep_header=True,
     keep_footer=True,
+    keep_hidden=True,
     strip_classes=("my-custom-ad",),
     strip_ids=("remove-me",),
 ))
@@ -316,17 +317,17 @@ Only explicitly set fields are included. Set a field to `False` to signal denial
 
 ### Block
 
-| HTML                                              | Markdown                                |
-| ------------------------------------------------- | --------------------------------------- |
-| `<h1>`...`<h6>`                                   | `# Heading` (atx) or underline (setext) |
-| `<p>`                                             | Paragraph with blank lines              |
-| `<blockquote>`                                    | `> Quoted text`                         |
-| `<pre><code>`                                     | Fenced code block with language         |
-| `<hr>`                                            | `---`                                   |
-| `<br>`                                            | Trailing double-space line break        |
-| `<ul>`, `<ol>`, `<li>`                            | Lists with nesting and indentation      |
-| `<table>`                                         | GFM pipe table with separator row       |
-| `<script>`, `<style>`, `<noscript>`, `<template>` | Stripped                                |
+| HTML                                              | Markdown                                                  |
+| ------------------------------------------------- | --------------------------------------------------------- |
+| `<h1>`...`<h6>`                                   | `# Heading` (atx) or underline (setext)                   |
+| `<p>`                                             | Paragraph with blank lines                                |
+| `<blockquote>`                                    | `> Quoted text`                                           |
+| `<pre><code>`                                     | Fenced code block with language                           |
+| `<hr>`                                            | `---`                                                     |
+| `<br>`                                            | Trailing double-space line break; a space inside headings |
+| `<ul>`, `<ol>`, `<li>`                            | Lists with nesting and indentation                        |
+| `<table>`                                         | GFM pipe table with separator row                         |
+| `<script>`, `<style>`, `<noscript>`, `<template>` | Stripped                                                  |
 
 ### Inline
 

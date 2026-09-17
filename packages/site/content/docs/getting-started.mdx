@@ -110,7 +110,8 @@ const { markdown } = convert('<html><head><title>My Page</title></head><body><p>
 // Hello
 ```
 
-Disable it with `frontmatter: false`, or merge custom fields with `frontmatter: { author: 'Jane' }`. See the [Frontmatter guide](/docs/frontmatter) for details.
+Disable it with `frontmatter: false`, or merge custom fields with `frontmatter: { author: 'Jane' }`. See the
+[Frontmatter guide](/docs/frontmatter) for details.
 
 ### Using Custom Rules
 
@@ -217,9 +218,11 @@ console.log(`Took ${convertDuration}ms`);
 Signal publisher consent for AI usage via an HTTP header. Only set when explicitly configured:
 
 ```ts
-app.use(markdown({
-    contentSignal: { aiTrain: true, search: true, aiInput: true }
-}));
+app.use(
+    markdown({
+        contentSignal: { aiTrain: true, search: true, aiInput: true }
+    })
+);
 // Sets: content-signal: ai-train=yes, search=yes, ai-input=yes
 ```
 

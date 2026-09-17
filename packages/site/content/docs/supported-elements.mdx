@@ -9,17 +9,17 @@ Both the TypeScript and Python implementations convert the same set of HTML elem
 
 ## Block
 
-| HTML                                              | Markdown                                |
-| ------------------------------------------------- | --------------------------------------- |
-| `<h1>`...`<h6>`                                   | `# Heading` (atx) or underline (setext) |
-| `<p>`                                             | Paragraph with blank lines              |
-| `<blockquote>`                                    | `> Quoted text`                         |
-| `<pre><code>`                                     | Fenced code block with language         |
-| `<hr>`                                            | `---`                                   |
-| `<br>`                                            | Trailing double-space line break        |
-| `<ul>`, `<ol>`, `<li>`                            | Lists with nesting and indentation      |
-| `<table>`                                         | GFM pipe table with separator row       |
-| `<script>`, `<style>`, `<noscript>`, `<template>` | Stripped                                |
+| HTML                                              | Markdown                                                  |
+| ------------------------------------------------- | --------------------------------------------------------- |
+| `<h1>`...`<h6>`                                   | `# Heading` (atx) or underline (setext)                   |
+| `<p>`                                             | Paragraph with blank lines                                |
+| `<blockquote>`                                    | `> Quoted text`                                           |
+| `<pre><code>`                                     | Fenced code block with language                           |
+| `<hr>`                                            | `---`                                                     |
+| `<br>`                                            | Trailing double-space line break; a space inside headings |
+| `<ul>`, `<ol>`, `<li>`                            | Lists with nesting and indentation                        |
+| `<table>`                                         | GFM pipe table with separator row                         |
+| `<script>`, `<style>`, `<noscript>`, `<template>` | Stripped                                                  |
 
 ## Inline
 
@@ -37,7 +37,8 @@ Both the TypeScript and Python implementations convert the same set of HTML elem
 
 ## Unsupported Elements
 
-Elements not listed above are treated as pass-through containers - their children are converted but the element itself produces no Markdown syntax. This means content is never lost, even for unknown or custom elements.
+Elements not listed above are treated as pass-through containers - their children are converted but the element itself produces no Markdown
+syntax. This means content is never lost, even for unknown or custom elements.
 
 To add support for additional elements or override built-in behavior, see [Custom Rules](/docs/rules).
 
@@ -45,12 +46,12 @@ To add support for additional elements or override built-in behavior, see [Custo
 
 Several elements support configurable output styles via [convert options](/docs/api#convertoptions):
 
-| Option            | Default      | Alternative  | Affects                      |
-| ----------------- | ------------ | ------------ | ---------------------------- |
-| `headingStyle`    | `atx` (`#`)  | `setext`     | `<h1>`, `<h2>`              |
-| `bulletChar`      | `-`          | `*`, `+`     | `<ul>` / `<li>`             |
-| `codeBlockStyle`  | `fenced`     | `indented`   | `<pre><code>`               |
-| `fenceChar`       | `` ` ``      | `~`          | Fenced code blocks           |
-| `strongDelimiter` | `**`         | `__`         | `<strong>`, `<b>`           |
-| `emDelimiter`     | `*`          | `_`          | `<em>`, `<i>`               |
-| `linkStyle`       | `inlined`    | `referenced` | `<a>`                       |
+| Option            | Default     | Alternative  | Affects            |
+| ----------------- | ----------- | ------------ | ------------------ |
+| `headingStyle`    | `atx` (`#`) | `setext`     | `<h1>`, `<h2>`     |
+| `bulletChar`      | `-`         | `*`, `+`     | `<ul>` / `<li>`    |
+| `codeBlockStyle`  | `fenced`    | `indented`   | `<pre><code>`      |
+| `fenceChar`       | `` ` ``     | `~`          | Fenced code blocks |
+| `strongDelimiter` | `**`        | `__`         | `<strong>`, `<b>`  |
+| `emDelimiter`     | `*`         | `_`          | `<em>`, `<i>`      |
+| `linkStyle`       | `inlined`   | `referenced` | `<a>`              |
