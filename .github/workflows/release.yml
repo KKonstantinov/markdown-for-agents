@@ -16,22 +16,25 @@ jobs:
             pull-requests: write
             id-token: write
         steps:
-            - uses: actions/checkout@v6
-            - uses: pnpm/action-setup@v4
-            - uses: actions/setup-node@v6
+            # This job publishes to npm and JSR, so every action is pinned to a
+            # full commit SHA. A tag is mutable and can be repointed at attacker
+            # code; the trailing comment tracks which release each SHA is.
+            - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+            - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+            - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
               with:
                   node-version: 24
                   cache: pnpm
                   registry-url: 'https://registry.npmjs.org'
             # `pnpm version-packages` runs `uv lock` so python/uv.lock keeps up
             # with the version bump written into python/pyproject.toml.
-            - uses: astral-sh/setup-uv@v6
+            - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
               with:
                   enable-cache: true
             - run: pnpm install --frozen-lockfile
             - name: Create Release Pull Request or Publish
               id: changesets
-              uses: changesets/action@v1
+              uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
               with:
                   publish: pnpm release
                   version: pnpm version-packages
