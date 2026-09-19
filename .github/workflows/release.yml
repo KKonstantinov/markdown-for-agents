@@ -7,6 +7,11 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+env:
+    # Keep in step with python-ci.yml. `pnpm version-packages` runs `uv lock`,
+    # so the uv version here determines the lockfile this job writes.
+    UV_VERSION: '0.12.15'
+
 jobs:
     release:
         name: Release
@@ -30,6 +35,7 @@ jobs:
             # with the version bump written into python/pyproject.toml.
             - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
               with:
+                  version: ${{ env.UV_VERSION }}
                   enable-cache: true
             - run: pnpm install --frozen-lockfile
             - name: Create Release Pull Request or Publish
