@@ -1,6 +1,6 @@
 {
     "name": "@markdown-for-agents/sveltekit",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "description": "SvelteKit handle middleware - serve Markdown to AI agents via content negotiation",
     "type": "module",
     "sideEffects": false,
