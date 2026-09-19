@@ -251,7 +251,7 @@ importers:
         version: 4.2.1
       '@universal-rate-limit/nextjs':
         specifier: ^1.0.0
-        version: 1.0.0(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        version: 1.1.0(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@vercel/analytics':
         specifier: ^2.0.1
         version: 2.0.1(@sveltejs/kit@2.70.3(@sveltejs/vite-plugin-svelte@7.3.0(svelte@5.57.0(@typescript-eslint/types@8.57.0))(vite@8.2.2(@types/node@25.5.0)(esbuild@0.27.4)(jiti@2.6.1)))(svelte@5.57.0(@typescript-eslint/types@8.57.0))(typescript@5.9.3)(vite@8.2.2(@types/node@25.5.0)(esbuild@0.27.4)(jiti@2.6.1)))(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(svelte@5.57.0(@typescript-eslint/types@8.57.0))(vue@3.5.29(typescript@5.9.3))
@@ -2268,8 +2268,8 @@ packages:
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
     deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
-  '@universal-rate-limit/nextjs@1.0.0':
-    resolution: {integrity: sha512-IXWDi6t7FynCkVRyU9/8GUop13Y+IIyTIBLy6tevbsLoi/nIiLYBncdODUuUDpnBKlGrIudxtQzWjnWsjLqIYg==}
+  '@universal-rate-limit/nextjs@1.1.0':
+    resolution: {integrity: sha512-vONqXmtpu1LckPUVto5x4rDLudmZez7wmxTqn7c3eCiIdu0MpgAYyRsxAxPbAPNNCuOTBZLu9mj/H+q6EC11vA==}
     engines: {node: '>=20'}
     peerDependencies:
       next: '>=14.0.0'
@@ -5018,8 +5018,8 @@ packages:
   unist-util-visit@5.1.0:
     resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
 
-  universal-rate-limit@1.0.0:
-    resolution: {integrity: sha512-9GiyZgG13viulb8NuaG+nVam0CNOoA6stejlZxnFvrGjMAaRk4gR8NMmyL6MfbP8ruWzCSjdhVAqG1mrO/DFcw==}
+  universal-rate-limit@1.1.0:
+    resolution: {integrity: sha512-A84eqsHN9r9HojftoSZCJYFPNX9chax9bf11ht1imfEbBung3IExuwhZW2AmZgGCTXUncol/wev+B9BI5TRJ0Q==}
     engines: {node: '>=20'}
 
   universalify@0.1.2:
@@ -7106,10 +7106,10 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@universal-rate-limit/nextjs@1.0.0(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@universal-rate-limit/nextjs@1.1.0(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
       next: 16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      universal-rate-limit: 1.0.0
+      universal-rate-limit: 1.1.0
 
   '@unrs/resolver-binding-android-arm-eabi@1.11.1':
     optional: true
@@ -10278,7 +10278,7 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  universal-rate-limit@1.0.0: {}
+  universal-rate-limit@1.1.0: {}
 
   universalify@0.1.2: {}
 
