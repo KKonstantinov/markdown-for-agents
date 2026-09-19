@@ -7,6 +7,9 @@ on:
 
 env:
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    # Keep in step with python-ci.yml. setup-uv otherwise installs the newest
+    # uv, so the toolchain that builds a published artifact would float.
+    UV_VERSION: '0.12.15'
 
 jobs:
     publish:
@@ -16,14 +19,19 @@ jobs:
         permissions:
             id-token: write
         steps:
-            - uses: actions/checkout@v6
-            - uses: astral-sh/setup-uv@v6
+            # This job publishes to PyPI with a trusted-publishing token, so
+            # every action is pinned to a full commit SHA. A tag is mutable and
+            # can be repointed at attacker code; the trailing comment tracks
+            # which release each SHA is.
+            - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+            - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
               with:
+                  version: ${{ env.UV_VERSION }}
                   enable-cache: true
             - name: Build package
               working-directory: python
               run: uv build
             - name: Publish to PyPI
-              uses: pypa/gh-action-pypi-publish@release/v1
+              uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
               with:
                   packages-dir: python/dist/

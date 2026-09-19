@@ -18,14 +18,26 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
 
+env:
+    # Assert that uv.lock already matches pyproject.toml instead of silently
+    # re-resolving, mirroring `pnpm install --frozen-lockfile` on the JS side.
+    # Applies to every `uv sync` and `uv run` in this workflow.
+    UV_LOCKED: '1'
+    # setup-uv installs the newest uv unless told otherwise, so the toolchain
+    # floated and a uv release broke this workflow with no change to the
+    # project. Asserting the lock is only meaningful when the tool that
+    # validates it is fixed too. Bump this deliberately, in its own PR.
+    UV_VERSION: '0.12.15'
+
 jobs:
     lint:
         name: Lint
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6
-            - uses: astral-sh/setup-uv@v6
+            - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+            - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
               with:
+                  version: ${{ env.UV_VERSION }}
                   enable-cache: true
             - working-directory: python
               run: uv sync --all-extras
@@ -44,9 +56,10 @@ jobs:
             matrix:
                 python-version: ['3.12', '3.13', '3.14']
         steps:
-            - uses: actions/checkout@v6
-            - uses: astral-sh/setup-uv@v6
+            - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+            - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
               with:
+                  version: ${{ env.UV_VERSION }}
                   enable-cache: true
             - working-directory: python
               run: uv sync --python ${{ matrix.python-version }}
@@ -58,14 +71,15 @@ jobs:
         runs-on: ubuntu-latest
         needs: test
         steps:
-            - uses: actions/checkout@v6
-            - uses: pnpm/action-setup@v4
-            - uses: actions/setup-node@v6
+            - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+            - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+            - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
               with:
                   node-version: 24
                   cache: pnpm
-            - uses: astral-sh/setup-uv@v6
+            - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
               with:
+                  version: ${{ env.UV_VERSION }}
                   enable-cache: true
             - run: pnpm install --frozen-lockfile
             - run: pnpm build
