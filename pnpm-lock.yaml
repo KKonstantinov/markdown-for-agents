@@ -92,13 +92,13 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.11
-        version: 1.19.11(hono@4.12.8)
+        version: 1.19.11(hono@4.13.9)
       '@markdown-for-agents/hono':
         specifier: workspace:*
         version: link:../../packages/middleware/hono
       hono:
         specifier: ^4.12.8
-        version: 4.12.8
+        version: 4.13.9
       markdown-for-agents:
         specifier: workspace:*
         version: link:../../packages/core
@@ -207,7 +207,7 @@ importers:
     devDependencies:
       hono:
         specifier: ^4.12.8
-        version: 4.12.8
+        version: 4.13.9
 
   packages/middleware/nextjs:
     dependencies:
@@ -3538,8 +3538,8 @@ packages:
   hastscript@9.0.1:
     resolution: {integrity: sha512-g7df9rMFX/SPi34tyGCyUBREQoKkapwdY/T04Qn9TDWfHhAYt4/I0gMVirzK5wEzeUqIjEB+LXC/ypb7Aqno5w==}
 
-  hono@4.12.8:
-    resolution: {integrity: sha512-VJCEvtrezO1IAR+kqEYnxUOoStaQPGrCmX3j4wDTNOcD1uRPFpGlwQUIW8niPuvHXaTUxeOUl5MMDGrl+tmO9A==}
+  hono@4.13.9:
+    resolution: {integrity: sha512-7dMkQmZoC4E6F7AtaQSPhlWAdnBti+j7rreMZl8QB4jFiEhP9TWbGWUMi8WYzBCgmgulxuvLQupKqo+Co6Omyg==}
     engines: {node: '>=16.9.0'}
 
   hookable@6.0.1:
@@ -3968,8 +3968,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  magic-string@1.4.1:
-    resolution: {integrity: sha512-8lyCu36ErXR0J9uaGKlKQoiLZKmtI63YGLE8G2o9jyRPdr4X47LusSOwgOJOzcVtp81fTAAjxR7BwKz682Jhow==}
+  magic-string@1.4.2:
+    resolution: {integrity: sha512-vG+rjFRj1PqdIBozIxAGMjPlOhaVe+GXpbttY/iSK7rGcJRMlwNJO7dcUwmUqkymsFLJiNGI06t4D7Fr7yRC9g==}
 
   markdown-extensions@2.0.0:
     resolution: {integrity: sha512-o5vL7aDWatOTX8LzaS1WMoaoxIiLRQJuIKKe2wAw6IeULDHaqbiqiggmx+pKvZDb1Sj+pE46Sn1T7lCqfFtg1Q==}
@@ -5752,9 +5752,9 @@ snapshots:
     optionalDependencies:
       tailwindcss: 4.2.1
 
-  '@hono/node-server@1.19.11(hono@4.12.8)':
+  '@hono/node-server@1.19.11(hono@4.13.9)':
     dependencies:
-      hono: 4.12.8
+      hono: 4.13.9
 
   '@humanfs/core@0.19.1': {}
 
@@ -6682,7 +6682,7 @@ snapshots:
   '@sveltejs/vite-plugin-svelte@7.3.0(svelte@5.57.0(@typescript-eslint/types@8.57.0))(vite@8.2.2(@types/node@25.5.0)(esbuild@0.27.4)(jiti@2.6.1))':
     dependencies:
       deepmerge: 4.3.1
-      magic-string: 1.4.1
+      magic-string: 1.4.2
       obug: 2.2.1
       svelte: 5.57.0(@typescript-eslint/types@8.57.0)
       vite: 8.2.2(@types/node@25.5.0)(esbuild@0.27.4)(jiti@2.6.1)
@@ -8510,7 +8510,7 @@ snapshots:
       property-information: 7.1.0
       space-separated-tokens: 2.0.2
 
-  hono@4.12.8: {}
+  hono@4.13.9: {}
 
   hookable@6.0.1: {}
 
@@ -8843,7 +8843,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  magic-string@1.4.1:
+  magic-string@1.4.2:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.6.0
 
