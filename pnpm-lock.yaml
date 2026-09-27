@@ -92,13 +92,13 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.11
-        version: 1.19.11(hono@4.12.8)
+        version: 1.19.11(hono@4.13.9)
       '@markdown-for-agents/hono':
         specifier: workspace:*
         version: link:../../packages/middleware/hono
       hono:
         specifier: ^4.12.8
-        version: 4.12.8
+        version: 4.13.9
       markdown-for-agents:
         specifier: workspace:*
         version: link:../../packages/core
@@ -207,7 +207,7 @@ importers:
     devDependencies:
       hono:
         specifier: ^4.12.8
-        version: 4.12.8
+        version: 4.13.9
 
   packages/middleware/nextjs:
     dependencies:
@@ -3550,8 +3550,8 @@ packages:
   hastscript@9.0.1:
     resolution: {integrity: sha512-g7df9rMFX/SPi34tyGCyUBREQoKkapwdY/T04Qn9TDWfHhAYt4/I0gMVirzK5wEzeUqIjEB+LXC/ypb7Aqno5w==}
 
-  hono@4.12.8:
-    resolution: {integrity: sha512-VJCEvtrezO1IAR+kqEYnxUOoStaQPGrCmX3j4wDTNOcD1uRPFpGlwQUIW8niPuvHXaTUxeOUl5MMDGrl+tmO9A==}
+  hono@4.13.9:
+    resolution: {integrity: sha512-7dMkQmZoC4E6F7AtaQSPhlWAdnBti+j7rreMZl8QB4jFiEhP9TWbGWUMi8WYzBCgmgulxuvLQupKqo+Co6Omyg==}
     engines: {node: '>=16.9.0'}
 
   hookable@6.0.1:
@@ -5784,9 +5784,9 @@ snapshots:
     optionalDependencies:
       tailwindcss: 4.2.1
 
-  '@hono/node-server@1.19.11(hono@4.12.8)':
+  '@hono/node-server@1.19.11(hono@4.13.9)':
     dependencies:
-      hono: 4.12.8
+      hono: 4.13.9
 
   '@humanfs/core@0.19.1': {}
 
@@ -8552,7 +8552,7 @@ snapshots:
       property-information: 7.1.0
       space-separated-tokens: 2.0.2
 
-  hono@4.12.8: {}
+  hono@4.13.9: {}
 
   hookable@6.0.1: {}
 
