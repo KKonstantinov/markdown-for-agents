@@ -92,13 +92,13 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.11
-        version: 1.19.11(hono@4.13.9)
+        version: 1.19.11(hono@4.13.12)
       '@markdown-for-agents/hono':
         specifier: workspace:*
         version: link:../../packages/middleware/hono
       hono:
         specifier: ^4.12.8
-        version: 4.13.9
+        version: 4.13.12
       markdown-for-agents:
         specifier: workspace:*
         version: link:../../packages/core
@@ -207,7 +207,7 @@ importers:
     devDependencies:
       hono:
         specifier: ^4.12.8
-        version: 4.13.9
+        version: 4.13.12
 
   packages/middleware/nextjs:
     dependencies:
@@ -3597,8 +3597,8 @@ packages:
   hastscript@9.0.1:
     resolution: {integrity: sha512-g7df9rMFX/SPi34tyGCyUBREQoKkapwdY/T04Qn9TDWfHhAYt4/I0gMVirzK5wEzeUqIjEB+LXC/ypb7Aqno5w==}
 
-  hono@4.13.9:
-    resolution: {integrity: sha512-7dMkQmZoC4E6F7AtaQSPhlWAdnBti+j7rreMZl8QB4jFiEhP9TWbGWUMi8WYzBCgmgulxuvLQupKqo+Co6Omyg==}
+  hono@4.13.12:
+    resolution: {integrity: sha512-6E2QDAc9Ick9Sq77ZrGS/dk2WUYni91aufTw6LJKpV7w8kW5/GxVUc650FOADOmlwg3K+f7Pun6XlV+pYmW6gw==}
     engines: {node: '>=16.9.0'}
 
   hookable@6.0.1:
@@ -4864,6 +4864,10 @@ packages:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
+  source-map-js@1.2.2:
+    resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
+    engines: {node: '>=0.10.0'}
+
   source-map@0.7.6:
     resolution: {integrity: sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ==}
     engines: {node: '>= 12'}
@@ -5873,9 +5877,9 @@ snapshots:
     optionalDependencies:
       tailwindcss: 4.2.1
 
-  '@hono/node-server@1.19.11(hono@4.13.9)':
+  '@hono/node-server@1.19.11(hono@4.13.12)':
     dependencies:
-      hono: 4.13.9
+      hono: 4.13.12
 
   '@humanfs/core@0.19.1': {}
 
@@ -7379,7 +7383,7 @@ snapshots:
       '@vue/shared': 3.5.29
       entities: 7.0.1
       estree-walker: 2.0.2
-      source-map-js: 1.2.1
+      source-map-js: 1.2.2
     optional: true
 
   '@vue/compiler-dom@3.5.29':
@@ -7398,7 +7402,7 @@ snapshots:
       estree-walker: 2.0.2
       magic-string: 0.30.21
       postcss: 8.5.28
-      source-map-js: 1.2.1
+      source-map-js: 1.2.2
     optional: true
 
   '@vue/compiler-ssr@3.5.29':
@@ -8664,7 +8668,7 @@ snapshots:
       property-information: 7.1.0
       space-separated-tokens: 2.0.2
 
-  hono@4.13.9: {}
+  hono@4.13.12: {}
 
   hookable@6.0.1: {}
 
@@ -10220,6 +10224,9 @@ snapshots:
       atomic-sleep: 1.0.0
 
   source-map-js@1.2.1: {}
+
+  source-map-js@1.2.2:
+    optional: true
 
   source-map@0.7.6: {}
 
