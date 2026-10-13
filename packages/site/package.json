@@ -16,7 +16,7 @@
         "@universal-rate-limit/nextjs": "^1.0.0",
         "@vercel/analytics": "^2.0.1",
         "fumadocs-core": "^16.7.7",
-        "fumadocs-mdx": "^14.2.11",
+        "fumadocs-mdx": "^15.0.0",
         "fumadocs-ui": "^16.7.7",
         "markdown-for-agents": "workspace:*",
         "mermaid": "^11.13.0",
