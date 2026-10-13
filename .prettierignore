@@ -18,14 +18,12 @@ packages/site/content/docs/frontmatter.mdx
 
 # Docs build output
 packages/site/.next/
-packages/site/next-env.d.ts
 
 # Build output
 **/dist/
 
 # Next.js
 examples/nextjs/.next/
-examples/nextjs/next-env.d.ts
 
 # SvelteKit
 examples/sveltekit/.svelte-kit/
