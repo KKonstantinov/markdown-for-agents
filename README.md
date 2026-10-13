@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/markdown-for-agents)](https://www.npmjs.com/package/markdown-for-agents) [![npm downloads](https://img.shields.io/npm/dm/markdown-for-agents)](https://www.npmjs.com/package/markdown-for-agents)
 [![PyPI version](https://img.shields.io/pypi/v/markdown-for-agents)](https://pypi.org/project/markdown-for-agents/) [![license](https://img.shields.io/npm/l/markdown-for-agents)](https://github.com/KKonstantinov/markdown-for-agents/blob/main/LICENSE)
+[![skills.sh](https://skills.sh/b/KKonstantinov/markdown-for-agents)](https://skills.sh/KKonstantinov/markdown-for-agents)
 
 Runtime-agnostic HTML to Markdown converter built for AI agents. One dependency, works everywhere.
 
@@ -62,6 +63,16 @@ pip install markdown-for-agents
 ```
 
 See the [Python package docs](python/) for the full API, middleware (FastAPI, Flask, Django), and usage examples.
+
+### Agent Skill
+
+Teach your coding agent (Claude Code, Cursor, Codex, and other agents supported by [skills.sh](https://skills.sh)) to use markdown-for-agents - reading web pages as Markdown, converting HTML in TypeScript or Python, and wiring up middleware:
+
+```bash
+npx skills add KKonstantinov/markdown-for-agents
+```
+
+The skill lives in [`skills/markdown-for-agents`](skills/markdown-for-agents/SKILL.md).
 
 ## Quick Start
 
