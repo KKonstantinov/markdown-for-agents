@@ -82,6 +82,21 @@ class TestTildeFence:
         assert "~~~py\nx = 1\n~~~" in result.markdown
 
 
+class TestFenceLength:
+    def test_fence_longer_than_backtick_run(self):
+        html = '<pre><code class="language-md">```js\nconst x = 1;\n```</code></pre><h2>Next section</h2>'
+        result = convert(html)
+        assert "````md\n```js\nconst x = 1;\n```\n````" in result.markdown
+        assert "## Next section" in result.markdown
+
+    def test_tilde_fence_longer_than_tilde_run(self):
+        result = convert("<pre><code>~~~~\nx\n~~~~</code></pre>", fence_char="~")
+        assert "~~~~~\n~~~~\nx\n~~~~\n~~~~~" in result.markdown
+
+    def test_three_char_fence_without_long_runs(self):
+        assert "```\na `b` c\n```" in convert("<pre><code>a `b` c</code></pre>").markdown
+
+
 class TestEmptyElements:
     def test_empty_p_produces_no_output(self):
         assert convert("<p></p>").markdown == "\n"

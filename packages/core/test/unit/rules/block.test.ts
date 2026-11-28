@@ -101,6 +101,24 @@ describe('block rules', () => {
         });
     });
 
+    describe('code block fence length', () => {
+        it('uses a fence longer than any backtick run in the content', () => {
+            const html = '<pre><code class="language-md">```js\nconst x = 1;\n```</code></pre><h2>Next section</h2>';
+            const { markdown } = convert(html);
+            expect(markdown).toContain('````md\n```js\nconst x = 1;\n```\n````');
+            expect(markdown).toContain('## Next section');
+        });
+
+        it('uses a tilde fence longer than any tilde run in the content', () => {
+            const { markdown } = convert('<pre><code>~~~~\nx\n~~~~</code></pre>', { fenceChar: '~' });
+            expect(markdown).toContain('~~~~~\n~~~~\nx\n~~~~\n~~~~~');
+        });
+
+        it('keeps a three-character fence for content with no long runs', () => {
+            expect(convert('<pre><code>a `b` c</code></pre>').markdown).toContain('```\na `b` c\n```');
+        });
+    });
+
     describe('empty elements', () => {
         it('empty <p> produces no output', () => {
             expect(convert('<p></p>').markdown).toBe('\n');

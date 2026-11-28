@@ -4,6 +4,7 @@ from urllib.parse import urljoin
 
 from .._types import Rule, RuleContext
 from ..dom.nodes import Text
+from .util import longest_run
 
 inline_rules: list[Rule] = [
     Rule(
@@ -85,8 +86,8 @@ def _code_replacement(ctx: RuleContext) -> str | None:
     text = "".join(c.data if isinstance(c, Text) else "" for c in ctx.node.children)
     if not text:
         return None
-    # Use double backticks if content contains a backtick
-    delimiter = "``" if "`" in text else "`"
+    # The delimiter must be longer than any backtick run in the content (CommonMark 6.1)
+    delimiter = "`" * (longest_run(text, "`") + 1)
     padded = f" {text} " if text.startswith("`") or text.endswith("`") else text
     return f"{delimiter}{padded}{delimiter}"
 
