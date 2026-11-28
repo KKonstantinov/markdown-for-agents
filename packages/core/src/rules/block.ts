@@ -1,7 +1,7 @@
 import type { Element } from 'domhandler';
 import { isTag } from 'domhandler';
 import type { Rule } from '../types.js';
-import { getTextContent } from './util.js';
+import { getTextContent, longestRun } from './util.js';
 
 /**
  * Bare CSS class names on `<pre>` elements that should be treated as
@@ -91,7 +91,8 @@ export const blockRules: Rule[] = [
         replacement: ({ node, options }) => {
             const lang = detectLanguage(node);
             const text = getTextContent(node);
-            const fence = options.fenceChar.repeat(3);
+            // The fence must be longer than any run of the fence character in the content (CommonMark 4.5)
+            const fence = options.fenceChar.repeat(Math.max(3, longestRun(text, options.fenceChar) + 1));
             return `\n\n${fence}${lang}\n${text}\n${fence}\n\n`;
         },
         priority: 0

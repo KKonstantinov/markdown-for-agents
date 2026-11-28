@@ -47,6 +47,11 @@ describe('inline rules', () => {
         it('uses double backticks when content has backtick', () => {
             expect(convert('<code>a`b</code>').markdown).toContain('``a`b``');
         });
+
+        it('uses a delimiter longer than the longest backtick run in the content', () => {
+            expect(convert('<p><code>``a``</code></p>').markdown).toContain('``` ``a`` ```');
+            expect(convert('<p><code>a```b</code></p>').markdown).toContain('````a```b````');
+        });
     });
 
     describe('links', () => {

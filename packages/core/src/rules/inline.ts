@@ -1,5 +1,6 @@
 import type { Text } from 'domhandler';
 import type { Rule } from '../types.js';
+import { longestRun } from './util.js';
 
 /**
  * Built-in rules for inline HTML elements.
@@ -46,8 +47,8 @@ export const inlineRules: Rule[] = [
             if (insidePre) return; // let <pre> rule handle it
             const text = node.children.map(c => ('data' in c ? (c as Text).data : '')).join('');
             if (!text) return null;
-            // Use double backticks if content contains a backtick
-            const delimiter = text.includes('`') ? '``' : '`';
+            // The delimiter must be longer than any backtick run in the content (CommonMark 6.1)
+            const delimiter = '`'.repeat(longestRun(text, '`') + 1);
             const padded = text.startsWith('`') || text.endsWith('`') ? ` ${text} ` : text;
             return `${delimiter}${padded}${delimiter}`;
         },

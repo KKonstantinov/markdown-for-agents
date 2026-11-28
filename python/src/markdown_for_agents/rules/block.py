@@ -4,7 +4,7 @@ import re
 
 from .._types import Rule, RuleContext
 from ..dom.nodes import Element, is_tag
-from .util import get_text_content
+from .util import get_text_content, longest_run
 
 _BARE_LANG_CLASSES = frozenset({"mermaid"})
 
@@ -113,5 +113,6 @@ def _blockquote_replacement(ctx: RuleContext) -> str | None:
 def _pre_replacement(ctx: RuleContext) -> str:
     lang = _detect_language(ctx.node)
     text = get_text_content(ctx.node)
-    fence = ctx.options.fence_char * 3
+    # The fence must be longer than any run of the fence character in the content (CommonMark 4.5)
+    fence = ctx.options.fence_char * max(3, longest_run(text, ctx.options.fence_char) + 1)
     return f"\n\n{fence}{lang}\n{text}\n{fence}\n\n"

@@ -36,6 +36,10 @@ class TestInlineCode:
     def test_uses_double_backticks_for_backtick_content(self):
         assert "``a`b``" in convert("<code>a`b</code>").markdown
 
+    def test_delimiter_longer_than_backtick_run(self):
+        assert "``` ``a`` ```" in convert("<p><code>``a``</code></p>").markdown
+        assert "````a```b````" in convert("<p><code>a```b</code></p>").markdown
+
 
 class TestLinks:
     def test_converts_a_to_markdown_link(self):
