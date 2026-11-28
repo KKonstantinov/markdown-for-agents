@@ -115,7 +115,9 @@ describe('block rules', () => {
         });
 
         it('keeps a three-character fence for content with no long runs', () => {
-            expect(convert('<pre><code>a `b` c</code></pre>').markdown).toContain('```\na `b` c\n```');
+            const { markdown } = convert('<pre><code>a `b` c</code></pre>');
+            expect(markdown).toContain('```\na `b` c\n```');
+            expect(markdown).not.toContain('````');
         });
     });
 
